@@ -11,8 +11,11 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { ArticleCard } from "@/components/site/article-card";
 import { ProductCard } from "@/components/site/product-card";
-import { articles } from "@/data/blog";
-import { productCategories, products } from "@/data/catalog";
+import { productCategories } from "@/data/catalog";
+import { getPublishedBlogPosts } from "@/lib/public-blog";
+import { getPublishedProducts } from "@/lib/public-products";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: { absolute: "Glarivo Glassware | Clear collections for confident sourcing" },
@@ -29,7 +32,11 @@ const capabilityItems = [
 
 const processSteps = ["Select", "Sample", "Confirm", "Produce", "Inspect", "Pack"];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [products, articles] = await Promise.all([
+    getPublishedProducts(),
+    getPublishedBlogPosts(),
+  ]);
   const featuredProducts = products.filter((product) => product.featured).slice(0, 3);
 
   return (
@@ -164,12 +171,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[var(--surface)] py-16 sm:py-24">
+      {featuredProducts.length ? <section className="bg-[var(--surface)] py-16 sm:py-24">
         <div className="site-container">
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="eyebrow">Featured products</p>
-              <h2 className="mt-4 text-3xl font-bold tracking-[-0.045em] text-[var(--navy)] sm:text-5xl">A focused first collection</h2>
+              <h2 className="mt-4 text-3xl font-bold tracking-[-0.045em] text-[var(--navy)] sm:text-5xl">Selected glassware products</h2>
             </div>
             <Link href="/products" className="button-secondary">View catalog <ArrowRight size={17} weight="bold" /></Link>
           </div>
@@ -177,9 +184,9 @@ export default function HomePage() {
             {featuredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
           </div>
         </div>
-      </section>
+      </section> : null}
 
-      <section className="site-container py-16 sm:py-24">
+      {articles.length ? <section className="site-container py-16 sm:py-24">
         <div className="mb-8">
           <p className="eyebrow">Latest guides</p>
           <h2 className="mt-4 text-3xl font-bold tracking-[-0.045em] text-[var(--navy)] sm:text-5xl">Practical notes for better product decisions</h2>
@@ -187,7 +194,7 @@ export default function HomePage() {
         <div className="grid gap-5 lg:grid-cols-2">
           {articles.slice(0, 2).map((article) => <ArticleCard key={article.slug} article={article} />)}
         </div>
-      </section>
+      </section> : null}
     </>
   );
 }

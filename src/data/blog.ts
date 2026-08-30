@@ -20,7 +20,7 @@ export const articles: Article[] = [
     publishedAt: "2026-08-30",
     readTime: "5 min read",
     featured: true,
-    image: "/images/home/hero-glassware.webp",
+    image: "https://media.glarivoglass.com/site/blog/how-to-build-a-clear-glassware-shortlist/cover-v1.webp",
     imageAlt: "Assorted clear glassware displayed inside a modern warehouse showroom",
     content: [
       {

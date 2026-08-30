@@ -120,7 +120,10 @@ textarea {
   border-color: var(--navy);
 }
 
-.prose-glarivo h2 {
+.prose-glarivo h1,
+.prose-glarivo h2,
+.prose-glarivo h3,
+.prose-glarivo h4 {
   margin-top: 3rem;
   color: var(--navy);
   font-size: clamp(1.7rem, 4vw, 2.5rem);
@@ -129,11 +132,182 @@ textarea {
   line-height: 1.08;
 }
 
+.prose-glarivo h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.prose-glarivo h3 {
+  margin-top: 2.25rem;
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.prose-glarivo h4 {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
 .prose-glarivo p {
   margin-top: 1.25rem;
   color: var(--ink-muted);
   font-size: 1.05rem;
   line-height: 1.85;
+}
+
+.prose-glarivo ul,
+.prose-glarivo ol {
+  margin-top: 1.25rem;
+  padding-left: 1.5rem;
+  color: var(--ink-muted);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.prose-glarivo ul {
+  list-style: disc;
+}
+
+.prose-glarivo ol {
+  list-style: decimal;
+}
+
+.prose-glarivo li + li {
+  margin-top: 0.55rem;
+}
+
+.prose-glarivo a {
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.prose-glarivo blockquote {
+  margin-top: 1.75rem;
+  border-left: 0.3rem solid var(--lime-strong);
+  background: var(--surface);
+  padding: 0.35rem 1.4rem 1.5rem;
+}
+
+.prose-glarivo blockquote p {
+  color: var(--navy);
+  font-size: 1.15rem;
+  font-style: italic;
+}
+
+.prose-glarivo blockquote cite {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  font-style: normal;
+}
+
+.prose-glarivo hr {
+  width: 5rem;
+  height: 0.3rem;
+  margin: 3rem auto;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lime-strong);
+}
+
+.prose-glarivo figure {
+  margin: 2.5rem 0;
+}
+
+.prose-glarivo figcaption {
+  margin-top: 0.75rem;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.prose-glarivo .article-image-with-background {
+  border-radius: 1rem;
+  background: var(--surface);
+  padding: 1rem;
+}
+
+.prose-glarivo .article-image-with-border {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+
+.article-editor-shell .codex-editor__redactor {
+  padding-bottom: 7rem !important;
+}
+
+.article-editor-shell .ce-block__content,
+.article-editor-shell .ce-toolbar__content {
+  max-width: 760px;
+}
+
+.article-editor-shell .ce-header {
+  color: var(--navy);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.article-editor-shell .ce-paragraph,
+.article-editor-shell .cdx-list,
+.article-editor-shell .cdx-quote__text {
+  color: var(--ink);
+  line-height: 1.75;
+}
+
+.article-editor-shell .ce-toolbar__plus,
+.article-editor-shell .ce-toolbar__settings-btn {
+  color: var(--navy);
+}
+
+.article-editor-shell .ce-toolbar__plus:hover,
+.article-editor-shell .ce-toolbar__settings-btn:hover,
+.article-editor-shell .ce-popover-item:hover {
+  background: var(--surface-blue);
+}
+
+.prose-glarivo code {
+  border-radius: 0.35rem;
+  background: var(--surface-blue);
+  padding: 0.12rem 0.35rem;
+  color: var(--navy);
+  font-size: 0.9em;
+}
+
+.prose-glarivo pre {
+  margin-top: 1.5rem;
+  overflow-x: auto;
+  border-radius: 0.8rem;
+  background: var(--navy);
+  padding: 1.25rem;
+  color: white;
+}
+
+.prose-glarivo pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.prose-glarivo table {
+  margin-top: 1.75rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.prose-glarivo th,
+.prose-glarivo td {
+  border: 1px solid var(--line);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.prose-glarivo th {
+  background: var(--surface);
+  color: var(--navy);
 }
 
 @media (min-width: 640px) {

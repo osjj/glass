@@ -1,16 +1,23 @@
 import Link from "next/link";
-import { ArrowRight, BookOpenText, Boxes, CircleCheck, Clock3 } from "lucide-react";
+import { ArrowRight, BookOpenText, Boxes, CircleCheck } from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { SetupNotice } from "@/components/admin/setup-notice";
-import { articles } from "@/data/blog";
-import { products } from "@/data/catalog";
+import { requireAdmin } from "@/lib/admin-auth";
+import { prisma } from "@/lib/prisma";
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  await requireAdmin();
+  const [productCount, publishedProductCount, blogPostCount, publishedBlogPostCount] = await Promise.all([
+    prisma.product.count(),
+    prisma.product.count({ where: { status: "PUBLISHED" } }),
+    prisma.blogPost.count(),
+    prisma.blogPost.count({ where: { status: "PUBLISHED" } }),
+  ]);
   const metrics = [
-    { label: "Products", value: products.length, icon: Boxes, href: "/admin/products" },
-    { label: "Blog posts", value: articles.length, icon: BookOpenText, href: "/admin/blog" },
-    { label: "Published demo items", value: products.length + articles.length, icon: CircleCheck, href: "/" },
-    { label: "Pending integration", value: 4, icon: Clock3, href: "#next-steps" },
+    { label: "Products", value: productCount, icon: Boxes, href: "/admin/products" },
+    { label: "Blog posts", value: blogPostCount, icon: BookOpenText, href: "/admin/blog" },
+    { label: "Published products", value: publishedProductCount, icon: CircleCheck, href: "/products" },
+    { label: "Published articles", value: publishedBlogPostCount, icon: CircleCheck, href: "/blog" },
   ] as const;
 
   return (
@@ -37,19 +44,6 @@ export default function AdminDashboardPage() {
             <span className="mt-1 block text-sm font-bold text-[var(--ink-muted)]">{label}</span>
           </Link>
         ))}
-      </section>
-
-      <section id="next-steps" className="mt-7 rounded-3xl border border-[#d7dcd8] bg-white p-6 sm:p-8">
-        <p className="text-[0.68rem] font-black uppercase tracking-[0.16em] text-[var(--accent-dark)]">Next implementation stage</p>
-        <h2 className="mt-3 text-2xl font-black tracking-[-0.04em]">Connect the interface to real maintenance workflows.</h2>
-        <ol className="mt-6 grid gap-3 md:grid-cols-2">
-          {["Admin login and session protection", "PostgreSQL and Prisma queries", "Product and blog save actions", "Local image upload and WebP processing"].map((item, index) => (
-            <li key={item} className="flex items-center gap-3 rounded-2xl bg-[#f4f6f3] p-4 text-sm font-bold">
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[var(--ink)] text-xs text-[var(--acid)]">{index + 1}</span>
-              {item}
-            </li>
-          ))}
-        </ol>
       </section>
     </div>
   );

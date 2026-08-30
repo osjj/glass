@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { ProductCard } from "@/components/site/product-card";
-import { productCategories, products } from "@/data/catalog";
+import { productCategories } from "@/data/catalog";
+import { getPublishedProducts } from "@/lib/public-products";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Browse the initial Glarivo glassware catalog.",
+  description: "Browse Glarivo's published glassware products, specifications, pricing, and minimum-order information.",
   alternates: { canonical: "/products" },
 };
 
@@ -18,6 +21,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const query = params.q?.trim() ?? "";
   const normalizedQuery = query.toLowerCase();
   const knownCategory = productCategories.some((item) => item.slug === category) ? category : "";
+  const products = await getPublishedProducts();
   const filteredProducts = products.filter((product) => {
     const matchesCategory = !knownCategory || product.category === knownCategory;
     const matchesQuery = !normalizedQuery || `${product.name} ${product.summary} ${product.categoryLabel}`.toLowerCase().includes(normalizedQuery);
@@ -32,7 +36,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <p className="eyebrow">Product catalog</p>
             <h1 className="mt-5 max-w-4xl text-balance text-5xl font-bold leading-[0.98] tracking-[-0.055em] text-[var(--navy)] sm:text-7xl">Glassware collections, clearly organized.</h1>
           </div>
-          <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)] lg:pb-2">Browse the initial Glarivo structure for drinkware, tableware, serveware, storage, bakeware, and colored glassware.</p>
+          <p className="max-w-2xl text-lg leading-8 text-[var(--ink-muted)] lg:pb-2">Browse current glassware products with published images, specifications, pricing, and order information maintained by Glarivo.</p>
         </div>
       </section>
 
@@ -63,9 +67,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)}</div>
         ) : (
           <div className="mt-8 rounded-xl border border-dashed border-[var(--line)] bg-[var(--surface)] px-6 py-20 text-center">
-            <h2 className="text-2xl font-bold tracking-[-0.04em] text-[var(--navy)]">No matching products yet.</h2>
-            <p className="mt-3 text-[var(--ink-muted)]">Try another search or return to all products.</p>
-            <Link href="/products" className="button-primary mt-7">View all products</Link>
+            <h2 className="text-2xl font-bold tracking-[-0.04em] text-[var(--navy)]">{query || knownCategory ? "No matching products." : "Published products are being prepared."}</h2>
+            <p className="mt-3 text-[var(--ink-muted)]">{query || knownCategory ? "Try another search or return to all products." : "Products will appear here as soon as they are published from the catalog."}</p>
+            {query || knownCategory ? <Link href="/products" className="button-primary mt-7">View all products</Link> : null}
           </div>
         )}
       </section>
