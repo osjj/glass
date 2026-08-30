@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #ffffff;
+  --surface: #f5f7fa;
+  --surface-blue: #eef3f9;
+  --navy: #102a59;
+  --navy-soft: #193d75;
+  --blue: #2d6bae;
+  --ink: #101d35;
+  --ink-muted: #667085;
+  --line: #dfe4ec;
+  --lime: #c9f238;
+  --lime-strong: #b8e51b;
+  --acid: var(--lime);
+  --accent: var(--blue);
+  --accent-dark: #245b98;
+  --paper-deep: var(--surface);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--paper);
+  overflow-x: clip;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+a {
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--navy);
+}
+
+:focus-visible {
+  outline: 3px solid var(--lime-strong);
+  outline-offset: 3px;
+}
+
+.site-container {
+  width: calc(100% - 2rem);
+  max-width: 1320px;
+  margin-inline: auto;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  width: 1.6rem;
+  height: 0.22rem;
+  border-radius: 999px;
+  background: var(--lime);
+  content: "";
+}
+
+.button-primary,
+.button-secondary {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  border-radius: 0.65rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+.button-primary {
+  background: var(--navy);
+  color: white;
+}
+
+.button-primary:hover {
+  transform: translateY(-2px);
+  background: var(--navy-soft);
+}
+
+.button-secondary {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--navy);
+}
+
+.button-secondary:hover {
+  transform: translateY(-2px);
+  border-color: var(--navy);
+}
+
+.prose-glarivo h2 {
+  margin-top: 3rem;
+  color: var(--navy);
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+}
+
+.prose-glarivo p {
+  margin-top: 1.25rem;
+  color: var(--ink-muted);
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+@media (min-width: 640px) {
+  .site-container {
+    width: calc(100% - 3rem);
+    max-width: 1320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
