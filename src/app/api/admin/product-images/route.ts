@@ -41,6 +41,10 @@ export async function POST(request: Request) {
       image: {
         url: uploaded.url,
         alt: requestedAlt || fallbackAlt || "Product image",
+        width: uploaded.width,
+        height: uploaded.height,
+        storageKey: uploaded.key,
+        mimeType: uploaded.contentType,
       },
     });
   } catch (error) {

@@ -17,8 +17,8 @@ export function Logo({
       <Image
         src={variant === "white" ? "/brand/glarivo-logo-white.png" : "/brand/glarivo-logo-blue.png"}
         alt="Glarivo Glassware"
-        width={760}
-        height={550}
+        width={1378}
+        height={748}
         priority
         className={compact ? "h-14 w-auto" : "h-[4.5rem] w-auto sm:h-[4.8rem]"}
       />

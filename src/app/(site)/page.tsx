@@ -11,9 +11,8 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { ArticleCard } from "@/components/site/article-card";
 import { ProductCard } from "@/components/site/product-card";
-import { productCategories } from "@/data/catalog";
 import { getPublishedBlogPosts } from "@/lib/public-blog";
-import { getPublishedProducts } from "@/lib/public-products";
+import { getPublicCategoryTree, getPublishedProducts } from "@/lib/public-products";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 const capabilityItems = [
-  { icon: Package, value: "6", label: "Focused glassware collections" },
+  { icon: Package, value: "56", label: "Aligned glassware categories" },
   { icon: ShieldCheck, value: "Clear", label: "Source-led product information" },
   { icon: Factory, value: "Ready", label: "Structured production details" },
   { icon: GlobeHemisphereWest, value: "Flexible", label: "Catalog built to grow" },
@@ -123,11 +122,13 @@ const testimonials = [
 ] as const;
 
 export default async function HomePage() {
-  const [products, articles] = await Promise.all([
+  const [products, articles, categoryTree] = await Promise.all([
     getPublishedProducts(),
     getPublishedBlogPosts(),
+    getPublicCategoryTree(),
   ]);
   const featuredProducts = products.filter((product) => product.featured).slice(0, 3);
+  const homepageCategories = categoryTree.slice(0, 9);
 
   return (
     <>
@@ -183,8 +184,11 @@ export default async function HomePage() {
               <span className="sr-only">Choose a category</span>
               <select name="category" defaultValue="" className="h-13 w-full rounded-lg border border-[var(--line)] bg-white px-4 text-sm font-semibold text-[var(--ink-muted)]">
                 <option value="">All categories</option>
-                {productCategories.map((category) => (
-                  <option key={category.slug} value={category.slug}>{category.label}</option>
+                {categoryTree.map((category) => (
+                  <optgroup key={category.id} label={category.label}>
+                    <option value={category.slug}>{category.label}</option>
+                    {category.children.map((child) => <option key={child.id} value={child.slug}>{child.label}</option>)}
+                  </optgroup>
                 ))}
               </select>
             </label>
@@ -200,20 +204,23 @@ export default async function HomePage() {
         <div className="mb-5 flex items-end justify-between gap-4">
           <h2 className="text-xl font-bold tracking-[-0.035em] text-[var(--navy)] sm:text-2xl">Browse glassware collections</h2>
           <Link href="/products" className="inline-flex items-center gap-2 text-sm font-bold text-[var(--navy)]">
-            View all products <ArrowRight size={17} weight="bold" />
+            View all 56 categories <ArrowRight size={17} weight="bold" />
           </Link>
         </div>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {productCategories.map((category) => (
+          {homepageCategories.map((category) => (
             <Link
-              key={category.slug}
-              href={`/products?category=${category.slug}`}
+              key={category.id}
+              href={`/products/category/${category.slug}`}
               className="group relative min-h-36 overflow-hidden rounded-xl bg-[var(--navy)] text-white"
             >
-              <Image src={category.image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
+              <Image src={category.image} alt="" fill unoptimized sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
               <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,22,48,0.88),rgba(6,22,48,0.12))]" />
               <div className="relative flex min-h-36 items-center justify-between p-6">
-                <h3 className="max-w-44 text-2xl font-bold tracking-[-0.035em]">{category.label}</h3>
+                <div>
+                  <h3 className="max-w-52 text-2xl font-bold tracking-[-0.035em]">{category.label}</h3>
+                  <p className="mt-2 text-xs font-semibold text-white/68">{category.children.length ? `${category.children.length} subcategories` : `${category.productCount} products`}</p>
+                </div>
                 <span className="grid size-10 place-items-center rounded-full border border-white/40 bg-white/10 transition group-hover:border-[var(--lime)] group-hover:bg-[var(--lime)] group-hover:text-[var(--navy)]">
                   <ArrowRight size={18} weight="bold" />
                 </span>

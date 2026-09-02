@@ -17,62 +17,289 @@ enum AdminRole {
   ADMIN
 }
 
+enum PricingMode {
+  REQUEST_QUOTE
+  FIXED
+  TIERED
+}
+
+enum ReviewStatus {
+  UNREVIEWED
+  VERIFIED
+  CONFLICT
+  REJECTED
+}
+
+enum ImportCandidateStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  IMPORTED
+  REJECTED
+  ERROR
+}
+
+enum SourceProvider {
+  GARBO
+  MANUAL
+}
+
+enum MediaRole {
+  GALLERY
+  DETAIL
+  SIZE_GUIDE
+  PRODUCTION
+  PACKAGING
+  OEM_ODM
+  VIDEO
+  DOCUMENT
+}
+
+enum MediaRightsStatus {
+  UNREVIEWED
+  AUTHORIZED
+  REPLACE_REQUIRED
+  REJECTED
+}
+
+enum SpecificationGroup {
+  GENERAL
+  DIMENSION
+  MATERIAL
+  PACKAGING
+  COMMERCIAL
+  COMPOSITION
+}
+
+enum CertificationStatus {
+  UNVERIFIED
+  VERIFIED
+  REJECTED
+}
+
+enum ProductPageTemplate {
+  GARBO_DETAIL
+}
+
 model AdminUser {
-  id                  String    @id @default(cuid())
-  email               String    @unique
+  id                  String                   @id @default(cuid())
+  email               String                   @unique
   name                String?
   passwordHash        String
-  role                AdminRole @default(ADMIN)
-  isActive            Boolean   @default(true)
-  sessionVersion      Int       @default(1)
-  failedLoginAttempts Int       @default(0)
+  role                AdminRole                @default(ADMIN)
+  isActive            Boolean                  @default(true)
+  sessionVersion      Int                      @default(1)
+  failedLoginAttempts Int                      @default(0)
   lockedUntil         DateTime?
   lastLoginAt         DateTime?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  reviewedCandidates  ProductImportCandidate[] @relation("ImportCandidateReviewer")
 
   @@index([role, isActive])
 }
 
+model Category {
+  id               String                    @id @default(cuid())
+  name             String
+  slug             String                    @unique
+  parentId         String?
+  sortOrder        Int                       @default(0)
+  isActive         Boolean                   @default(true)
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+  parent           Category?                 @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children         Category[]                @relation("CategoryTree")
+  productLinks     ProductCategory[]
+  externalMappings ExternalCategoryMapping[]
+
+  @@index([parentId, sortOrder])
+  @@index([isActive, sortOrder])
+}
+
+model ExternalCategoryMapping {
+  id         String         @id @default(cuid())
+  categoryId String
+  provider   SourceProvider
+  sourceSlug String
+  sourcePath String
+  sourceName String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  category   Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, sourcePath])
+  @@index([categoryId])
+  @@index([provider, sourceSlug])
+}
+
+model ExternalSourceCategory {
+  id            String                   @id @default(cuid())
+  provider      SourceProvider
+  sourceSlug    String
+  sourcePath    String
+  sourceUrl     String
+  sourceName    String
+  parentId      String?
+  depth         Int                      @default(0)
+  sortOrder     Int                      @default(0)
+  isActive      Boolean                  @default(true)
+  isImportable  Boolean                  @default(true)
+  productCount  Int?
+  pageCount     Int?
+  lastSyncedAt  DateTime?
+  lastScannedAt DateTime?
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  parent        ExternalSourceCategory?  @relation("ExternalSourceCategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children      ExternalSourceCategory[] @relation("ExternalSourceCategoryTree")
+
+  @@unique([provider, sourcePath])
+  @@index([provider, parentId, sortOrder])
+  @@index([provider, isActive, isImportable])
+}
+
 model Product {
-  id             String                 @id @default(cuid())
-  name           String
-  slug           String                 @unique
-  sku            String?                @unique
-  category       String
-  summary        String
-  description    String
-  content        String                 @default("")
-  price          Decimal                @default(0) @db.Decimal(12, 2)
-  comparePrice   Decimal?               @db.Decimal(12, 2)
-  cost           Decimal?               @db.Decimal(12, 2)
-  currency       String                 @default("USD")
-  moq            Int                    @default(1)
-  unit           String                 @default("piece")
-  stock          Int                    @default(0)
-  status         PublishStatus          @default(DRAFT)
-  featured       Boolean                @default(false)
-  sortOrder      Int                    @default(0)
-  publishedAt    DateTime?
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
-  attributes     ProductAttribute[]
-  features       ProductFeature[]
-  images         ProductImage[]
-  priceTiers     PriceTier[]
-  specifications ProductSpecification[]
+  id                   String                      @id @default(cuid())
+  name                 String
+  slug                 String                      @unique
+  sku                  String?                     @unique
+  legacyCategory       String                      @map("category")
+  summary              String
+  description          String
+  content              String                      @default("")
+  pageTemplate         ProductPageTemplate         @default(GARBO_DETAIL)
+  sourceProvider       SourceProvider?
+  sourceUrl            String?
+  sourceCategoryPath   String?
+  detailsHeading       String                      @default("Details")
+  specificationHeading String                      @default("Specifications")
+  pricingMode          PricingMode                 @default(REQUEST_QUOTE)
+  price                Decimal?                    @db.Decimal(12, 2)
+  comparePrice         Decimal?                    @db.Decimal(12, 2)
+  cost                 Decimal?                    @db.Decimal(12, 2)
+  currency             String                      @default("USD")
+  moq                  Int?
+  unit                 String?
+  stock                Int                         @default(0)
+  seoTitle             String?
+  seoDescription       String?
+  status               PublishStatus               @default(DRAFT)
+  featured             Boolean                     @default(false)
+  sortOrder            Int                         @default(0)
+  publishedAt          DateTime?
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+  attributes           ProductAttribute[]
+  features             ProductFeature[]
+  images               ProductImage[]
+  priceTiers           PriceTier[]
+  specifications       ProductSpecification[]
+  categories           ProductCategory[]
+  variants             ProductVariant[]
+  components           ProductComponent[]
+  certifications       ProductCertificationClaim[]
+  importCandidates     ProductImportCandidate[]
+  overviewFields       ProductOverviewField[]
+  contentSections      ProductContentSection[]
 
   @@index([status, sortOrder])
-  @@index([category])
+  @@index([sourceProvider, sourceCategoryPath])
+  @@index([legacyCategory], map: "Product_category_idx")
+}
+
+model ProductOverviewField {
+  id              String       @id @default(cuid())
+  productId       String
+  key             String?
+  label           String
+  value           String
+  rawValue        String?
+  normalizedValue String?
+  reviewStatus    ReviewStatus @default(VERIFIED)
+  sortOrder       Int          @default(0)
+  product         Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
+}
+
+model ProductContentSection {
+  id        String         @id @default(cuid())
+  productId String
+  sourceKey String
+  title     String
+  body      String         @default("")
+  sortOrder Int            @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images    ProductImage[]
+
+  @@unique([productId, sourceKey])
+  @@index([productId, sortOrder])
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+  isPrimary  Boolean  @default(false)
+  sortOrder  Int      @default(0)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@index([categoryId, sortOrder])
+  @@index([productId, isPrimary])
+}
+
+model ProductVariant {
+  id             String                 @id @default(cuid())
+  productId      String
+  sku            String?                @unique
+  label          String
+  isDefault      Boolean                @default(false)
+  price          Decimal?               @db.Decimal(12, 2)
+  moq            Int?
+  unit           String?
+  stock          Int?
+  reviewStatus   ReviewStatus           @default(VERIFIED)
+  sortOrder      Int                    @default(0)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  product        Product                @relation(fields: [productId], references: [id], onDelete: Cascade)
+  components     ProductComponent[]
+  specifications ProductSpecification[]
+
+  @@index([productId, sortOrder])
+  @@index([productId, isDefault])
+}
+
+model ProductComponent {
+  id             String                 @id @default(cuid())
+  productId      String
+  variantId      String?
+  name           String
+  quantity       Int                    @default(1)
+  sortOrder      Int                    @default(0)
+  product        Product                @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant        ProductVariant?        @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  specifications ProductSpecification[]
+
+  @@index([productId, sortOrder])
+  @@index([variantId])
 }
 
 model ProductAttribute {
-  id        String  @id @default(cuid())
-  productId String
-  label     String
-  value     String
-  sortOrder Int     @default(0)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id              String       @id @default(cuid())
+  productId       String
+  key             String?
+  label           String
+  value           String
+  rawValue        String?
+  normalizedValue String?
+  reviewStatus    ReviewStatus @default(VERIFIED)
+  sortOrder       Int          @default(0)
+  product         Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId, sortOrder])
 }
@@ -88,26 +315,123 @@ model ProductFeature {
 }
 
 model ProductImage {
-  id        String   @id @default(cuid())
-  productId String
-  url       String
-  alt       String
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id               String                 @id @default(cuid())
+  productId        String
+  contentSectionId String?
+  url              String
+  alt              String
+  role             MediaRole              @default(GALLERY)
+  sourceUrl        String?
+  storageKey       String?
+  sha256           String?
+  mimeType         String?
+  width            Int?
+  height           Int?
+  sectionKey       String?
+  rightsStatus     MediaRightsStatus      @default(UNREVIEWED)
+  reviewStatus     ReviewStatus           @default(VERIFIED)
+  sortOrder        Int                    @default(0)
+  createdAt        DateTime               @default(now())
+  product          Product                @relation(fields: [productId], references: [id], onDelete: Cascade)
+  contentSection   ProductContentSection? @relation(fields: [contentSectionId], references: [id], onDelete: SetNull)
 
-  @@index([productId, sortOrder])
+  @@index([productId, role, sortOrder])
+  @@index([contentSectionId, sortOrder])
+  @@index([sha256])
 }
 
 model ProductSpecification {
-  id        String  @id @default(cuid())
-  productId String
-  label     String
-  value     String
-  sortOrder Int     @default(0)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id           String             @id @default(cuid())
+  productId    String
+  variantId    String?
+  componentId  String?
+  key          String?
+  label        String
+  value        String
+  rawValue     String?
+  numericValue Decimal?           @db.Decimal(14, 4)
+  unit         String?
+  group        SpecificationGroup @default(GENERAL)
+  reviewStatus ReviewStatus       @default(VERIFIED)
+  sortOrder    Int                @default(0)
+  product      Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant      ProductVariant?    @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  component    ProductComponent?  @relation(fields: [componentId], references: [id], onDelete: Cascade)
 
   @@index([productId, sortOrder])
+  @@index([variantId, sortOrder])
+  @@index([componentId, sortOrder])
+}
+
+model ProductCertificationClaim {
+  id              String              @id @default(cuid())
+  productId       String
+  claimName       String
+  sourceText      String?
+  sourceUrl       String?
+  evidenceFileUrl String?
+  status          CertificationStatus @default(UNVERIFIED)
+  verifiedAt      DateTime?
+  sortOrder       Int                 @default(0)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  product         Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
+  @@index([status])
+}
+
+model ProductImportCandidate {
+  id                   String                @id @default(cuid())
+  provider             SourceProvider
+  sourceUrl            String
+  sourceCategorySlug   String
+  sourceCategoryPath   String
+  sourceTitle          String
+  sourceSku            String?
+  rawPayload           Json
+  normalizedPayload    Json?
+  warnings             Json?
+  sourceHash           String
+  conflictCount        Int                   @default(0)
+  warningCount         Int                   @default(0)
+  fetchedAt            DateTime
+  sourceLastModifiedAt DateTime?
+  status               ImportCandidateStatus @default(PENDING)
+  reviewNotes          String?
+  reviewedAt           DateTime?
+  reviewerId           String?
+  productId            String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  reviewer             AdminUser?            @relation("ImportCandidateReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  product              Product?              @relation(fields: [productId], references: [id], onDelete: SetNull)
+  fields               ProductImportField[]
+
+  @@unique([provider, sourceUrl])
+  @@index([provider, sourceCategorySlug, status])
+  @@index([status, updatedAt])
+  @@index([productId])
+}
+
+model ProductImportField {
+  id              String                 @id @default(cuid())
+  candidateId     String
+  fieldKey        String
+  label           String
+  rawValue        String
+  normalizedValue String?
+  unit            String?
+  status          ReviewStatus           @default(UNREVIEWED)
+  note            String?
+  sortOrder       Int                    @default(0)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  candidate       ProductImportCandidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, fieldKey])
+  @@index([candidateId, sortOrder])
+  @@index([status])
 }
 
 model PriceTier {

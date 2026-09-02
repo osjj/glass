@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CaretRight, Check } from "@phosphor-icons/react/dist/ssr";
+import {
+  ArrowRight,
+  Check,
+  ChevronRight,
+  Facebook,
+  House,
+  MessageSquareText,
+  Share2,
+  Twitter,
+} from "lucide-react";
 import { notFound } from "next/navigation";
 import { RichContentRenderer } from "@/components/site/article-content-renderer";
-import { productCategories } from "@/data/catalog";
-import { getPublishedProductBySlug } from "@/lib/public-products";
+import { ProductDetailGallery } from "@/components/site/product-detail-gallery";
+import { getPublicCategories, getPublishedProductBySlug } from "@/lib/public-products";
+import { getSiteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 
@@ -22,271 +32,205 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
   };
 }
 
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="text-center text-[clamp(1.55rem,3vw,2rem)] font-semibold leading-tight text-[#075989]">
+      {children}
+      <span className="mx-auto mt-3 block h-0.5 w-12 bg-[#075989]" aria-hidden="true" />
+    </h2>
+  );
+}
+
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { slug } = await params;
-  const product = await getPublishedProductBySlug(slug);
+  const [product, publicCategories] = await Promise.all([
+    getPublishedProductBySlug(slug),
+    getPublicCategories(),
+  ]);
   if (!product) notFound();
 
   const gallery = product.images.length
     ? product.images
-    : [{ url: product.primaryImage, alt: product.primaryImageAlt }];
-  const categoryLinks: Array<{ slug: string; label: string }> = productCategories.map((category) => ({
-    slug: category.slug,
-    label: category.label,
-  }));
-
+    : [{
+        url: product.primaryImage,
+        alt: product.primaryImageAlt,
+        width: null,
+        height: null,
+      }];
+  const categoryLinks: Array<{ slug: string; label: string }> = publicCategories.map(
+    ({ slug: categorySlug, label }) => ({ slug: categorySlug, label }),
+  );
   if (!categoryLinks.some((category) => category.slug === product.category)) {
     categoryLinks.push({ slug: product.category, label: product.categoryLabel });
   }
 
-  const categoryMenu = (
-    <nav aria-label="Product categories" className="p-2">
-      <Link
-        href="/products"
-        className="flex items-center justify-between rounded-lg px-4 py-3 text-sm font-bold text-[var(--navy)] transition-colors hover:bg-[var(--surface-blue)]"
-      >
-        All Products
-        <CaretRight size={15} weight="bold" />
-      </Link>
-      {categoryLinks.map((category) => {
-        const isActive = category.slug === product.category;
-
-        return (
-          <Link
-            key={category.slug}
-            href={`/products?category=${category.slug}`}
-            aria-current={isActive ? "page" : undefined}
-            className={`mt-1 flex items-center justify-between rounded-lg px-4 py-3 text-sm font-bold transition-colors ${
-              isActive
-                ? "bg-[var(--navy)] text-white"
-                : "text-[var(--ink-muted)] hover:bg-[var(--surface-blue)] hover:text-[var(--navy)]"
-            }`}
-          >
-            {category.label}
-            <CaretRight size={15} weight="bold" className={isActive ? "text-[var(--lime)]" : ""} />
-          </Link>
-        );
-      })}
-    </nav>
-  );
+  const canonicalUrl = `${getSiteUrl()}/products/${product.slug}`;
+  const shareUrl = encodeURIComponent(canonicalUrl);
+  const shareText = encodeURIComponent(product.name);
 
   return (
     <>
-      <section className="site-container py-8 sm:py-12">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--ink-muted)]">
-          <Link href="/" className="font-bold hover:text-[var(--navy)]">
-            Home
-          </Link>
-          <span aria-hidden="true">/</span>
-          <Link href="/products" className="font-bold hover:text-[var(--navy)]">
-            Products
-          </Link>
-          <span aria-hidden="true">/</span>
-          <Link href={`/products?category=${product.category}`} className="font-bold hover:text-[var(--navy)]">
-            {product.categoryLabel}
-          </Link>
-          <span aria-hidden="true">/</span>
-          <span className="max-w-full truncate text-[var(--navy)]" aria-current="page">
-            {product.name}
-          </span>
-        </div>
-
-        <div className="mt-8 grid gap-8 lg:grid-cols-[15rem_minmax(0,1fr)] xl:grid-cols-[17rem_minmax(0,1fr)]">
-          <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
-            <details className="group rounded-xl border border-[var(--line)] bg-white lg:hidden">
-              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-sm font-bold text-[var(--navy)] marker:content-none">
-                Product Categories
-                <CaretRight size={17} weight="bold" className="transition-transform group-open:rotate-90" />
-              </summary>
-              <div className="border-t border-[var(--line)]">{categoryMenu}</div>
-            </details>
-
-            <div className="hidden overflow-hidden rounded-xl border border-[var(--line)] bg-white shadow-[0_16px_42px_rgba(15,42,89,0.06)] lg:block">
-              <div className="border-b border-[var(--line)] bg-[var(--navy)] px-5 py-5">
-                <p className="text-[0.65rem] font-bold uppercase tracking-[0.15em] text-[var(--lime)]">Browse catalog</p>
-                <h2 className="mt-2 text-lg font-bold text-white">Product Categories</h2>
-              </div>
-              {categoryMenu}
-            </div>
-          </aside>
-
-          <div className="min-w-0">
-            <div className="grid gap-9 xl:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] xl:items-start">
-              <div className="min-w-0 space-y-4">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[var(--surface)]">
-                  <Image
-                    src={gallery[0].url}
-                    alt={gallery[0].alt}
-                    fill
-                    priority
-                    unoptimized
-                    sizes="(min-width: 1280px) 42vw, (min-width: 1024px) 70vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-                {gallery.length > 1 ? (
-                  <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-                    {gallery.slice(1, 5).map((image, index) => (
-                      <div
-                        key={`${image.url}-${index}`}
-                        className="relative aspect-square overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--surface)]"
-                      >
-                        <Image
-                          src={image.url}
-                          alt={image.alt}
-                          fill
-                          unoptimized
-                          sizes="(min-width: 1280px) 10vw, (min-width: 640px) 18vw, 30vw"
-                          className="object-cover"
-                        />
-                        <span className="sr-only">Gallery image {index + 2}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="min-w-0 py-1 xl:pl-3">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-md bg-[var(--lime)] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[var(--navy)]">
-                    Published product
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--blue)]">
-                    {product.categoryLabel}
-                  </span>
-                </div>
-
-                <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.02] tracking-[-0.05em] text-[var(--navy)] sm:text-5xl xl:text-6xl">
-                  {product.name}
-                </h1>
-                <p className="mt-6 text-lg leading-8 text-[var(--ink-muted)]">{product.summary}</p>
-
-                <div className="mt-8 overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--surface)]">
-                  <div className="border-b border-[var(--line)] p-5">
-                    <span className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--ink-muted)]">Price</span>
-                    <strong className="mt-2 block text-3xl tracking-[-0.04em] text-[var(--navy)]">
-                      {product.price > 0 ? `${product.currency} ${product.price.toFixed(2)}` : "Request pricing"}
-                    </strong>
-                    {product.comparePrice !== null && product.comparePrice > product.price ? (
-                      <span className="mt-1 block text-sm text-[var(--ink-muted)] line-through">
-                        {product.currency} {product.comparePrice.toFixed(2)}
-                      </span>
-                    ) : null}
-                  </div>
-                  <dl className="grid sm:grid-cols-2">
-                    <div className="border-b border-[var(--line)] p-5 sm:border-r sm:border-b-0">
-                      <dt className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--ink-muted)]">Minimum order</dt>
-                      <dd className="mt-2 text-lg font-bold text-[var(--navy)]">
-                        {product.moq} {product.unit}
-                      </dd>
-                    </div>
-                    <div className="p-5">
-                      <dt className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--ink-muted)]">Item No.</dt>
-                      <dd className="mt-2 break-words text-sm font-bold text-[var(--navy)]">{product.sku || "Contact us"}</dd>
-                    </div>
-                  </dl>
-                </div>
-
-                <a href="#product-details" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[var(--blue)] hover:text-[var(--navy)]">
-                  View product details
-                  <ArrowRight size={16} weight="bold" className="rotate-90" />
-                </a>
-              </div>
-            </div>
-
-            <section id="product-details" className="mt-12 scroll-mt-28 border-t border-[var(--line)] pt-10 sm:mt-16 sm:pt-12">
-              <div className="max-w-3xl">
-                <p className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--blue)]">Full information</p>
-                <h2 className="mt-3 text-3xl font-bold tracking-[-0.045em] text-[var(--navy)] sm:text-4xl">Product Details</h2>
-                <p className="mt-5 whitespace-pre-line text-base leading-8 text-[var(--ink-muted)]">
-                  {product.description || product.summary}
-                </p>
-              </div>
-
-              {product.features.length ? (
-                <ul className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {product.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 rounded-xl bg-[var(--surface)] p-4 text-sm font-bold leading-6 text-[var(--navy)]">
-                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[var(--lime)]">
-                        <Check size={13} weight="bold" />
-                      </span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-
-              {product.attributes.length || product.specifications.length ? (
-                <div className="mt-10 grid gap-8 xl:grid-cols-2">
-                  {product.attributes.length ? (
-                    <div>
-                      <h3 className="text-xl font-bold tracking-[-0.035em] text-[var(--navy)]">Attributes</h3>
-                      <dl className="mt-4 divide-y divide-[var(--line)] overflow-hidden rounded-xl border border-[var(--line)]">
-                        {product.attributes.map((attribute) => (
-                          <div key={`${attribute.label}-${attribute.value}`} className="grid gap-2 p-4 sm:grid-cols-[9rem_1fr]">
-                            <dt className="text-sm font-bold text-[var(--navy)]">{attribute.label}</dt>
-                            <dd className="text-sm leading-6 text-[var(--ink-muted)]">{attribute.value}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                    </div>
-                  ) : null}
-
-                  {product.specifications.length ? (
-                    <div>
-                      <h3 className="text-xl font-bold tracking-[-0.035em] text-[var(--navy)]">Specifications</h3>
-                      <dl className="mt-4 divide-y divide-[var(--line)] overflow-hidden rounded-xl border border-[var(--line)]">
-                        {product.specifications.map((specification) => (
-                          <div key={`${specification.label}-${specification.value}`} className="grid gap-2 p-4 sm:grid-cols-[9rem_1fr]">
-                            <dt className="text-sm font-bold text-[var(--navy)]">{specification.label}</dt>
-                            <dd className="text-sm leading-6 text-[var(--ink-muted)]">{specification.value}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
-
-              {product.hasRichContent ? (
-                <div className="mt-14 border-t border-[var(--line)] pt-12">
-                  <p className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--blue)]">
-                    Detailed presentation
-                  </p>
-                  <h2 className="mt-3 text-3xl font-bold tracking-[-0.045em] text-[var(--navy)] sm:text-4xl">
-                    More Product Details
-                  </h2>
-                  <div className="prose-glarivo mt-8 max-w-4xl">
-                    <RichContentRenderer
-                      content={product.content}
-                      fallbackImageAlt={`${product.name} detail image`}
-                    />
-                  </div>
-                </div>
-              ) : null}
-            </section>
-
-            <Link href="/products" className="mt-10 inline-flex items-center gap-2 text-sm font-bold text-[var(--navy)] hover:text-[var(--blue)]">
-              <ArrowLeft size={17} weight="bold" />
-              Back to all products
-            </Link>
-          </div>
+      <section className="relative isolate grid min-h-44 place-items-center overflow-hidden text-white sm:min-h-[11.25rem]">
+        <Image
+          src={product.categoryHeroImage}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover"
+        />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,46,76,0.68),rgba(10,47,72,0.2)_47%,rgba(11,42,60,0.48))]" />
+        <div className="site-container py-8 text-center [text-shadow:0_2px_4px_rgba(0,0,0,0.34)]">
+          <h1 className="text-3xl font-bold sm:text-5xl">{product.categoryLabel}</h1>
+          <nav className="mt-4 flex flex-wrap items-center justify-center gap-1 text-xs sm:text-sm" aria-label="Breadcrumb">
+            <House className="size-4" aria-hidden="true" />
+            <Link href="/">Home</Link>
+            <ChevronRight className="size-4" aria-hidden="true" />
+            <Link href="/products">Products</Link>
+            <ChevronRight className="size-4" aria-hidden="true" />
+            <span aria-current="page">{product.categoryLabel}</span>
+          </nav>
         </div>
       </section>
 
-      <section className="mt-8 bg-[var(--navy)] py-16 text-white sm:py-20">
-        <div className="site-container flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--lime)]">Continue exploring</p>
-            <h2 className="mt-4 text-balance text-4xl font-bold leading-tight tracking-[-0.05em]">
-              Compare the rest of the current glassware catalog.
+      <section className="mx-auto grid w-[calc(100%-2rem)] max-w-[1218px] gap-8 py-8 sm:w-[calc(100%-3rem)] sm:py-12 lg:grid-cols-[16.625rem_minmax(0,1fr)]">
+        <aside className="hidden self-start border border-[#edf0f2] bg-white shadow-[0_10px_28px_rgba(24,48,66,0.08)] lg:block">
+          <h2 className="bg-[#075989] px-4 py-4 text-xl font-medium uppercase text-white">Product Categories</h2>
+          <nav className="max-h-[calc(100vh-12rem)] overflow-y-auto" aria-label="Product categories">
+            {categoryLinks.map((category) => {
+              const active = category.slug === product.category;
+              return (
+                <Link
+                  key={category.slug}
+                  href={`/products/category/${category.slug}`}
+                  aria-current={active ? "page" : undefined}
+                  className={`flex min-h-12 items-center justify-between border-b border-[#eef0f1] px-5 text-sm transition ${
+                    active ? "bg-[#dedede] text-[#144f74]" : "text-[#4e565c] hover:bg-[#f1f6f9] hover:text-[#075989]"
+                  }`}
+                >
+                  {category.label}
+                  {!active ? <ChevronRight className="size-4" aria-hidden="true" /> : null}
+                </Link>
+              );
+            })}
+          </nav>
+        </aside>
+
+        <div className="grid min-w-0 gap-7 xl:grid-cols-[minmax(24rem,1.08fr)_minmax(20rem,0.92fr)] xl:gap-14">
+          <ProductDetailGallery images={gallery} />
+
+          <article className="min-w-0 pt-1">
+            <h2 className="border-b border-[#e8e9ea] pb-3 text-[clamp(1.55rem,3vw,2rem)] font-bold leading-[1.35] text-[#075989]">
+              {product.name}
             </h2>
-          </div>
-          <Link href="/products" className="inline-flex items-center gap-2 self-start rounded-lg bg-white px-5 py-3 text-sm font-bold text-[var(--navy)] sm:self-auto">
-            All products
-            <ArrowRight size={17} weight="bold" />
-          </Link>
+            <div className="mt-3 flex gap-2" aria-label="Share product">
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noreferrer" aria-label="Share on Facebook" className="grid size-7 place-items-center bg-black text-white"><Facebook className="size-4" /></a>
+              <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`} target="_blank" rel="noreferrer" aria-label="Share on X" className="grid size-7 place-items-center bg-black text-white"><Twitter className="size-4" /></a>
+              <a href={`mailto:?subject=${shareText}&body=${shareUrl}`} aria-label="Share by email" className="grid size-7 place-items-center bg-black text-white"><Share2 className="size-4" /></a>
+            </div>
+
+            <dl className="mt-4 space-y-4 text-sm text-[#4e555b]">
+              {product.sku ? (
+                <div className="grid grid-cols-[max-content_1fr] gap-1">
+                  <dt className="flex items-start gap-1"><ChevronRight className="mt-0.5 size-4 fill-[#1e489f] text-[#1e489f]" />Item No.:</dt>
+                  <dd className="m-0">{product.sku}</dd>
+                </div>
+              ) : null}
+              {product.overviewFields.map((field) => (
+                <div key={`${field.label}-${field.value}`} className="grid grid-cols-[max-content_1fr] gap-1">
+                  <dt className="flex items-start gap-1"><ChevronRight className="mt-0.5 size-4 fill-[#1e489f] text-[#1e489f]" />{field.label}:</dt>
+                  <dd className="m-0">{field.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="mt-7 grid grid-cols-2 gap-3 max-sm:sticky max-sm:bottom-0 max-sm:z-20 max-sm:-mx-4 max-sm:gap-0 max-sm:shadow-[0_-7px_20px_rgba(12,42,64,0.12)]">
+              <Link href="/about" className="flex min-h-12 items-center justify-center gap-2 bg-[#075989] px-4 text-sm font-bold uppercase text-white hover:bg-[#06496f]">
+                <MessageSquareText className="size-5" /> Inquire now
+              </Link>
+              <Link href="/products" className="flex min-h-12 items-center justify-center gap-2 border border-[#075989] bg-white px-4 text-sm font-bold uppercase text-[#075989]">
+                Next product <ArrowRight className="size-4" />
+              </Link>
+            </div>
+          </article>
         </div>
+      </section>
+
+      <section className="mx-auto grid w-[calc(100%-2rem)] max-w-[1218px] gap-8 pb-20 sm:w-[calc(100%-3rem)] lg:grid-cols-[16.625rem_minmax(0,1fr)]">
+        <aside className="hidden self-start bg-[linear-gradient(150deg,#0f345c,#075989)] p-6 text-white shadow-[0_16px_28px_rgba(15,52,92,0.15)] lg:sticky lg:top-28 lg:block" id="inquiry">
+          <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#bcd2df]">Need a custom glass?</p>
+          <h2 className="mt-3 text-2xl font-bold leading-tight">Talk to our sourcing team</h2>
+          <Link href="/about" className="mt-6 flex min-h-11 items-center justify-center gap-2 bg-[var(--lime)] px-4 text-sm font-extrabold uppercase text-[var(--navy)]">
+            Send inquiry <ArrowRight className="size-4" />
+          </Link>
+        </aside>
+
+        <article className="min-w-0">
+          {product.features.length || product.description ? (
+            <section className="mb-10">
+              <SectionTitle>{product.detailsHeading}</SectionTitle>
+              {product.features.length ? (
+                <ul className="mt-6 space-y-3 text-sm leading-7 text-[#4b5359]">
+                  {product.features.map((feature) => (
+                    <li key={feature} className="grid grid-cols-[1.1rem_1fr] gap-2">
+                      <Check className="mt-1.5 size-4 text-[#075989]" aria-hidden="true" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-6 whitespace-pre-line text-sm leading-7 text-[#4b5359]">{product.description}</p>
+              )}
+            </section>
+          ) : null}
+
+          {product.specifications.length ? (
+            <section className="mb-10">
+              <SectionTitle>{product.specificationHeading}</SectionTitle>
+              <div className="mt-6 overflow-x-auto border border-[#d9dddf]">
+                <table className="w-full min-w-[34rem] border-collapse text-left text-sm">
+                  <tbody>
+                    {product.specifications.map((specification) => (
+                      <tr key={`${specification.label}-${specification.value}`} className="border-b border-[#d9dddf] last:border-b-0">
+                        <th scope="row" className="w-[31%] border-r border-[#d9dddf] bg-[#f5f6f6] px-4 py-3 font-semibold text-[#3f4a52]">{specification.label}</th>
+                        <td className="px-4 py-3 leading-6 text-[#50585e]">{specification.value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          ) : null}
+
+          {product.contentSections.map((section) => (
+            <section key={section.sourceKey} className="mb-10 text-center">
+              <SectionTitle>{section.title}</SectionTitle>
+              {section.body ? <p className="mx-auto mt-5 max-w-3xl whitespace-pre-line text-left text-sm leading-7 text-[#4b5359]">{section.body}</p> : null}
+              {section.images.length ? (
+                <div className="mt-6 grid gap-6">
+                  {section.images.map((image, index) => (
+                    <Image
+                      key={`${image.url}-${index}`}
+                      src={image.url}
+                      alt={image.alt}
+                      width={image.width ?? 1200}
+                      height={image.height ?? 900}
+                      unoptimized
+                      sizes="(min-width: 1280px) 900px, 100vw"
+                      className="mx-auto h-auto w-auto max-w-full"
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </section>
+          ))}
+
+          {!product.contentSections.length && product.hasRichContent ? (
+            <div className="prose-glarivo mt-10 border-t border-[var(--line)] pt-2">
+              <RichContentRenderer content={product.content} />
+            </div>
+          ) : null}
+        </article>
       </section>
     </>
   );

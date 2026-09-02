@@ -8,12 +8,18 @@ import { Logo } from "./logo";
 
 const navigation = [
   { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
 ] as const;
 
-export function SiteHeader() {
+type HeaderCategory = {
+  slug: string;
+  label: string;
+  productCount: number;
+  children: Array<{ slug: string; label: string; productCount: number }>;
+};
+
+export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -38,7 +44,57 @@ export function SiteHeader() {
         <Logo variant={overlay ? "white" : "blue"} compact />
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Primary navigation">
-          {navigation.map((item) => {
+          <Link
+            href="/"
+            className={`relative py-3 text-sm font-semibold transition after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-left after:transition ${
+              pathname === "/"
+                ? "after:scale-x-100 after:bg-[var(--lime)]"
+                : "after:scale-x-0 hover:after:scale-x-100 hover:after:bg-[var(--lime)]"
+            } ${overlay ? "text-white/90 hover:text-white" : "text-[var(--navy)]"}`}
+          >
+            Home
+          </Link>
+          <div className="group relative py-5">
+            <Link
+              href="/products"
+              className={`relative py-3 text-sm font-semibold transition after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-left after:transition ${
+                pathname.startsWith("/products")
+                  ? "after:scale-x-100 after:bg-[var(--lime)]"
+                  : "after:scale-x-0 hover:after:scale-x-100 hover:after:bg-[var(--lime)]"
+              } ${overlay ? "text-white/90 hover:text-white" : "text-[var(--navy)]"}`}
+            >
+              Products
+            </Link>
+            <div className="fixed left-1/2 top-[76px] z-[70] hidden max-h-[calc(100vh-96px)] w-[min(1180px,calc(100vw-2rem))] -translate-x-1/2 overflow-y-auto rounded-2xl border border-[var(--line)] bg-white p-6 text-[var(--navy)] shadow-[0_28px_80px_rgba(5,22,52,0.2)] group-hover:block group-focus-within:block">
+              <div className="mb-5 flex items-center justify-between border-b border-[var(--line)] pb-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--blue)]">Product directory</p>
+                  <p className="mt-1 text-sm text-[var(--ink-muted)]">56 aligned glassware categories</p>
+                </div>
+                <Link href="/products" className="text-sm font-bold text-[var(--blue)] hover:underline">View all products</Link>
+              </div>
+              <div className="grid gap-x-7 gap-y-6 lg:grid-cols-4">
+                {categories.map((category) => (
+                  <div key={category.slug}>
+                    <Link href={`/products/category/${category.slug}`} className="flex items-center justify-between gap-3 text-sm font-bold hover:text-[var(--blue)]">
+                      {category.label}
+                      <span className="text-[0.65rem] text-[var(--ink-muted)]">{category.productCount}</span>
+                    </Link>
+                    {category.children.length ? (
+                      <div className="mt-2 space-y-1.5 border-l border-[var(--line)] pl-3">
+                        {category.children.map((child) => (
+                          <Link key={child.slug} href={`/products/category/${child.slug}`} className="flex items-center justify-between gap-2 text-xs font-semibold text-[var(--ink-muted)] hover:text-[var(--blue)]">
+                            {child.label}<span>{child.productCount}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {navigation.slice(1).map((item) => {
             const active = pathname === item.href;
             return (
               <Link
@@ -89,7 +145,23 @@ export function SiteHeader() {
           aria-label="Mobile navigation"
         >
           <div className="site-container grid gap-1">
-            {navigation.map((item) => (
+            <Link href="/" onClick={() => setOpen(false)} className="rounded-lg px-4 py-3 text-base font-bold hover:bg-[var(--surface)]">Home</Link>
+            <Link href="/products" onClick={() => setOpen(false)} className="rounded-lg px-4 py-3 text-base font-bold hover:bg-[var(--surface)]">Products</Link>
+            <div className="max-h-[52vh] overflow-y-auto rounded-xl bg-[var(--surface)] p-3">
+              {categories.map((category) => (
+                <div key={category.slug} className="border-b border-[var(--line)] py-2 last:border-b-0">
+                  <Link href={`/products/category/${category.slug}`} onClick={() => setOpen(false)} className="flex items-center justify-between rounded-lg px-2 py-2 text-sm font-bold">
+                    {category.label}<span className="text-xs text-[var(--ink-muted)]">{category.productCount}</span>
+                  </Link>
+                  {category.children.map((child) => (
+                    <Link key={child.slug} href={`/products/category/${child.slug}`} onClick={() => setOpen(false)} className="flex items-center justify-between rounded-lg px-5 py-1.5 text-xs font-semibold text-[var(--ink-muted)] hover:text-[var(--blue)]">
+                      {child.label}<span>{child.productCount}</span>
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
+            {navigation.slice(1).map((item) => (
               <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="rounded-lg px-4 py-3 text-base font-bold hover:bg-[var(--surface)]">
                 {item.label}
               </Link>

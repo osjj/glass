@@ -3,11 +3,6 @@ import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { getAdminProducts } from "@/actions/products";
 import { AdminHeader } from "@/components/admin/admin-header";
-import { productCategories } from "@/data/catalog";
-
-function categoryLabel(slug: string) {
-  return productCategories.find((category) => category.slug === slug)?.label ?? slug;
-}
 
 export default async function AdminProductsPage() {
   const products = await getAdminProducts();
@@ -53,10 +48,10 @@ export default async function AdminProductsPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-[var(--ink-muted)]">{categoryLabel(product.category)}</td>
+                  <td className="px-5 py-4 text-[var(--ink-muted)]">{product.categoryName}</td>
                   <td className="px-5 py-4">
-                    <strong>{product.currency} {product.price.toFixed(2)}</strong>
-                    <span className="mt-1 block text-xs text-[var(--ink-muted)]">MOQ {product.moq} {product.unit}</span>
+                    <strong>{product.price === null ? "Request quote" : `${product.currency} ${product.price.toFixed(2)}`}</strong>
+                    <span className="mt-1 block text-xs text-[var(--ink-muted)]">{product.moq === null ? "MOQ not confirmed" : `MOQ ${product.moq}${product.unit ? ` ${product.unit}` : ""}`}</span>
                   </td>
                   <td className="px-5 py-4">
                     <span className={`rounded-full px-3 py-1 text-xs font-black ${product.status === "PUBLISHED" ? "bg-[#e8f5e6] text-[#286a31]" : product.status === "ARCHIVED" ? "bg-[#eceeed] text-[#68706a]" : "bg-[#fff5e8] text-[#82522d]"}`}>

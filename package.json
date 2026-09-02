@@ -15,6 +15,10 @@
     "admin:create": "tsx scripts/create-admin.ts",
     "blog:migrate-content": "tsx scripts/migrate-blog-content.ts",
     "blog:seed": "tsx scripts/seed-blog.ts",
+    "catalog:shot-glass:dry-run": "tsx scripts/dry-run-garbo-shot-glass.ts",
+    "catalog:shot-glass:import": "tsx scripts/import-garbo-shot-glass.ts",
+    "catalog:garbo-categories:sync": "tsx scripts/sync-garbo-categories.ts",
+    "catalog:glarivo-categories:sync": "tsx scripts/sync-glarivo-categories.ts",
     "r2:smoke": "tsx scripts/r2-smoke-test.ts"
   },
   "dependencies": {
@@ -30,6 +34,7 @@
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "bcryptjs": "^3.0.3",
+    "cheerio": "^1.2.0",
     "dotenv": "^17.3.1",
     "jose": "^6.1.0",
     "lucide-react": "^0.562.0",
