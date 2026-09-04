@@ -15,9 +15,11 @@ import {
   Plus,
   Save,
   Shapes,
+  Sparkles,
   Trash2,
 } from "lucide-react";
 import { createProduct, updateProduct } from "@/actions/products";
+import { AiImageEditorModal } from "@/components/admin/ai-image-editor-modal";
 import type {
   AdminCategoryOption,
   AdminProductContentSectionInput,
@@ -53,6 +55,10 @@ const defaultContentSections = (): AdminProductContentSectionInput[] => [
   { sourceKey: "different_package", title: "Different Package", body: "", images: [] },
 ];
 const emptyEditorContent = JSON.stringify({ time: 0, blocks: [], version: "2.31.6" });
+
+type AiImageTarget =
+  | { kind: "gallery"; imageIndex: number }
+  | { kind: "section"; sectionIndex: number; imageIndex: number };
 
 function buildSlug(value: string) {
   return value
@@ -147,9 +153,13 @@ function PairEditor({
 function ImageRows({
   images,
   onChange,
+  onAiEdit,
+  imageLabel,
 }: {
   images: AdminProductImageInput[];
   onChange: (images: AdminProductImageInput[]) => void;
+  onAiEdit: (imageIndex: number) => void;
+  imageLabel: string;
 }) {
   function move(index: number, direction: -1 | 1) {
     const target = index + direction;
@@ -163,8 +173,18 @@ function ImageRows({
     <div className="space-y-3">
       {images.map((image, index) => (
         <div key={`${image.url}-${index}`} className="grid gap-3 rounded-2xl border border-[#e1e5e1] bg-[#fafbfa] p-3 sm:grid-cols-[5rem_1fr_auto] sm:items-center">
-          <div className="relative aspect-square overflow-hidden rounded-xl bg-[#e8ece8]">
+          <div className="group relative aspect-square overflow-hidden rounded-xl bg-[#e8ece8]">
             <Image src={image.url} alt={image.alt} fill unoptimized sizes="80px" className="object-cover" />
+            <button
+              type="button"
+              className="absolute right-1.5 top-1.5 z-10 inline-flex h-8 items-center gap-1 rounded-lg border border-white/40 bg-[var(--ink)] px-2 text-[var(--acid)] opacity-100 shadow-lg transition hover:scale-105 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+              onClick={() => onAiEdit(index)}
+              aria-label={"Edit " + imageLabel + " " + (index + 1) + " with AI"}
+              title="Edit image with AI"
+            >
+              <Sparkles className="size-3.5" aria-hidden="true" />
+              <span className="text-[10px] font-black tracking-wide">AI</span>
+            </button>
           </div>
           <input className="h-11 rounded-xl border border-[#ccd3ce] bg-white px-3 text-sm" value={image.alt} onChange={(event) => onChange(images.map((item, imageIndex) => imageIndex === index ? { ...item, alt: event.target.value } : item))} placeholder="Image alt text" aria-label={`Image alt text ${index + 1}`} />
           <div className="flex justify-end gap-1">
@@ -201,6 +221,38 @@ export function ProductForm({
   const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState("");
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [aiImageTarget, setAiImageTarget] = useState<AiImageTarget | null>(null);
+
+  const aiSourceImage = aiImageTarget?.kind === "gallery"
+    ? images[aiImageTarget.imageIndex] ?? null
+    : aiImageTarget?.kind === "section"
+      ? contentSections[aiImageTarget.sectionIndex]?.images[aiImageTarget.imageIndex] ?? null
+      : null;
+
+  function finishAiImageEdit(replacement: AdminProductImageInput) {
+    if (!aiImageTarget) return;
+    if (aiImageTarget.kind === "gallery") {
+      setImages((current) =>
+        current.map((image, index) =>
+          index === aiImageTarget.imageIndex ? replacement : image,
+        ),
+      );
+    } else {
+      setContentSections((current) =>
+        current.map((section, sectionIndex) =>
+          sectionIndex === aiImageTarget.sectionIndex
+            ? {
+                ...section,
+                images: section.images.map((image, imageIndex) =>
+                  imageIndex === aiImageTarget.imageIndex ? replacement : image,
+                ),
+              }
+            : section,
+        ),
+      );
+    }
+    setAiImageTarget(null);
+  }
 
   const submittedImages = images.filter((image) => image.url.trim());
   const submittedOverview = overviewFields.filter((row) => row.label.trim() && row.value.trim());
@@ -327,7 +379,14 @@ export function ProductForm({
         </label>
         {uploadingTarget === "gallery" ? <p className="mt-3 flex items-center gap-2 text-xs font-bold text-[var(--accent-dark)]"><Loader2 className="size-4 animate-spin" />{uploadProgress}</p> : null}
         {uploadError ? <p className="mt-3 rounded-xl bg-[#fff1ef] px-4 py-3 text-sm font-bold text-[#7d2e27]" role="alert">{uploadError}</p> : null}
-        <div className="mt-5"><ImageRows images={images} onChange={setImages} /></div>
+        <div className="mt-5">
+          <ImageRows
+            images={images}
+            onChange={setImages}
+            imageLabel="gallery image"
+            onAiEdit={(imageIndex) => setAiImageTarget({ kind: "gallery", imageIndex })}
+          />
+        </div>
       </SectionCard>
 
       <SectionCard title="4. Details" description="Garbo's Details heading and ordered selling-point statements." icon={FileText}>
@@ -371,7 +430,14 @@ export function ProductForm({
                 <input className="mt-3 block w-full text-sm font-normal file:mr-4 file:rounded-lg file:border-0 file:bg-[var(--ink)] file:px-4 file:py-2 file:font-bold file:text-white disabled:opacity-50" type="file" accept="image/*" multiple onChange={(event) => uploadSectionImages(sectionIndex, event)} disabled={Boolean(uploadingTarget) || section.images.length >= 12} />
               </label>
               {uploadingTarget === `section-${sectionIndex}` ? <p className="mt-3 flex items-center gap-2 text-xs font-bold text-[var(--accent-dark)]"><Loader2 className="size-4 animate-spin" />{uploadProgress}</p> : null}
-              <div className="mt-4"><ImageRows images={section.images} onChange={(nextImages) => setContentSections((current) => current.map((item, index) => index === sectionIndex ? { ...item, images: nextImages } : item))} /></div>
+              <div className="mt-4">
+                <ImageRows
+                  images={section.images}
+                  onChange={(nextImages) => setContentSections((current) => current.map((item, index) => index === sectionIndex ? { ...item, images: nextImages } : item))}
+                  imageLabel="detail image"
+                  onAiEdit={(imageIndex) => setAiImageTarget({ kind: "section", sectionIndex, imageIndex })}
+                />
+              </div>
             </article>
           ))}
           <button type="button" className="button-secondary" onClick={() => setContentSections((current) => [...current, emptySection(current.length)])}><Plus className="size-4" />Add content section</button>
@@ -401,6 +467,16 @@ export function ProductForm({
           <button type="submit" className="button-primary" disabled={pending || Boolean(uploadingTarget)}>{pending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}{pending ? "Saving…" : product ? "Save changes" : "Create product"}</button>
         </div>
       </div>
+
+      {aiSourceImage ? (
+        <AiImageEditorModal
+          open
+          sourceImage={aiSourceImage}
+          slug={slug}
+          onClose={() => setAiImageTarget(null)}
+          onFinish={finishAiImageEdit}
+        />
+      ) : null}
     </form>
   );
 }

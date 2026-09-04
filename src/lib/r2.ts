@@ -6,8 +6,18 @@ import {
 } from "@aws-sdk/client-s3";
 import sharp from "sharp";
 
-const MAX_SOURCE_IMAGE_BYTES = 12 * 1024 * 1024;
+const MAX_SOURCE_IMAGE_BYTES = 25 * 1024 * 1024;
 const MAX_IMAGE_DIMENSION = 2400;
+const MAX_INPUT_PIXELS = 40_000_000;
+
+export const R2_IMAGE_FORMATS = ["webp", "png", "jpeg"] as const;
+export type R2ImageFormat = (typeof R2_IMAGE_FORMATS)[number];
+
+const CONTENT_TYPE_BY_FORMAT: Record<R2ImageFormat, UploadedR2Image["contentType"]> = {
+  webp: "image/webp",
+  png: "image/png",
+  jpeg: "image/jpeg",
+};
 
 type R2Config = {
   accountId: string;
@@ -23,7 +33,7 @@ export type UploadedR2Image = {
   width: number;
   height: number;
   size: number;
-  contentType: "image/webp";
+  contentType: "image/webp" | "image/png" | "image/jpeg";
 };
 
 let client: S3Client | undefined;
@@ -66,9 +76,12 @@ function getR2Client() {
 
 function normalizeObjectKey(key: string) {
   const normalized = key.replaceAll("\\", "/").replace(/^\/+/, "");
+  const hasSupportedExtension = R2_IMAGE_FORMATS.some((format) =>
+    normalized.toLowerCase().endsWith(`.${format}`),
+  );
 
-  if (!normalized || normalized.includes("..") || !normalized.endsWith(".webp")) {
-    throw new Error("R2 image keys must be safe relative paths ending in .webp");
+  if (!normalized || normalized.includes("..") || !hasSupportedExtension) {
+    throw new Error("R2 image keys must be safe relative paths ending in .webp, .png, or .jpeg");
   }
 
   return normalized;
@@ -87,28 +100,41 @@ export async function uploadImageToR2(input: {
   data: Buffer;
   key: string;
   cacheControl?: string;
+  outputFormat?: R2ImageFormat;
 }): Promise<UploadedR2Image> {
   if (input.data.byteLength === 0 || input.data.byteLength > MAX_SOURCE_IMAGE_BYTES) {
-    throw new Error("Image source must be between 1 byte and 12 MB");
+    throw new Error("Image source must be between 1 byte and 25 MB");
   }
 
+  const outputFormat = input.outputFormat ?? "webp";
   const key = normalizeObjectKey(input.key);
-  const image = sharp(input.data, { failOn: "error" }).rotate();
+  if (!key.toLowerCase().endsWith(`.${outputFormat}`)) {
+    throw new Error(`R2 image key extension must match the ${outputFormat} output format`);
+  }
+  const image = sharp(input.data, {
+    failOn: "error",
+    limitInputPixels: MAX_INPUT_PIXELS,
+  }).rotate();
   const metadata = await image.metadata();
 
   if (!metadata.width || !metadata.height) {
     throw new Error("Unable to read image dimensions");
   }
 
-  const output = await image
-    .resize({
-      width: MAX_IMAGE_DIMENSION,
-      height: MAX_IMAGE_DIMENSION,
-      fit: "inside",
-      withoutEnlargement: true,
-    })
-    .webp({ quality: 84, effort: 5 })
-    .toBuffer({ resolveWithObject: true });
+  const resized = image.resize({
+    width: MAX_IMAGE_DIMENSION,
+    height: MAX_IMAGE_DIMENSION,
+    fit: "inside",
+    withoutEnlargement: true,
+  });
+  const encoded =
+    outputFormat === "png"
+      ? resized.png({ compressionLevel: 9 })
+      : outputFormat === "jpeg"
+        ? resized.jpeg({ quality: 90, mozjpeg: true })
+        : resized.webp({ quality: 84, effort: 5 });
+  const output = await encoded.toBuffer({ resolveWithObject: true });
+  const contentType = CONTENT_TYPE_BY_FORMAT[outputFormat];
 
   const config = getR2Config();
   await getR2Client().send(
@@ -116,7 +142,7 @@ export async function uploadImageToR2(input: {
       Bucket: config.bucketName,
       Key: key,
       Body: output.data,
-      ContentType: "image/webp",
+      ContentType: contentType,
       CacheControl: input.cacheControl ?? "public, max-age=31536000, immutable",
     }),
   );
@@ -127,7 +153,7 @@ export async function uploadImageToR2(input: {
     width: output.info.width,
     height: output.info.height,
     size: output.info.size,
-    contentType: "image/webp",
+    contentType,
   };
 }
 

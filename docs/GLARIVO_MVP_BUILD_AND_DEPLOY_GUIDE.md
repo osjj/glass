@@ -847,7 +847,15 @@ server {
     ssl_certificate     /path/to/fullchain.pem;
     ssl_certificate_key /path/to/private.key;
 
-    client_max_body_size 10m;
+    # AI-edited images can be up to 25 MiB; leave multipart overhead here.
+    client_max_body_size 30m;
+
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_buffering off;
 
     location ^~ /uploads/ {
         alias /www/wwwroot/glarivo/shared/uploads/;
@@ -857,14 +865,15 @@ server {
         add_header X-Content-Type-Options "nosniff" always;
     }
 
+    # GPT Image edits can take about two minutes. Keep this longer than the
+    # application's 180-second route limit so the app can return its own error.
+    location = /api/admin/product-image-ai {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_read_timeout 190s;
+    }
+
     location / {
         proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
         proxy_read_timeout 60s;
     }
 }
@@ -876,7 +885,8 @@ server {
 - `proxy_pass` 只指向 `127.0.0.1:3000`，不能写成公开域名，否则可能形成代理循环；
 - 初期不要在 Nginx 开启全页缓存；
 - `proxy_buffering off` 有利于 Next.js App Router 的流式响应；
-- 10 MB 是传输上限，应用仍按 5 MB 做更严格校验；
+- 30 MB 是 Nginx 传输上限；应用对普通产品图片限制为 12 MB，对 AI 生成图片限制为 25 MB；
+- `/api/admin/product-image-ai` 单独允许 190 秒读取时间；若前面还有 Cloudflare 或宝塔代理，也要确认其超时不会低于该接口的实际生成时间；
 - 对 uploads 使用 UUID 不可变文件名，替换图片时生成新 URL；
 - 配置完成后先运行 `nginx -t`，成功后才 reload。
 
