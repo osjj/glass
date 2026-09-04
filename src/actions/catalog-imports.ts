@@ -22,7 +22,7 @@ const idSchema = z.string().trim().min(1).max(100);
 const categoryImportSchema = z.object({
   sourceCategoryId: idSchema,
   categoryId: idSchema,
-  limit: z.enum(["25", "50", "all"]).default("25"),
+  limit: z.enum(["5", "10", "25", "50", "all"]).default("25"),
 });
 
 const fieldReviewSchema = z.object({

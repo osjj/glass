@@ -156,6 +156,8 @@ export default async function ImportsPage({ searchParams }: ImportsPageProps) {
             <label className="text-sm font-black">
               Import batch
               <select className={inputClass} name="limit" defaultValue={query.limit || "25"}>
+                <option value="5">5 products</option>
+                <option value="10">10 products</option>
                 <option value="25">25 products (recommended)</option>
                 <option value="50">50 products</option>
                 <option value="all">All products</option>
