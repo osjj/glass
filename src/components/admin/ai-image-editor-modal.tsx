@@ -53,7 +53,7 @@ type AiImageEditorModalProps = {
 const REMOVE_ICON_PROMPT =
   "去除图片中的品牌 Logo、文字水印和其他图标，保持产品主体、颜色、材质、比例、背景和构图不变，自然修复被遮挡区域。";
 const REPLACE_ICON_PROMPT =
-  "将第一张产品原图中的品牌 Logo、文字水印和其他图标，替换成第二张参考图里的蓝色 GLARIVO GLASSWARE Logo。保持蓝色 Logo 的图形、文字、颜色和比例准确，并根据原标识的位置、透视、光照和产品材质自然贴合。只保留一个 GLARIVO Logo，产品主体、颜色、材质、比例、背景和构图不得改变。";
+  "去除第一张产品原图中的品牌 Logo、文字水印和其他图标，自然修复被遮挡区域，再添加第二张参考图里的蓝色 GLARIVO GLASSWARE Logo。图标放左上角，与图片边缘保持适当留白，不遮挡产品主体。保持蓝色 Logo 的图形、文字、颜色和比例准确。只保留一个 GLARIVO Logo，产品主体、颜色、材质、比例、背景和构图不得改变。";
 
 function isOutputFormat(value: unknown): value is OutputFormat {
   return OUTPUT_FORMAT_OPTIONS.includes(value as OutputFormat);
