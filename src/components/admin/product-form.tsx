@@ -20,6 +20,10 @@ import {
 } from "lucide-react";
 import { createProduct, updateProduct } from "@/actions/products";
 import { AiImageEditorModal } from "@/components/admin/ai-image-editor-modal";
+import {
+  PRODUCT_DETAIL_STATEMENT_MAX_ITEMS,
+  PRODUCT_DETAIL_STATEMENT_MAX_LENGTH,
+} from "@/lib/product-limits";
 import type {
   AdminCategoryOption,
   AdminProductContentSectionInput,
@@ -395,11 +399,14 @@ export function ProductForm({
         <div className="mt-6 space-y-3">
           {(features.length ? features : [""]).map((feature, index) => (
             <div key={index} className="flex gap-2">
-              <textarea className="min-h-20 min-w-0 flex-1 rounded-xl border border-[#ccd3ce] bg-white p-3 text-sm" value={feature} onChange={(event) => { const next = features.length ? [...features] : [""]; next[index] = event.target.value; setFeatures(next); }} placeholder="Add one source detail statement" aria-label={`Detail statement ${index + 1}`} />
+              <div className="min-w-0 flex-1">
+                <textarea className="min-h-20 w-full rounded-xl border border-[#ccd3ce] bg-white p-3 text-sm" value={feature} onChange={(event) => { const next = features.length ? [...features] : [""]; next[index] = event.target.value; setFeatures(next); }} placeholder="Add one source detail statement" aria-label={`Detail statement ${index + 1}`} maxLength={PRODUCT_DETAIL_STATEMENT_MAX_LENGTH} />
+                <p className="mt-1 text-right text-xs text-[var(--ink-muted)]">{feature.length}/{PRODUCT_DETAIL_STATEMENT_MAX_LENGTH} characters</p>
+              </div>
               <button type="button" className="self-start rounded-lg p-2 text-[#a33c32] hover:bg-[#fff0ee]" onClick={() => setFeatures((current) => current.filter((_, featureIndex) => featureIndex !== index))} aria-label={`Delete detail statement ${index + 1}`}><Trash2 className="size-4" /></button>
             </div>
           ))}
-          <button type="button" className="button-secondary" onClick={() => setFeatures((current) => [...current, ""])}><Plus className="size-4" />Add detail statement</button>
+          <button type="button" className="button-secondary" onClick={() => setFeatures((current) => [...current, ""])} disabled={features.length >= PRODUCT_DETAIL_STATEMENT_MAX_ITEMS}><Plus className="size-4" />Add detail statement</button>
         </div>
       </SectionCard>
 

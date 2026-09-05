@@ -10,6 +10,10 @@ import {
   serializeStoredProductContentForEditor,
 } from "@/lib/article-content-server";
 import { prisma } from "@/lib/prisma";
+import {
+  PRODUCT_DETAIL_STATEMENT_MAX_ITEMS,
+  PRODUCT_DETAIL_STATEMENT_MAX_LENGTH,
+} from "@/lib/product-limits";
 import type {
   AdminCategoryOption,
   AdminProductInput,
@@ -77,6 +81,26 @@ const productContentSchema = z
     return prepared.success ? prepared.value : value;
   });
 
+const productFeaturesSchema = z
+  .array(z.string().trim().min(1, "Detail statement cannot be empty"))
+  .max(
+    PRODUCT_DETAIL_STATEMENT_MAX_ITEMS,
+    `Details support up to ${PRODUCT_DETAIL_STATEMENT_MAX_ITEMS} statements`,
+  )
+  .superRefine((features, context) => {
+    features.forEach((feature, index) => {
+      if (feature.length <= PRODUCT_DETAIL_STATEMENT_MAX_LENGTH) return;
+      context.addIssue({
+        code: "too_big",
+        maximum: PRODUCT_DETAIL_STATEMENT_MAX_LENGTH,
+        origin: "string",
+        inclusive: true,
+        path: [index],
+        message: `Detail statement ${index + 1} is too long (${feature.length}/${PRODUCT_DETAIL_STATEMENT_MAX_LENGTH} characters)`,
+      });
+    });
+  });
+
 const productSchema = z
   .object({
   name: z.string().trim().min(1, "Product name is required").max(180),
@@ -120,7 +144,7 @@ const productSchema = z
   contentSections: z.array(contentSectionSchema).max(20),
   attributes: z.array(pairSchema).max(30),
   specifications: z.array(pairSchema).max(60),
-  features: z.array(z.string().trim().min(1).max(240)).max(20),
+  features: productFeaturesSchema,
   })
   .superRefine((data, context) => {
     if (data.pricingMode === "FIXED" && data.price === undefined) {
