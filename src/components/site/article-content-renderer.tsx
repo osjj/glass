@@ -7,7 +7,7 @@ import {
 } from "@/lib/article-content-server";
 import { isSafeArticleImageUrl, type ArticleListItem } from "@/lib/article-content";
 
-function headingId(value: string, index: number) {
+export function headingId(value: string, index: number) {
   const base = plainTextFromEditorHtml(value)
     .normalize("NFKD")
     .toLowerCase()

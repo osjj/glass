@@ -8,6 +8,7 @@ import { Logo } from "./logo";
 
 const navigation = [
   { href: "/", label: "Home" },
+  { href: "/case-studies", label: "Case Studies" },
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
 ] as const;
@@ -43,7 +44,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
       <div className="site-container flex h-[88px] items-center justify-between gap-6">
         <Logo variant={overlay ? "white" : "blue"} compact />
 
-        <nav className="hidden items-center gap-7 md:flex" aria-label="Primary navigation">
+        <nav className="hidden items-center gap-7 xl:flex" aria-label="Primary navigation">
           <Link
             href="/"
             className={`relative py-3 text-sm font-semibold transition after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-left after:transition ${
@@ -95,11 +96,12 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
             </div>
           </div>
           {navigation.slice(1).map((item) => {
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`) || (item.href === "/blog" && pathname.startsWith("/guides/"));
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={`relative py-3 text-sm font-semibold transition after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-left after:transition ${
                   active
                     ? "after:scale-x-100 after:bg-[var(--lime)]"
@@ -114,7 +116,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
 
         <Link
           href="/products"
-          className={`hidden min-h-11 items-center gap-2 rounded-lg px-5 text-sm font-bold transition hover:-translate-y-0.5 md:inline-flex ${
+          className={`hidden min-h-11 items-center gap-2 rounded-lg px-5 text-sm font-bold transition hover:-translate-y-0.5 xl:inline-flex ${
             overlay
               ? "border border-white/40 text-white hover:bg-white/10"
               : "bg-[var(--navy)] text-white hover:bg-[var(--navy-soft)]"
@@ -126,7 +128,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
 
         <button
           type="button"
-          className={`grid size-11 place-items-center rounded-lg border md:hidden ${
+          className={`grid size-11 place-items-center rounded-lg border xl:hidden ${
             overlay ? "border-white/35 text-white" : "border-[var(--line)] text-[var(--navy)]"
           }`}
           aria-expanded={open}
@@ -141,7 +143,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
       {open ? (
         <nav
           id="mobile-navigation"
-          className="border-t border-[var(--line)] bg-white p-4 text-[var(--navy)] shadow-2xl md:hidden"
+          className="max-h-[calc(100dvh-88px)] overflow-y-auto border-t border-[var(--line)] bg-white p-4 text-[var(--navy)] shadow-2xl xl:hidden"
           aria-label="Mobile navigation"
         >
           <div className="site-container grid gap-1">
@@ -162,7 +164,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
               ))}
             </div>
             {navigation.slice(1).map((item) => (
-              <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="rounded-lg px-4 py-3 text-base font-bold hover:bg-[var(--surface)]">
+              <Link key={item.href} href={item.href} aria-current={pathname === item.href || pathname.startsWith(`${item.href}/`) ? "page" : undefined} onClick={() => setOpen(false)} className="rounded-lg px-4 py-3 text-base font-bold hover:bg-[var(--surface)]">
                 {item.label}
               </Link>
             ))}

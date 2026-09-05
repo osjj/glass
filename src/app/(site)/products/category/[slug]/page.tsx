@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CategoryMenu } from "@/components/site/category-menu";
 import { ProductCard } from "@/components/site/product-card";
 import { getPublicCategoryPage, getPublicCategoryTree } from "@/lib/public-products";
+import { getClustersForCategory } from "@/data/guide-clusters";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,7 @@ export default async function ProductCategoryPage({ params }: CategoryPageProps)
   ]);
   if (!data) notFound();
   const { category, breadcrumbs, products } = data;
+  const buyingGuides = getClustersForCategory(category.slug);
 
   return (
     <>
@@ -55,6 +57,7 @@ export default async function ProductCategoryPage({ params }: CategoryPageProps)
       <section className="site-container grid items-start gap-6 py-8 sm:py-10 lg:grid-cols-[16.625rem_minmax(0,1fr)] lg:gap-8">
         <CategoryMenu categories={categoryTree} activeSlug={category.slug} />
         <div className="min-w-0">
+          {buyingGuides.length > 0 && <nav aria-label="Related buying guides" className="mb-6 rounded-xl border border-[var(--line)] bg-[var(--surface)] p-4"><p className="text-sm font-semibold text-[var(--navy)]">Need help choosing?</p><div className="mt-2 flex flex-wrap gap-3">{buyingGuides.map((guide) => <Link key={guide.slug} href={`/guides/${guide.slug}`} className="text-sm font-bold text-[var(--blue)] underline underline-offset-4">{guide.title} guide →</Link>)}</div></nav>}
           <div className="flex flex-col gap-3 border-b border-[var(--line)] pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-[-0.035em] text-[var(--navy)]">{category.label}</h2>

@@ -215,6 +215,11 @@ textarea {
   margin: 2.5rem 0;
 }
 
+.prose-glarivo h2[id],
+.prose-glarivo h3[id] {
+  scroll-margin-top: 7rem;
+}
+
 .prose-glarivo figcaption {
   margin-top: 0.75rem;
   color: var(--ink-muted);

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+<title id="title">Shot glass buying guide: capacity, shape and finish</title><desc id="desc">Three illustrative cup profiles: a short thick-base glass, a tall shooter and a handled mini mug. Shapes are schematic, not product specifications.</desc>
+<defs><linearGradient id="glass" x2="1" y2="1"><stop stop-color="#d5eef3" stop-opacity=".8"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".08"/><stop offset="1" stop-color="#8bc7d8" stop-opacity=".45"/></linearGradient></defs>
+<rect width="1200" height="660" rx="20" fill="#082c48"/><circle cx="1110" cy="45" r="280" fill="#0d3d59"/>
+<g font-family="Arial, sans-serif"><text x="70" y="73" fill="#c9ed82" font-size="19" letter-spacing="4">GLARIVO / BUYER'S FIELD NOTES</text><text x="70" y="136" fill="white" font-size="48" font-weight="bold">A small glass. Six buying decisions.</text><text x="70" y="179" fill="#b8d0df" font-size="23">Use · capacity · shape · finish · sample · packaging</text></g>
+<g fill="url(#glass)" stroke="#d5eef3" stroke-width="4" stroke-linejoin="round">
+<path d="M150 299 L345 299 L322 497 Q245 516 173 497 Z"/><ellipse cx="247" cy="299" rx="97" ry="17"/><path d="M173 462 Q245 480 325 462 L322 497 Q245 516 173 497 Z"/>
+<path d="M540 246 L680 246 L663 499 Q610 512 557 499 Z"/><ellipse cx="610" cy="246" rx="70" ry="13"/><path d="M556 476 Q610 489 665 476"/>
+<path d="M861 331 L1010 331 L1005 496 Q935 514 865 496 Z"/><ellipse cx="935" cy="331" rx="75" ry="14"/><path d="M1010 350 C1102 333 1105 465 1008 457 L1008 434 C1072 443 1071 367 1009 375 Z"/><path d="M867 475 Q935 490 1005 475"/>
+</g>
+<g font-family="Arial, sans-serif" font-size="22" fill="#fff" text-anchor="middle"><text x="245" y="560">Short / thick base</text><text x="610" y="560">Tall / shooter</text><text x="954" y="560">Handled / mini mug</text></g><text x="70" y="620" font-family="Arial, sans-serif" font-size="17" fill="#b8d0df">Illustrative profiles only. Compare actual samples and confirmed specifications.</text></svg>

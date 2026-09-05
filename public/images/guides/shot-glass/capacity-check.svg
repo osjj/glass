@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="700" viewBox="0 0 600 700" role="img" aria-labelledby="title desc">
+<title id="title">Separate brimful capacity from the intended fill level</title><desc id="desc">A schematic glass with an upper brimful line, a lower intended fill line, and outside height and rim diameter measurements. No numerical dimensions or certified measures are implied.</desc>
+<rect width="600" height="700" rx="24" fill="#eef5f6"/>
+<g font-family="Arial, sans-serif" fill="#082c48" font-size="29" font-weight="bold"><text x="32" y="53">Glass capacity and serving volume</text><text x="32" y="91">are different measurements.</text></g>
+<path d="M159 250 L355 250 L331 539 Q259 558 185 539 Z" fill="#fff" stroke="#54788b" stroke-width="4"/>
+<path d="M170 367 L344 367 L330 505 Q259 522 183 505 Z" fill="#a8d3df"/>
+<ellipse cx="257" cy="250" rx="98" ry="15" fill="#fff" stroke="#54788b" stroke-width="4"/>
+<path d="M164 264 H555 M170 367 H555" stroke="#0a6385" stroke-width="3" stroke-dasharray="8 6"/>
+<path d="M141 250 H124 V539 H141 M159 208 V189 H355 V208" fill="none" stroke="#54788b" stroke-width="3"/>
+<g font-family="Arial, sans-serif" fill="#082c48" font-size="25"><text x="181" y="170">Rim diameter</text><text x="30" y="406">Height</text><text x="381" y="222">Brimful</text><text x="381" y="250">capacity</text><text x="381" y="319">Intended</text><text x="381" y="349">fill level</text><text x="381" y="420" font-size="23">Leave room</text><text x="381" y="453" font-size="23">above the fill.</text></g>
+<g font-family="Arial, sans-serif" fill="#466576" font-size="23"><text x="32" y="603">Schematic only. Not to scale.</text><text x="32" y="639">Not a calibrated serving mark.</text><text x="32" y="675">Check a measured sample of your model.</text></g></svg>
