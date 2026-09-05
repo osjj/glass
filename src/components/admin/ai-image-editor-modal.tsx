@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import { ImageIcon, Loader2, Sparkles, X } from "lucide-react";
 import type { AdminProductImageInput } from "@/types/admin-product";
+import { MagnifiableImage } from "@/components/admin/magnifiable-image";
 
 const SIZE_OPTIONS = [
   "1024x1024",
@@ -15,10 +16,23 @@ const SIZE_OPTIONS = [
 ] as const;
 const QUALITY_OPTIONS = ["low", "medium", "high", "auto"] as const;
 const OUTPUT_FORMAT_OPTIONS = ["jpeg", "png", "webp"] as const;
+const BACKGROUND_OPTIONS = [
+  { value: "original", label: "保持原背景", prompt: "" },
+  { value: "dining", label: "餐桌", prompt: "温馨雅致的餐桌，亚麻桌布与简洁餐具，柔和自然光" },
+  { value: "bar", label: "酒吧桌", prompt: "高级酒吧的深色木质吧台，暖色氛围灯，背景酒架虚化" },
+  { value: "cafe", label: "咖啡馆", prompt: "明亮咖啡馆的木桌，窗边自然光，咖啡馆背景柔和虚化" },
+  { value: "marble", label: "大理石台面", prompt: "浅色大理石台面，干净现代的室内背景，柔和侧光" },
+  { value: "kitchen", label: "厨房台面", prompt: "整洁现代的厨房台面，明亮自然光，背景简洁" },
+  { value: "restaurant", label: "西餐厅", prompt: "精致西餐厅餐桌，白色桌布与低调餐具，优雅暖光" },
+  { value: "garden", label: "户外花园桌", prompt: "户外花园木桌，自然绿植背景虚化，柔和日光" },
+  { value: "hotel", label: "酒店宴会桌", prompt: "高端酒店宴会餐桌，简洁花艺与柔和灯光，优雅布置" },
+  { value: "studio", label: "纯白摄影棚", prompt: "纯白无缝摄影棚背景与白色台面，柔和棚拍光和自然接触阴影" },
+] as const;
 
 type ImageSize = (typeof SIZE_OPTIONS)[number];
 type ImageQuality = (typeof QUALITY_OPTIONS)[number];
 type OutputFormat = (typeof OUTPUT_FORMAT_OPTIONS)[number];
+type ReferenceImage = "none" | "glarivo-blue-logo";
 
 type GeneratedImage = {
   b64Json: string;
@@ -38,6 +52,8 @@ type AiImageEditorModalProps = {
 
 const REMOVE_ICON_PROMPT =
   "去除图片中的品牌 Logo、文字水印和其他图标，保持产品主体、颜色、材质、比例、背景和构图不变，自然修复被遮挡区域。";
+const REPLACE_ICON_PROMPT =
+  "将第一张产品原图中的品牌 Logo、文字水印和其他图标，替换成第二张参考图里的蓝色 GLARIVO GLASSWARE Logo。保持蓝色 Logo 的图形、文字、颜色和比例准确，并根据原标识的位置、透视、光照和产品材质自然贴合。只保留一个 GLARIVO Logo，产品主体、颜色、材质、比例、背景和构图不得改变。";
 
 function isOutputFormat(value: unknown): value is OutputFormat {
   return OUTPUT_FORMAT_OPTIONS.includes(value as OutputFormat);
@@ -76,6 +92,8 @@ export function AiImageEditorModal({
   const [size, setSize] = useState<ImageSize>("auto");
   const [quality, setQuality] = useState<ImageQuality>("auto");
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("webp");
+  const [referenceImage, setReferenceImage] = useState<ReferenceImage>("none");
+  const [background, setBackground] = useState<string>("original");
   const [generatedImage, setGeneratedImage] = useState<GeneratedImage | null>(null);
   const [generating, setGenerating] = useState(false);
   const [finishing, setFinishing] = useState(false);
@@ -131,7 +149,16 @@ export function AiImageEditorModal({
   }
 
   async function generateImage() {
-    if (!sourceImage || !prompt.trim()) return;
+    const selectedBackground = BACKGROUND_OPTIONS.find((option) => option.value === background);
+    const backgroundPrompt = selectedBackground?.prompt
+      ? `背景要求（优先于上述保持背景或构图不变的要求）：将产品置于${selectedBackground.prompt}。保持产品数量、外形、比例、材质、颜色和细节，玻璃透明度、折射、反射及接触阴影应与新场景自然一致。产品作为清晰主体，不添加文字、图标或额外品牌标识。`
+      : "";
+    const finalPrompt = [prompt.trim(), backgroundPrompt].filter(Boolean).join("\n\n");
+    if (!sourceImage || !finalPrompt) return;
+    if (finalPrompt.length > 4000) {
+      setError("提示词与背景要求合计不能超过 4000 字，请缩短提示词。");
+      return;
+    }
     operationAbortRef.current?.abort();
     const controller = new AbortController();
     operationAbortRef.current = controller;
@@ -145,10 +172,11 @@ export function AiImageEditorModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sourceUrl: sourceImage.url,
-          prompt: prompt.trim(),
+          prompt: finalPrompt,
           size,
           quality,
           outputFormat,
+          referenceImage,
         }),
         signal: controller.signal,
       });
@@ -302,16 +330,7 @@ export function AiImageEditorModal({
           <div className="grid gap-5 lg:grid-cols-2">
             <figure>
               <figcaption className="mb-2 text-sm font-black">Original image</figcaption>
-              <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#d7dcd8] bg-[#eef0ed]">
-                <Image
-                  src={sourceImage.url}
-                  alt={sourceImage.alt || "Original product image"}
-                  fill
-                  unoptimized
-                  sizes="(min-width: 1024px) 40vw, 90vw"
-                  className="object-contain"
-                />
-              </div>
+              <MagnifiableImage key={sourceImage.url} src={sourceImage.url} alt={sourceImage.alt || "Original product image"} />
             </figure>
 
             <figure>
@@ -323,18 +342,14 @@ export function AiImageEditorModal({
                   </span>
                 ) : null}
               </figcaption>
-              <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#d7dcd8] bg-[#eef0ed]">
                 {generatedPreview ? (
-                  <Image
+                  <MagnifiableImage
+                    key={generatedPreview}
                     src={generatedPreview}
                     alt="AI-generated product image preview"
-                    fill
-                    unoptimized
-                    sizes="(min-width: 1024px) 40vw, 90vw"
-                    className="object-contain"
                   />
                 ) : (
-                  <div className="grid h-full place-items-center p-6 text-center text-sm text-[var(--ink-muted)]">
+                  <div className="grid aspect-square place-items-center rounded-2xl border border-[#d7dcd8] bg-[#eef0ed] p-6 text-center text-sm text-[var(--ink-muted)]">
                     <div>
                       {generating ? (
                         <Loader2 className="mx-auto size-8 animate-spin text-[var(--accent-dark)]" />
@@ -347,7 +362,6 @@ export function AiImageEditorModal({
                     </div>
                   </div>
                 )}
-              </div>
             </figure>
           </div>
 
@@ -371,20 +385,76 @@ export function AiImageEditorModal({
             <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--ink-muted)]">
               Prompt templates
             </p>
-            <button
-              type="button"
-              className="mt-2 inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#c9d0ca] bg-[#f8f9f7] px-3 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent)] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-              onClick={() => {
-                setPrompt(REMOVE_ICON_PROMPT);
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#c9d0ca] bg-[#f8f9f7] px-3 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent)] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                onClick={() => {
+                  setPrompt(REMOVE_ICON_PROMPT);
+                  setReferenceImage("none");
+                  setGeneratedImage(null);
+                  promptRef.current?.focus();
+                }}
+                disabled={busy}
+              >
+                <Sparkles className="size-4 text-[var(--accent-dark)]" aria-hidden="true" />
+                去除图标
+              </button>
+              <button
+                type="button"
+                className={`inline-flex min-h-10 items-center gap-2 rounded-xl border px-3 text-sm font-black transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+                  referenceImage === "glarivo-blue-logo"
+                    ? "border-[var(--accent)] bg-[#edf4ff] text-[var(--accent-dark)]"
+                    : "border-[#c9d0ca] bg-[#f8f9f7] text-[var(--ink)] hover:border-[var(--accent)] hover:bg-white"
+                }`}
+                onClick={() => {
+                  setPrompt(REPLACE_ICON_PROMPT);
+                  setReferenceImage("glarivo-blue-logo");
+                  setGeneratedImage(null);
+                  promptRef.current?.focus();
+                }}
+                disabled={busy}
+                aria-pressed={referenceImage === "glarivo-blue-logo"}
+              >
+                <ImageIcon className="size-4" aria-hidden="true" />
+                替换图标
+              </button>
+            </div>
+            {referenceImage === "glarivo-blue-logo" ? (
+              <div className="mt-3 flex items-center gap-3 rounded-xl border border-[#d8e5f7] bg-[#f7faff] p-3">
+                <span className="relative h-10 w-20 shrink-0 overflow-hidden rounded-lg bg-white">
+                  <Image
+                    src="/brand/glarivo-logo-blue.png"
+                    alt="Blue GLARIVO GLASSWARE logo reference"
+                    fill
+                    unoptimized
+                    sizes="80px"
+                    className="object-contain p-1"
+                  />
+                </span>
+                <p className="text-xs font-bold leading-5 text-[var(--ink-muted)]">
+                  This blue GLARIVO logo is attached as the second reference image.
+                </p>
+              </div>
+            ) : null}
+          </div>
+
+          <label className="mt-5 block text-sm font-black">
+            背景选择
+            <select
+              className="mt-2 h-11 w-full rounded-xl border border-[#ccd3ce] bg-white px-3 text-sm font-normal shadow-sm focus:border-[var(--accent)]"
+              value={background}
+              onChange={(event) => {
+                setBackground(event.target.value);
                 setGeneratedImage(null);
-                promptRef.current?.focus();
+                setError(null);
               }}
               disabled={busy}
             >
-              <Sparkles className="size-4 text-[var(--accent-dark)]" aria-hidden="true" />
-              去除图标
-            </button>
-          </div>
+              {BACKGROUND_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+            </select>
+            <span className="mt-2 block text-xs font-normal text-[var(--ink-muted)]">可单独更换背景，也可搭配去除图标或替换图标。鼠标移入预览图片可放大查看细节。</span>
+          </label>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             <label className="text-sm font-black">
@@ -460,7 +530,7 @@ export function AiImageEditorModal({
               type="button"
               className="button-secondary"
               onClick={generateImage}
-              disabled={!prompt.trim() || busy}
+              disabled={(!prompt.trim() && background === "original") || busy}
             >
               {generating ? (
                 <Loader2 className="size-4 animate-spin" aria-hidden="true" />

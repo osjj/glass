@@ -1,5 +1,7 @@
 import "server-only";
 
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { NextResponse } from "next/server";
 import sharp from "sharp";
 import { z } from "zod";
@@ -17,6 +19,12 @@ const MAX_SOURCE_IMAGE_BYTES = 12 * 1024 * 1024;
 const MAX_GENERATED_IMAGE_BYTES = 25 * 1024 * 1024;
 const MAX_UPSTREAM_RESPONSE_BYTES = 36 * 1024 * 1024;
 const MAX_INPUT_PIXELS = 40_000_000;
+const GLARIVO_BLUE_LOGO_PATH = join(
+  process.cwd(),
+  "public",
+  "brand",
+  "glarivo-logo-blue.png",
+);
 
 const imageSizeSchema = z.enum([
   "auto",
@@ -28,6 +36,7 @@ const imageSizeSchema = z.enum([
 ]);
 const imageQualitySchema = z.enum(["auto", "low", "medium", "high"]);
 const imageFormatSchema = z.enum(["webp", "png", "jpeg"]);
+const referenceImageSchema = z.enum(["none", "glarivo-blue-logo"]);
 const requestSchema = z
   .object({
     sourceUrl: z.string().trim().min(1).max(2_048),
@@ -35,6 +44,7 @@ const requestSchema = z
     size: imageSizeSchema,
     quality: imageQualitySchema,
     outputFormat: imageFormatSchema,
+    referenceImage: referenceImageSchema.default("none"),
   })
   .strict();
 
@@ -264,6 +274,37 @@ async function fetchSourceImage(sourceUrl: string, requestSignal: AbortSignal) {
   throw new RouteError("The original product image could not be loaded.", 502);
 }
 
+async function loadGlarivoBlueLogo() {
+  let data: Buffer;
+  try {
+    data = await readFile(GLARIVO_BLUE_LOGO_PATH);
+  } catch {
+    throw new RouteError("The GLARIVO blue logo could not be loaded.", 500);
+  }
+
+  if (!data.byteLength || data.byteLength > MAX_SOURCE_IMAGE_BYTES) {
+    throw new RouteError("The GLARIVO blue logo is empty or too large.", 500);
+  }
+
+  try {
+    const metadata = await sharp(data, {
+      failOn: "error",
+      limitInputPixels: MAX_INPUT_PIXELS,
+    }).metadata();
+    if (!metadata.width || !metadata.height || metadata.format !== "png") {
+      throw new Error("Invalid logo image");
+    }
+  } catch {
+    throw new RouteError("The GLARIVO blue logo is invalid.", 500);
+  }
+
+  return {
+    data,
+    mimeType: "image/png",
+    extension: "png",
+  };
+}
+
 function openAiConfiguration() {
   const apiKey = process.env.OPENAI_API_KEY?.trim();
   const endpoint = process.env.OPENAI_API_ENDPOINT?.trim().replace(/\/+$/, "");
@@ -296,7 +337,7 @@ function parseUpstreamJson(data: Buffer) {
   try {
     return JSON.parse(data.toString("utf8")) as unknown;
   } catch {
-    throw new RouteError("The AI image service returned an invalid response.", 502);
+    return null;
   }
 }
 
@@ -360,19 +401,34 @@ export async function POST(request: Request) {
     if (!parsed.success) return errorResponse("Check the image prompt and output options.", 400);
 
     const sourceUrl = authorizedSourceUrl(parsed.data.sourceUrl, request.url);
-    const [sourceImage, configuration] = await Promise.all([
+    const [sourceImage, configuration, referenceImage] = await Promise.all([
       fetchSourceImage(sourceUrl, request.signal),
       Promise.resolve(openAiConfiguration()),
+      parsed.data.referenceImage === "glarivo-blue-logo"
+        ? loadGlarivoBlueLogo()
+        : Promise.resolve(null),
     ]);
 
     const body = new FormData();
-    body.set(
+    body.append(
       "image[]",
       new Blob([Uint8Array.from(sourceImage.data)], { type: sourceImage.mimeType }),
       `product.${sourceImage.extension}`,
     );
+    if (referenceImage) {
+      body.append(
+        "image[]",
+        new Blob([Uint8Array.from(referenceImage.data)], { type: referenceImage.mimeType }),
+        `glarivo-logo-blue.${referenceImage.extension}`,
+      );
+    }
     body.set("model", OPENAI_IMAGE_MODEL);
-    body.set("prompt", parsed.data.prompt);
+    body.set(
+      "prompt",
+      referenceImage
+        ? `${parsed.data.prompt}\n\nThe first input image is the product image. The second input image is the approved blue GLARIVO GLASSWARE logo reference. Use the second image only as the replacement logo; preserve its exact geometry, wording, and blue color.`
+        : parsed.data.prompt,
+    );
     body.set("n", "1");
     body.set("size", parsed.data.size);
     body.set("quality", parsed.data.quality);
@@ -409,7 +465,9 @@ export async function POST(request: Request) {
       console.error("AI product image edit rejected", {
         status: response.status,
         requestId: response.headers.get("x-request-id"),
+        contentType: response.headers.get("content-type"),
       });
+      const gatewayUnavailable = [502, 503, 504].includes(response.status);
       const status = response.status === 429
         ? 429
         : response.status === 400 || response.status === 422
@@ -419,9 +477,13 @@ export async function POST(request: Request) {
         ? "The AI image service is busy. Wait a moment and try again."
         : response.status === 400 || response.status === 422
           ? "The AI image request was rejected. Check the prompt and source image."
+          : gatewayUnavailable
+            ? "The AI image service gateway is temporarily unavailable. Try again later."
           : "The AI image service rejected the request.";
       return errorResponse(message, status);
     }
+
+    if (!payload) throw new RouteError("The AI image service returned an invalid response.", 502);
 
     const base64 = resultBase64(payload);
     if (!base64) throw new RouteError("The AI image service did not return an image.", 502);
