@@ -3,9 +3,11 @@ import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { getAdminProducts } from "@/actions/products";
 import { AdminHeader } from "@/components/admin/admin-header";
+import { ProductPagination } from "@/components/product-pagination";
+import { getPageNumber } from "@/lib/product-pagination";
 
-export default async function AdminProductsPage() {
-  const products = await getAdminProducts();
+export default async function AdminProductsPage({ searchParams }: { searchParams: Promise<{ page?: string | string[] }> }) {
+  const { products, pagination } = await getAdminProducts(getPageNumber((await searchParams).page));
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -76,6 +78,7 @@ export default async function AdminProductsPage() {
           </div>
         )}
       </div>
+      <ProductPagination pagination={pagination} path="/admin/products" />
     </div>
   );
 }

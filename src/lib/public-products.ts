@@ -5,6 +5,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { productCategories } from "@/data/catalog";
 import { hasRenderableStoredContent } from "@/lib/article-content-server";
 import { prisma } from "@/lib/prisma";
+import { getProductPagination, PRODUCTS_PER_PAGE } from "@/lib/product-pagination";
 
 const publicProductInclude = {
   images: { where: { role: "GALLERY" as const }, orderBy: { sortOrder: "asc" as const } },
@@ -133,6 +134,53 @@ export const getPublishedProducts = cache(async (): Promise<PublicProduct[]> => 
   return products.map(serializeProduct);
 });
 
+export const getPublishedProductPage = cache(async (
+  requestedPage = 1,
+  category = "",
+  query = "",
+) => {
+  const categoryTree = await getPublicCategoryTree();
+  const selectedCategory = flattenPublicCategoryTree(categoryTree).find((item) => item.slug === category);
+  const selectedSlugs = new Set(selectedCategory
+    ? flattenPublicCategoryTree([selectedCategory]).map((item) => item.slug)
+    : []);
+  const normalizedQuery = query.toLowerCase();
+
+  // Preserve the catalog's primary-category and combined-text search semantics.
+  // Only scan search fields; load images and detailed content for this page.
+  const candidates = await prisma.product.findMany({
+    where: { status: "PUBLISHED" },
+    orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }, { updatedAt: "desc" }, { id: "asc" }],
+    select: {
+      id: true, name: true, summary: true, legacyCategory: true,
+      categories: {
+        orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
+        take: 1,
+        select: { category: { select: { slug: true, name: true } } },
+      },
+    },
+  });
+  const filtered = candidates.filter((product) => {
+    const primaryCategory = product.categories[0]?.category;
+    const slug = primaryCategory?.slug ?? product.legacyCategory;
+    const label = primaryCategory?.name ?? productCategories.find((item) => item.slug === slug)?.label ?? slug;
+    return (!selectedCategory || selectedSlugs.has(slug)) &&
+      (!normalizedQuery || `${product.name} ${product.summary} ${label}`.toLowerCase().includes(normalizedQuery));
+  });
+  const pagination = getProductPagination(filtered.length, requestedPage);
+  const ids = filtered.slice(pagination.skip, pagination.skip + PRODUCTS_PER_PAGE).map((product) => product.id);
+  const records = ids.length ? await prisma.product.findMany({
+    where: { id: { in: ids }, status: "PUBLISHED" },
+    include: publicProductInclude,
+  }) : [];
+  const byId = new Map(records.map((product) => [product.id, product]));
+  const products = ids.flatMap((id) => {
+    const product = byId.get(id);
+    return product ? [serializeProduct(product)] : [];
+  });
+  return { products, pagination, selectedCategory, categoryTree };
+});
+
 export const getPublishedProductBySlug = cache(
   async (slug: string): Promise<PublicProduct | null> => {
     const product = await prisma.product.findFirst({
@@ -254,17 +302,12 @@ export const getPublicCategories = cache(async (): Promise<PublicCategory[]> =>
   flattenPublicCategoryTree(await getPublicCategoryTree()),
 );
 
-export const getPublicCategoryPage = cache(async (slug: string) => {
-  const [categoryTree, products] = await Promise.all([
-    getPublicCategoryTree(),
-    getPublishedProducts(),
-  ]);
+export const getPublicCategoryPage = cache(async (slug: string, requestedPage = 1) => {
+  const categoryTree = await getPublicCategoryTree();
   const categories = flattenPublicCategoryTree(categoryTree);
   const category = categories.find((item) => item.slug === slug);
   if (!category) return null;
-  const descendantSlugs = new Set(
-    flattenPublicCategoryTree([category]).map((item) => item.slug),
-  );
+  const { products, pagination } = await getPublishedProductPage(requestedPage, slug);
   const byId = new Map(categories.map((item) => [item.id, item]));
   const breadcrumbs: PublicCategory[] = [];
   const visited = new Set<string>();
@@ -277,7 +320,8 @@ export const getPublicCategoryPage = cache(async (slug: string) => {
   return {
     category,
     breadcrumbs,
-    products: products.filter((product) => descendantSlugs.has(product.category)),
+    products,
+    pagination,
   };
 });
 

@@ -3,44 +3,32 @@ import Link from "next/link";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { CategoryMenu } from "@/components/site/category-menu";
 import { ProductCard } from "@/components/site/product-card";
-import {
-  flattenPublicCategoryTree,
-  getPublicCategoryTree,
-  getPublishedProducts,
-} from "@/lib/public-products";
+import { ProductPagination } from "@/components/product-pagination";
+import { getPublishedProductPage } from "@/lib/public-products";
+import { getPageNumber, productPageHref } from "@/lib/product-pagination";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Products",
-  description: "Explore Glarivo glassware by category, browse product images, and find specifications for your next collection.",
-  alternates: { canonical: "/products" },
-};
+export async function generateMetadata({ searchParams }: ProductsPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const query = firstParam(params.q).trim();
+  const { pagination, selectedCategory } = await getPublishedProductPage(getPageNumber(params.page), firstParam(params.category).trim(), query);
+  return {
+    title: "Products",
+    description: "Explore Glarivo glassware by category, browse product images, and find specifications for your next collection.",
+    alternates: { canonical: productPageHref("/products", pagination.page, { category: selectedCategory?.slug ?? "", q: query }) },
+  };
+}
 
-type ProductsPageProps = { searchParams: Promise<{ category?: string; q?: string }> };
+type ProductsPageProps = { searchParams: Promise<{ category?: string | string[]; q?: string | string[]; page?: string | string[] }> };
+const firstParam = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value) ?? "";
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const params = await searchParams;
-  const category = params.category?.trim() ?? "";
-  const query = params.q?.trim() ?? "";
-  const normalizedQuery = query.toLowerCase();
-  const [products, categoryTree] = await Promise.all([
-    getPublishedProducts(),
-    getPublicCategoryTree(),
-  ]);
-  const categories = flattenPublicCategoryTree(categoryTree);
-  const selectedCategory = categories.find((item) => item.slug === category);
+  const category = firstParam(params.category).trim();
+  const query = firstParam(params.q).trim();
+  const { products, pagination, categoryTree, selectedCategory } = await getPublishedProductPage(getPageNumber(params.page), category, query);
   const knownCategory = selectedCategory?.slug ?? "";
-  const selectedSlugs = new Set(
-    selectedCategory
-      ? flattenPublicCategoryTree([selectedCategory]).map((item) => item.slug)
-      : [],
-  );
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory = !knownCategory || selectedSlugs.has(product.category);
-    const matchesQuery = !normalizedQuery || `${product.name} ${product.summary} ${product.categoryLabel}`.toLowerCase().includes(normalizedQuery);
-    return matchesCategory && matchesQuery;
-  });
 
   return (
     <>
@@ -60,7 +48,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           <div className="flex flex-col gap-4 border-b border-[var(--line)] pb-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-[-0.035em] text-[var(--navy)]">{selectedCategory?.label ?? "All glassware"}</h2>
-              <p className="mt-1 text-sm text-[var(--ink-muted)]">{filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}</p>
+              <p className="mt-1 text-sm text-[var(--ink-muted)]">{pagination.total} {pagination.total === 1 ? "product" : "products"}</p>
             </div>
             <form action="/products" method="get" className="flex w-full min-w-0 gap-2 sm:w-auto sm:max-w-sm sm:flex-1">
               {knownCategory ? <input type="hidden" name="category" value={knownCategory} /> : null}
@@ -81,9 +69,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             </div>
           ) : null}
 
-          {filteredProducts.length ? (
+          {products.length ? (
             <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredProducts.map((product, index) => <ProductCard key={product.id} product={product} index={index} />)}
+              {products.map((product, index) => <ProductCard key={product.id} product={product} index={index} />)}
             </div>
           ) : (
             <div className="mt-8 rounded-xl border border-dashed border-[var(--line)] bg-[var(--surface)] px-6 py-20 text-center">
@@ -92,6 +80,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               {query || knownCategory ? <Link href="/products" className="button-primary mt-7">View all products</Link> : null}
             </div>
           )}
+          <ProductPagination pagination={pagination} path="/products" filters={{ category: knownCategory, q: query }} />
         </div>
       </section>
     </>

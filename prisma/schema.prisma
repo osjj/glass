@@ -7,6 +7,35 @@ datasource db {
   provider = "postgresql"
 }
 
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+  SPAM
+}
+
+model Inquiry {
+  id           String        @id @default(cuid())
+  submissionId String        @unique @db.Uuid
+  email        String        @db.VarChar(100)
+  countryCode  String        @default("") @db.VarChar(5)
+  phone        String        @default("") @db.VarChar(100)
+  name         String        @db.VarChar(100)
+  companyName  String        @default("") @db.VarChar(200)
+  message      String        @db.VarChar(1000)
+  sourcePath   String        @db.VarChar(500)
+  productName  String?       @db.VarChar(500)
+  productSku   String?       @db.VarChar(200)
+  status       InquiryStatus @default(NEW)
+  notes        String        @default("") @db.VarChar(5000)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email, createdAt])
+  @@index([createdAt])
+}
+
 enum PublishStatus {
   DRAFT
   PUBLISHED

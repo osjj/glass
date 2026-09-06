@@ -14,6 +14,7 @@ import {
 import { notFound } from "next/navigation";
 import { RichContentRenderer } from "@/components/site/article-content-renderer";
 import { ProductDetailGallery } from "@/components/site/product-detail-gallery";
+import { InquiryButton } from "@/components/site/inquiry-contact";
 import { getPublicCategories, getPublishedProductBySlug } from "@/lib/public-products";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -145,9 +146,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </dl>
 
             <div className="mt-7 grid grid-cols-2 gap-3 max-sm:sticky max-sm:bottom-0 max-sm:z-20 max-sm:-mx-4 max-sm:gap-0 max-sm:shadow-[0_-7px_20px_rgba(12,42,64,0.12)]">
-              <Link href="/about" className="flex min-h-12 items-center justify-center gap-2 bg-[#075989] px-4 text-sm font-bold uppercase text-white hover:bg-[#06496f]">
+              <InquiryButton product={{ name: product.name, sku: product.sku }} className="flex min-h-12 items-center justify-center gap-2 bg-[#075989] px-4 text-sm font-bold uppercase text-white hover:bg-[#06496f]">
                 <MessageSquareText className="size-5" /> Inquire now
-              </Link>
+              </InquiryButton>
               <Link href="/products" className="flex min-h-12 items-center justify-center gap-2 border border-[#075989] bg-white px-4 text-sm font-bold uppercase text-[#075989]">
                 Next product <ArrowRight className="size-4" />
               </Link>
@@ -160,9 +161,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         <aside className="hidden self-start bg-[linear-gradient(150deg,#0f345c,#075989)] p-6 text-white shadow-[0_16px_28px_rgba(15,52,92,0.15)] lg:sticky lg:top-28 lg:block" id="inquiry">
           <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#bcd2df]">Need a custom glass?</p>
           <h2 className="mt-3 text-2xl font-bold leading-tight">Talk to our sourcing team</h2>
-          <Link href="/about" className="mt-6 flex min-h-11 items-center justify-center gap-2 bg-[var(--lime)] px-4 text-sm font-extrabold uppercase text-[var(--navy)]">
+          <InquiryButton product={{ name: product.name, sku: product.sku }} className="mt-6 flex min-h-11 w-full items-center justify-center gap-2 bg-[var(--lime)] px-4 text-sm font-extrabold uppercase text-[var(--navy)]">
             Send inquiry <ArrowRight className="size-4" />
-          </Link>
+          </InquiryButton>
         </aside>
 
         <article className="min-w-0">

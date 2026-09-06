@@ -10,6 +10,7 @@ import {
   serializeStoredProductContentForEditor,
 } from "@/lib/article-content-server";
 import { prisma } from "@/lib/prisma";
+import { getProductPagination, PRODUCTS_PER_PAGE } from "@/lib/product-pagination";
 import {
   PRODUCT_DETAIL_STATEMENT_MAX_ITEMS,
   PRODUCT_DETAIL_STATEMENT_MAX_LENGTH,
@@ -570,10 +571,13 @@ export async function getAdminProduct(productId: string): Promise<AdminProductIn
   };
 }
 
-export async function getAdminProducts() {
+export async function getAdminProducts(requestedPage = 1) {
   await requireAdmin();
+  const pagination = getProductPagination(await prisma.product.count(), requestedPage);
   const products = await prisma.product.findMany({
-    orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }],
+    orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }, { id: "asc" }],
+    skip: pagination.skip,
+    take: PRODUCTS_PER_PAGE,
     include: {
       images: { where: { role: "GALLERY" }, orderBy: { sortOrder: "asc" }, take: 1 },
       categories: {
@@ -584,14 +588,14 @@ export async function getAdminProducts() {
     },
   });
 
-  return products.map((product) => ({
+  return { pagination, products: products.map((product) => ({
     ...product,
     categoryName: product.categories[0]?.category.name ?? product.legacyCategory,
     categorySlug: product.categories[0]?.category.slug ?? product.legacyCategory,
     price: product.price === null ? null : Number(product.price),
     comparePrice: product.comparePrice === null ? null : Number(product.comparePrice),
     cost: product.cost === null ? null : Number(product.cost),
-  }));
+  })) };
 }
 
 export async function getAdminCategories(): Promise<AdminCategoryOption[]> {

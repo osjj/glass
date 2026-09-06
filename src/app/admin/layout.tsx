@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpenText, Boxes, ClipboardCheck, FolderTree, LayoutDashboard, LibraryBig, LogOut, MoveUpRight, ShieldCheck } from "lucide-react";
+import { BookOpenText, Boxes, ClipboardCheck, FolderTree, LayoutDashboard, LibraryBig, LogOut, MoveUpRight, ShieldCheck, MessageSquareText } from "lucide-react";
 import { logoutAdmin } from "@/actions/admin-auth";
 import { Logo } from "@/components/site/logo";
 import { getCurrentAdmin } from "@/lib/admin-auth";
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 const adminNavigation = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Boxes },
+  { href: "/admin/inquiries", label: "Inquiries", icon: MessageSquareText },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
   { href: "/admin/imports", label: "Product Import", icon: ClipboardCheck },
   { href: "/admin/imports/garbo-categories", label: "Garbo Categories", icon: LibraryBig },

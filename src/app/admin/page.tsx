@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BookOpenText, Boxes, CircleCheck } from "lucide-react";
+import { ArrowRight, BookOpenText, Boxes, CircleCheck, MessageSquareText } from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { SetupNotice } from "@/components/admin/setup-notice";
 import { requireAdmin } from "@/lib/admin-auth";
@@ -7,13 +7,15 @@ import { prisma } from "@/lib/prisma";
 
 export default async function AdminDashboardPage() {
   await requireAdmin();
-  const [productCount, publishedProductCount, blogPostCount, publishedBlogPostCount] = await Promise.all([
+  const [productCount, publishedProductCount, blogPostCount, publishedBlogPostCount, newInquiryCount] = await Promise.all([
     prisma.product.count(),
     prisma.product.count({ where: { status: "PUBLISHED" } }),
     prisma.blogPost.count(),
     prisma.blogPost.count({ where: { status: "PUBLISHED" } }),
+    prisma.inquiry.count({ where: { status: "NEW" } }),
   ]);
   const metrics = [
+    { label: "New inquiries", value: newInquiryCount, icon: MessageSquareText, href: "/admin/inquiries" },
     { label: "Products", value: productCount, icon: Boxes, href: "/admin/products" },
     { label: "Blog posts", value: blogPostCount, icon: BookOpenText, href: "/admin/blog" },
     { label: "Published products", value: publishedProductCount, icon: CircleCheck, href: "/products" },
@@ -25,7 +27,7 @@ export default async function AdminDashboardPage() {
       <AdminHeader
         eyebrow="Glarivo admin"
         title="Dashboard"
-        description="A compact workspace for the product catalog and blog."
+        description="Manage the product catalog, blog, and customer inquiries."
       />
       <div className="mt-6">
         <SetupNotice />

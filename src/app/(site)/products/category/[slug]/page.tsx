@@ -5,32 +5,34 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CategoryMenu } from "@/components/site/category-menu";
 import { ProductCard } from "@/components/site/product-card";
+import { ProductPagination } from "@/components/product-pagination";
+import { getPageNumber, productPageHref } from "@/lib/product-pagination";
 import { getPublicCategoryPage, getPublicCategoryTree } from "@/lib/public-products";
 import { getClustersForCategory } from "@/data/guide-clusters";
 
 export const dynamic = "force-dynamic";
 
-type CategoryPageProps = { params: Promise<{ slug: string }> };
+type CategoryPageProps = { params: Promise<{ slug: string }>; searchParams: Promise<{ page?: string | string[] }> };
 
-export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const data = await getPublicCategoryPage(slug);
+  const data = await getPublicCategoryPage(slug, getPageNumber((await searchParams).page));
   if (!data) return { title: "Category not found", robots: { index: false, follow: false } };
   return {
     title: data.category.label,
     description: `Browse ${data.category.label} glassware products and related Glarivo collections.`,
-    alternates: { canonical: `/products/category/${data.category.slug}` },
+    alternates: { canonical: productPageHref(`/products/category/${data.category.slug}`, data.pagination.page) },
   };
 }
 
-export default async function ProductCategoryPage({ params }: CategoryPageProps) {
+export default async function ProductCategoryPage({ params, searchParams }: CategoryPageProps) {
   const { slug } = await params;
   const [data, categoryTree] = await Promise.all([
-    getPublicCategoryPage(slug),
+    getPublicCategoryPage(slug, getPageNumber((await searchParams).page)),
     getPublicCategoryTree(),
   ]);
   if (!data) notFound();
-  const { category, breadcrumbs, products } = data;
+  const { category, breadcrumbs, products, pagination } = data;
   const buyingGuides = getClustersForCategory(category.slug);
 
   return (
@@ -61,7 +63,7 @@ export default async function ProductCategoryPage({ params }: CategoryPageProps)
           <div className="flex flex-col gap-3 border-b border-[var(--line)] pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-[-0.035em] text-[var(--navy)]">{category.label}</h2>
-              <p className="mt-1 text-sm text-[var(--ink-muted)]">{products.length} {products.length === 1 ? "product" : "products"}</p>
+              <p className="mt-1 text-sm text-[var(--ink-muted)]">{pagination.total} {pagination.total === 1 ? "product" : "products"}</p>
             </div>
             <Link href="/products" className="inline-flex items-center gap-2 text-sm font-bold text-[var(--navy)]"><ArrowLeft size={16} weight="bold" /> All products</Link>
           </div>
@@ -77,6 +79,7 @@ export default async function ProductCategoryPage({ params }: CategoryPageProps)
               <Link href="/products" className="button-primary mt-7">Browse all products</Link>
             </div>
           )}
+          <ProductPagination pagination={pagination} path={`/products/category/${category.slug}`} />
         </div>
       </section>
     </>

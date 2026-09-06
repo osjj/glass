@@ -1,5 +1,6 @@
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
+import { InquiryProvider } from "@/components/site/inquiry-contact";
 import { getPublicCategoryTree } from "@/lib/public-products";
 
 type HeaderCategories = Awaited<ReturnType<typeof getPublicCategoryTree>>;
@@ -23,7 +24,7 @@ async function getHeaderCategories(): Promise<HeaderCategories> {
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const categories = await getHeaderCategories();
   return (
-    <div className="flex min-h-screen flex-col">
+    <InquiryProvider><div className="flex min-h-screen flex-col">
       <SiteHeader categories={categories.map((category) => ({
         slug: category.slug,
         label: category.label,
@@ -36,6 +37,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       }))} />
       <main className="site-main flex-1 pt-[88px]">{children}</main>
       <SiteFooter />
-    </div>
+    </div></InquiryProvider>
   );
 }

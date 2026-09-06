@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ArrowUpRight, List, X } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { Logo } from "./logo";
+import { InquiryButton } from "./inquiry-contact";
 import styles from "./home-shell.module.css";
 
 const navigation = [
@@ -123,9 +124,8 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
           })}
         </nav>
 
-        <Link
-          href="/#custom-glassware"
-          className={`hidden min-h-11 items-center gap-2 rounded-lg px-5 text-sm font-bold transition hover:-translate-y-0.5 xl:inline-flex ${
+        <InquiryButton
+          className={`${styles.quoteButton} hidden min-h-11 items-center gap-2 rounded-lg px-5 text-sm font-bold transition hover:-translate-y-0.5 xl:inline-flex ${
             overlay
               ? "bg-[var(--navy)] text-white shadow-[0_10px_28px_rgba(4,14,32,0.22)] hover:bg-[var(--navy-soft)]"
               : "bg-[var(--navy)] text-white hover:bg-[var(--navy-soft)]"
@@ -133,7 +133,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
         >
           Request a quote
           <ArrowUpRight size={17} weight="bold" aria-hidden="true" />
-        </Link>
+        </InquiryButton>
 
         <button
           type="button"
