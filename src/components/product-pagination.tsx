@@ -28,6 +28,15 @@ export function ProductPagination({ pagination, path, filters }: ProductPaginati
         ))}
         {page < totalPages ? <Link href={href(page + 1)} rel="next" className={`${button} hover:bg-[var(--surface)]`}>Next</Link> : <span aria-disabled="true" className={`${button} text-[var(--ink-muted)] opacity-50`}>Next</span>}
       </nav>
+      <form key={href(page)} action={path} method="get" aria-label="Jump to page" className="flex flex-wrap items-center justify-center gap-2 text-sm">
+        {Object.entries(filters ?? {}).map(([name, value]) => value && name !== "page" ? <input key={name} type="hidden" name={name} value={value} /> : null)}
+        <label className="flex items-center gap-2 text-[var(--ink-muted)]">
+          Go to page
+          <input type="number" name="page" min={1} max={totalPages} step={1} required defaultValue={page} className="min-h-11 w-20 rounded-lg border border-[var(--line)] bg-white px-2 text-center text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--blue)]" />
+        </label>
+        <span className="text-[var(--ink-muted)]">of {totalPages}</span>
+        <button type="submit" className={`${button} hover:bg-[var(--surface)]`}>Go</button>
+      </form>
     </div>
   );
 }
