@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "./logo";
+import { HomeFooter } from "./home-footer";
 
 const links = [
   { href: "/", label: "Home" },
@@ -11,6 +15,8 @@ const links = [
 ] as const;
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  if (pathname === "/") return <HomeFooter />;
   return (
     <footer className="bg-[var(--navy)] text-white">
       <div className="site-container py-14 sm:py-20">
@@ -18,7 +24,7 @@ export function SiteFooter() {
           <div>
             <Logo variant="white" />
             <p className="mt-6 max-w-xl text-balance text-2xl font-semibold leading-snug text-white/90 sm:text-3xl">
-              Clear glassware collections and practical product information for confident sourcing.
+              Crafted glassware collections and practical sourcing guidance for confident decisions.
             </p>
           </div>
           <nav className="grid grid-cols-2 gap-3 self-end" aria-label="Footer navigation">
@@ -26,7 +32,7 @@ export function SiteFooter() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="flex items-center justify-between rounded-lg border border-white/15 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[var(--lime)] hover:text-[var(--lime)]"
+                className="flex items-center justify-between rounded-lg border border-white/15 px-4 py-3 text-sm font-bold text-white/80 transition hover:border-[#d5b77b] hover:text-[#e1c995]"
               >
                 {link.label}
                 <ArrowUpRight size={17} weight="bold" aria-hidden="true" />
@@ -36,7 +42,7 @@ export function SiteFooter() {
         </div>
         <div className="flex flex-col gap-3 pt-7 text-xs font-medium uppercase tracking-[0.14em] text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} Glarivo Glassware</span>
-          <span>Focused catalog · Initial release</span>
+          <span>Glassware for modern living</span>
         </div>
       </div>
     </footer>

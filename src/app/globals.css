@@ -16,6 +16,63 @@
   --accent: var(--blue);
   --accent-dark: #245b98;
   --paper-deep: var(--surface);
+  --home-ivory: #fbfaf7;
+  --home-stone: #f7f2e9;
+  --home-ink: #14243c;
+  --home-gold: #d5b77b;
+}
+
+.home-luxe {
+  font-family: var(--font-home-sans), Arial, "Segoe UI", sans-serif;
+}
+
+.home-display {
+  font-family: var(--font-home-display), Georgia, "Times New Roman", serif;
+  font-weight: 600;
+}
+
+.home-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.home-kicker::before {
+  width: 2.25rem;
+  height: 1px;
+  background: var(--home-gold);
+  content: "";
+}
+
+.home-kicker-light {
+  color: white;
+}
+
+.home-text-link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.65rem;
+  border-bottom: 1px solid #b9a382;
+  color: var(--home-ink);
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+
+.home-text-link:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.site-main:has([data-home-hero]) {
+  padding-top: 0;
 }
 
 * {
