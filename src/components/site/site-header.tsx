@@ -27,11 +27,12 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const overlay = pathname === "/" && !scrolled;
+  const editorial = pathname === "/" || pathname === "/about";
+  const overlay = editorial && !scrolled;
 
   useEffect(() => {
     const onScroll = () => {
-      const homeHero = document.querySelector<HTMLElement>("[data-home-hero]");
+      const homeHero = document.querySelector<HTMLElement>("[data-home-hero], [data-about-hero]");
       const threshold = homeHero ? homeHero.offsetHeight - 88 : 48;
       setScrolled(window.scrollY > threshold);
     };
@@ -42,10 +43,10 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
 
   return (
     <header
-      className={`${pathname === "/" ? styles.header : ""} fixed inset-x-0 top-0 z-50 border-b transition duration-300 ${
+      className={`${editorial ? styles.header : ""} fixed inset-x-0 top-0 z-50 border-b transition duration-300 ${
         overlay
           ? "border-transparent bg-transparent text-white shadow-none"
-          : pathname === "/"
+          : editorial
             ? "border-white/30 bg-white/45 text-[var(--navy)] shadow-[0_8px_30px_rgba(10,30,70,0.08)] backdrop-blur-2xl backdrop-saturate-150"
             : "border-[var(--line)] bg-white/95 text-[var(--navy)] shadow-[0_8px_30px_rgba(10,30,70,0.06)] backdrop-blur-xl"
       }`}

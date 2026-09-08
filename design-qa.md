@@ -1,58 +1,19 @@
-# Glarivo homepage image-swap QA — 2026-09-06
-
-## Scope and result
-
-- Request: use the supplied showroom image as the homepage hero; move the previous homepage hero into the Garbo Glassware image slot; stop displaying the previous Garbo image.
-- Local implementation: http://127.0.0.1:3000/
-- Source image: C:/Users/osjj/AppData/Local/Temp/codex-clipboard-3079cc0f-3dee-4b82-8245-5236fc3132dd.png
-- Source pixels: 1672 x 941.
-- Desktop CSS viewport: 1440 x 1000, density 1x.
-- Mobile CSS viewport: 390 x 844, density 1x.
-- State: loaded homepage at the hero and scrolled Garbo Glassware section.
+# About implementation QA
 
 final result: passed
 
-## Findings
+Source: output/about-design-20260907/about-revised-concept.png (864 × 1821). Latest user amendment replaces section 1 with supplied garboglass profile; reference attribution is displayed separately.
 
-- No actionable P0, P1, or P2 mismatch remains for the requested image swap.
-- The supplied image is displayed as the hero with the existing text, header, overlay and calls to action intact.
-- The former hero image is displayed in the Garbo Glassware company image slot.
-- The former Garbo image at public/images/home/garbo-reference/company-showroom.jpg is no longer referenced by the homepage. The file was retained on disk to avoid destructive deletion.
-- P3: the hero uses object-fit cover, so edge content is intentionally cropped at different viewport ratios. The central showroom and glass displays remain visible on desktop and mobile.
+Implementation: http://127.0.0.1:3000/about. Captured in Codex in-app browser at desktop 1440 × 960; content width excludes scrollbar. Responsive overflow checked at 320, 390, 768, 1440 CSS pixels. 390 × 844 mobile header, menu and inquiry dialog inspected.
 
-## Visual evidence
+Comparison: qa/final-comparison.png combines the original source and desktop implementation at equal 720px display width, preserving aspect ratio. qa/final-0.jpg through final-5.jpg are overlapping viewport captures. qa/final-frames.json records scroll offsets. qa/desktop-verified.png is assembled from these frames, excluding repeated fixed-header regions. Native full-page capture desktop-full.png is invalid (repeated strips) and excluded from QA evidence. Minor header-shadow seams in assembled evidence are capture artifacts; individual frames are authoritative.
 
-- Desktop hero: D:/glarivo/output/design-qa/home-20260906/image-swap/hero-desktop.png
-- Mobile hero: D:/glarivo/output/design-qa/home-20260906/image-swap/hero-mobile.png
-- Desktop Garbo section: D:/glarivo/output/design-qa/home-20260906/image-swap/company-desktop.png
-- Mobile Garbo section: D:/glarivo/output/design-qa/home-20260906/image-swap/company-mobile.png
-- Side-by-side hero comparison: D:/glarivo/output/design-qa/home-20260906/image-swap/hero-comparison.jpg
-- Side-by-side Garbo comparison: D:/glarivo/output/design-qa/home-20260906/image-swap/company-comparison.jpg
+History: initial factory gallery included excess baked-in margin. Adjusted gallery display ratios to 3.6:1 for factory and 4.5:1 for conversations, retaining uncropped original links. Re-captured final frames and compared. No remaining P0/P1/P2 rendering issues found. Complete body copy and shared Home footer produce a longer page than the mock; this preserves approved written content and the existing shell. Generated assets intentionally differ from the conceptual mock photographs.
 
-The comparison files place the source asset on the left and the browser-rendered implementation on the right. Both were opened together and inspected. The full hero state confirms layout and text contrast; the focused Garbo state confirms the former hero occupies the requested company slot.
+Latest copy check: qa/profile-revised.jpg captures user-requested replacement. Browser text contains all four supplied paragraphs with Garbo replaced by garboglass. This content amendment supersedes the shorter company profile in the prior comparison. Mobile DOM width check remained clear of overflow.
 
-## Required fidelity surfaces
+Interactions: mobile menu expands, About link closes it; inquiry dialog opens and closes; factory and partner gallery links open the full image and browser Back returns to About. No inquiry submitted. Browser logs had no warnings/errors during initial full-page verification. All five content images loaded successfully.
 
-- Fonts and typography: unchanged; Cormorant display type and Manrope body type remain intact with no new wrapping or clipping.
-- Spacing and layout: unchanged; both image containers retain their original dimensions and surrounding rhythm.
-- Colors and visual tokens: unchanged; the hero overlay preserves white-text contrast over the brighter supplied image.
-- Image quality and fidelity: the supplied 1672 x 941 image was converted to a 394 KB WebP at quality 90 without enlargement. The former hero is reused directly, not duplicated or regenerated.
-- Copy and content: unchanged. Image alt text was updated to describe the displayed scenes accurately.
-- Responsive behavior: no horizontal overflow at 390 px; all images loaded with nonzero intrinsic dimensions.
-- Accessibility: semantic image alt text remains present; header and hero controls remain usable.
+Checks: production build and TypeScript passed during implementation. Scoped ESLint passed for About/header/footer before the latest text-only amendment. Full-repository lint reports five pre-existing no-require-imports errors in output/imagegen/exhibitions-v2/save-assets.cjs and exhibitions-v3/save-assets.cjs. Latest scoped lint checked separately. No deployment or push performed.
 
-## Verification
-
-- Browser-rendered desktop and mobile screenshots inspected.
-- Clean homepage image loading check: passed.
-- Browser console errors in final state: none.
-- npm run typecheck: passed.
-- npm run lint -- --quiet: passed.
-- npm run build: passed; compilation, TypeScript and all 20 static pages completed successfully.
-- No deployment, database write, commit or push performed.
-
-## Comparison history
-
-- First implementation pass used the exact supplied image for the hero and the previous hero for the Garbo slot.
-- Desktop review found both focal areas visible and text contrast acceptable.
-- Mobile review found the central showroom retained and no overflow. No P0/P1/P2 fix iteration was required.
+Assets: public/images/about/{glassware-hero,certificate-wall,partner-conversations,factory-gallery}.webp. Built-in Image Gen supplied original photography illustrations; Sharp used for WebP conversion. Profile photograph reused from existing Home assets. Source images and captions do not establish factory identity, certifications or customer history.

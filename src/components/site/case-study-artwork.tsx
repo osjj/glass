@@ -25,7 +25,7 @@ export function CaseStudyArtwork() {
         ))}
       </svg>
       <figcaption className="border-t border-[#132d50]/10 px-6 py-4 text-xs leading-5 text-[#536274] sm:px-10">
-        Editorial illustration, not project photography. Colors and shapes are illustrative.
+        Glarivo concept illustration. Colors and shapes show the design direction.
       </figcaption>
     </figure>
   );

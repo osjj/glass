@@ -249,10 +249,10 @@ export default async function HomePage() {
       {study && <section aria-labelledby="case-heading" className={styles.caseStudy + " " + styles.dark}>
         <div className={styles.container + " " + styles.caseGrid}>
           <figure><Photo src="/images/home/editorial/hotel-glassware-case.webp" alt="Editorial illustration of blue and amber glassware with unbranded gift packaging" className={styles.casePhoto} /><figcaption>Editorial illustration</figcaption></figure>
-          <div className={styles.caseCopy}><p className={styles.kicker}>Industry case review</p><h2 id="case-heading" className={styles.heading}>Hotel glassware,<br />considered in detail.</h2><Rule />
-            <p>A source-based customization case review exploring color, decoration and packaging.</p><p className={styles.caseTopics}>Color · Identity · Packaging</p>
-            <p className={styles.caseDisclosure}>Independent editorial review,<br />not a Glarivo customer project.</p>
-            <Link href={"/case-studies/" + study.slug} className={styles.outlineButton}>Read the case review<ArrowRight size={25} weight="light" aria-hidden="true" /></Link>
+          <div className={styles.caseCopy}><p className={styles.kicker}>Glarivo design study</p><h2 id="case-heading" className={styles.heading}>Hotel glassware,<br />considered in detail.</h2><Rule />
+            <p>Our coordinated glassware concept for hotel rooms and lounges, from the first brief to sample approval.</p><p className={styles.caseTopics}>Color · Identity · Packaging</p>
+            <p className={styles.caseDisclosure}>Explore our approach to product selection,<br />brand details and packaging.</p>
+            <Link href={"/case-studies/" + study.slug} className={styles.outlineButton}>Explore the case study<ArrowRight size={25} weight="light" aria-hidden="true" /></Link>
           </div>
         </div>
       </section>}

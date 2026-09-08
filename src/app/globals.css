@@ -71,7 +71,8 @@
   color: var(--blue);
 }
 
-.site-main:has([data-home-hero]) {
+.site-main:has([data-home-hero]),
+.site-main:has([data-about-hero]) {
   padding-top: 0;
 }
 

@@ -4,63 +4,47 @@ export type CaseStudy = {
   excerpt: string;
   category: string;
   updatedAt: string;
-  disclosure: string;
-  reportedSummary: string;
-  evidenceNote: string;
+  introduction: string;
+  brief: string;
+  objective: string;
   decisions: Array<{ title: string; text: string }>;
   approvalSteps: Array<{ title: string; text: string }>;
   conclusion: string;
-  sources: Array<{ id: string; title: string; url: string; note: string }>;
   relatedLinks: Array<{ href: string; label: string }>;
 };
 
-// Public-source reviews are editorial analysis, never Glarivo customer references.
-// Keep supplier-reported facts separate from our recommendations and retain attribution.
+// Original Glarivo design studies. Completed customer projects require supporting records.
 export const caseStudies: CaseStudy[] = [
   {
-    slug: "garbo-hotel-glassware-color-customization",
-    title: "Hotel glassware customization: a review of Garbo’s published case",
-    excerpt: "An industry case review exploring how to turn a hotel glassware concept into a clear brief for color, decoration and packaging.",
+    slug: "glarivo-hotel-glassware-customization",
+    title: "Glarivo hotel glassware: a coordinated concept for rooms and lounges",
+    excerpt: "Our hotel glassware design study brings together a versatile tumbler, a considered color palette and packaging planned around daily service.",
     category: "Hospitality · Custom glassware",
-    updatedAt: "2026-09-05T08:00:00.000Z",
-    disclosure: "Glarivo editorial review of a case reported by Garbo Glassware. This is not a Glarivo-delivered project. The customer is unnamed in the source, and the project has not been independently verified.",
-    reportedSummary: "In an article dated August 29, 2025, Garbo describes a European hotel group seeking distinctive minibar glassware. Its account pairs region-inspired colors with decorated whiskey glasses and branded packaging. The article also describes engraved crests and silicone base rings. These are supplier-reported details, rather than a specification independently checked by Glarivo.",
-    evidenceNote: "The source does not identify the hotel group or provide underlying order records or a customer confirmation. We therefore draw no verified conclusion about delivery or commercial performance. The useful focus of this review is the buying brief, not a claimed business result.",
+    updatedAt: "2026-09-07T00:00:00.000Z",
+    introduction: "A Glarivo design study showing how we would approach a hotel glassware brief, from product selection to sample approval.",
+    brief: "For this concept, we set a brief around two hotel settings: a guest-room refreshment tray and a relaxed lounge table. The glassware should feel like part of the same collection while leaving room for a different finish in each setting. We start with one tumbler silhouette and consider its proportions alongside the tray, serving area and available storage. Color and a small brand detail provide the visual connection; the exact glass and decoration method remain subject to sample review.",
+    objective: "Our aim is to develop a collection that is coherent for guests and clearly specified for the purchasing and receiving teams. The proposal brings the glass, artwork, finish references and packing instructions into one brief so that each choice can be reviewed before an order is agreed.",
     decisions: [
       {
-        title: "Turn a color idea into an approval reference",
-        text: "For a buyer planning a similar range, a mood board is only a starting point. Record the selected glass reference, the area to be colored and the intended appearance under the venue’s lighting. Compare a decorated physical sample against the agreed color reference. If several locations need different finishes, assign a separate reference to each version so that future orders can be checked against the correct sample.",
+        title: "One silhouette, two service settings",
+        text: "We begin with a compact tumbler as the common element across the concept. For the room tray, we explore a quiet, understated finish; for the lounge, a colored option adds a more distinctive accent. The shortlist would be reviewed against the intended drinks, tray dimensions and storage layout. Capacity, dimensions and handling suitability would be confirmed for the selected item before the specification is finalized.",
       },
       {
-        title: "Review the complete glass in its service setting",
-        text: "A logo and an accessory can change how a glass fits a tray, rack or shelf. Ask for a drawing showing the artwork position and review the finished sample with every proposed component attached. Check handling and cleaning instructions for that exact finished item. A catalog description of the base glass should not be treated as evidence for the performance of a later coating, decoration or added part.",
+        title: "Make the brand detail part of the glass",
+        text: "Our proposed visual direction pairs a restrained color palette with a small logo placement, leaving the shape of the glass as the focus. We would prepare artwork references showing the logo size, position and proposed finish, then review a decorated sample under the venue’s lighting. The selected decoration method and care instructions need to be confirmed for the finished glass, including any coating or printed detail.",
       },
       {
-        title: "Specify packaging for the receiving team",
-        text: "Start with the destination: individual hotel departments, a central warehouse or a retail display may need different identification and packing arrangements. Record how variants are separated, which references appear on labels and how the receiving team will recognize each version. Approve the unit pack and shipping carton together. Ask for documentation if a packaging certification is part of the purchasing requirement.",
+        title: "Plan the pack around hotel receiving",
+        text: "We separate the presentation decision from the delivery requirements: a guest-facing pack may need a different treatment from stock going directly into service. The packing brief would identify each finish, the agreed pack quantity and the destination department. We would review the proposed inner protection, unit pack and shipping carton together, with clear item references to help staff sort the collection on arrival.",
       },
     ],
     approvalSteps: [
-      { title: "Brief", text: "List the intended use, product references, finish variants, quantities per version and delivery destination. Mark unresolved requirements explicitly." },
-      { title: "Finished sample", text: "Review the decorated glass and proposed pack together. Keep photographs, an approval date and a physical reference where practical." },
-      { title: "Written order", text: "Record the accepted sample revision, packaging details, agreed tolerances and inspection requirements in the order documents." },
-      { title: "Receiving review", text: "Compare arriving goods with the agreed reference. Log discrepancies by item and batch before making claims about the project’s outcome." },
+      { title: "Define the brief", text: "Confirm the service settings, shortlisted glass, quantities by finish, artwork files and delivery destination. Record the points that still need a decision." },
+      { title: "Review the sample", text: "Check the finished glass and proposed packaging together. Review proportions, color and logo placement, and record any requested revisions." },
+      { title: "Agree the specification", text: "Reference the approved sample and artwork revision in the order documents, alongside packing details, inspection requirements and the agreed schedule." },
+      { title: "Check on arrival", text: "Use the agreed specification to check item references, finish variants and packing. Record any discrepancies by item and batch for follow-up." },
     ],
-    conclusion: "For your own project, the practical deliverable is a traceable set of decisions: which glass, which finish, which artwork and which pack. An attractive concept becomes easier to quote and review when those decisions are written down. Use the collections below to build a shortlist; their inclusion does not imply that those products were supplied to the hotel in Garbo’s account.",
-    sources: [
-      {
-        id: "garbo-case",
-        title: "Garbo: Capturing Global Drinkware Demand: The Competitive Edge of Spray-Colored Glassware",
-        url: "https://www.garboglass.com/news/capturing-global-drinkware-demand-the-competitive-edge-of-spray-colored-glassware.html",
-        note: "Published August 29, 2025. Primary source for the supplier-reported hotel case; reviewed September 5, 2026.",
-      },
-      {
-        id: "garbo-service",
-        title: "Garbo: Service",
-        url: "https://www.garboglass.com/services/service/",
-        note: "Reviewed September 5, 2026. Garbo describes design, pre-production samples, inspection and shipment support in general; this page does not verify the hotel project.",
-      },
-    ],
+    conclusion: "This Glarivo concept sets out a coordinated direction for hotel glassware and a practical route to an order-ready specification. For your project, share the service setting, preferred glass style, artwork and planned quantities with us. These details form the starting point for discussing product options, customization and packaging.",
     relatedLinks: [
       { href: "/products/category/glass-tumblers", label: "Explore drinking glasses" },
       { href: "/products/category/colored-glassware", label: "Explore colored glassware" },
