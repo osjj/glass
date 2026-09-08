@@ -10,7 +10,6 @@ import styles from "./home-shell.module.css";
 
 const navigation = [
   { href: "/", label: "Home" },
-  { href: "/#custom-glassware", label: "Custom Glassware" },
   { href: "/case-studies", label: "Case Studies" },
   { href: "/guides", label: "Guides" },
   { href: "/about", label: "About" },
