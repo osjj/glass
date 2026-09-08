@@ -57,13 +57,21 @@ export default function AboutPage() {
       <div className={styles.profileCopy}>
         <p className={styles.kicker}>01 Company profile</p>
         <h2 id="profile-heading">About Glarivo Glass</h2>
+        <figure className={styles.profilePhoto}>
+          <Image
+            src="/images/about/glarivo-showroom-profile-user-20260908.webp"
+            alt="Glarivo glassware showroom reception with illuminated displays and a logo wall"
+            width={1672}
+            height={941}
+            sizes="(min-width: 1467px) 700px, (min-width: 900px) 55vw, calc(100vw - 40px)"
+          />
+        </figure>
         {glarivoCompanyProfile.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>
           {paragraph.map((segment, segmentIndex) => segment.highlight
             ? <strong key={segmentIndex} className={styles.profileHighlight}>{segment.text}</strong>
             : segment.text)}
         </p>)}
       </div>
-      <div className={styles.profilePhoto}><Image src="/images/about/glarivo-showroom-profile-user-20260908.webp" alt="Glarivo glassware showroom reception with illuminated displays and a logo wall" width={1672} height={941} sizes="(min-width: 900px) 46vw, 90vw" /></div>
     </section>
     <section id="exhibition-gallery" className={`${styles.container} ${styles.gallery}`} aria-labelledby="exhibition-heading">
       <p className={styles.kicker}>02 Exhibition gallery</p><h2 id="exhibition-heading">Glassware, in conversation.</h2>
