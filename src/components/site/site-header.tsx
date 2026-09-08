@@ -51,7 +51,18 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
             : "border-[var(--line)] bg-white/95 text-[var(--navy)] shadow-[0_8px_30px_rgba(10,30,70,0.06)] backdrop-blur-xl"
       }`}
     >
-      <div className="site-container flex h-[88px] items-center justify-between gap-6">
+      {pathname === "/" && !scrolled ? (
+        <div className={styles.topContactBar} aria-label="Homepage contact details">
+          <div className={styles.topContactInner}>
+            <a href="mailto:sales@glarivoglass.com">sales@glarivoglass.com</a>
+            <span className={styles.topContactPhones}>
+              <a href="tel:+8618688757773">+86 186 8875 7773</a>
+              <a href="tel:+8618825913441">+86 188 2591 3441</a>
+            </span>
+          </div>
+        </div>
+      ) : null}
+      <div className={`site-container flex h-[88px] items-center justify-between gap-6 ${styles.headerNav}`}>
         <Logo variant="blue" compact />
 
         <nav className="hidden items-center gap-7 xl:flex" aria-label="Primary navigation">

@@ -1,41 +1,64 @@
 .header { font-family: var(--font-home-sans), Arial, sans-serif; }
-.header > div:first-child { width: 92%; max-width: 1480px; height: 112px; gap: 25px; }
+.headerNav { width: 92%; max-width: 1480px; height: 112px; gap: 25px; }
+.topContactBar { background: rgb(7 29 50 / 88%); border-bottom: 1px solid rgb(213 178 116 / 28%); }
+.topContactInner { display: flex; align-items: center; justify-content: flex-end; gap: 34px; width: 92%; max-width: 1480px; min-height: 36px; margin-inline: auto; color: #d5b274; font-size: 13px; line-height: 1.4; }
+.topContactInner a { color: inherit; transition: color 180ms ease; }
+.topContactInner a:hover { color: #f0d9ac; }
+.topContactPhones { display: flex; align-items: center; gap: 28px; }
+.topContactPhones a + a { position: relative; }
+.topContactPhones a + a::before { content: ""; position: absolute; top: 50%; left: -14px; width: 1px; height: 13px; background: rgb(213 178 116 / 45%); transform: translateY(-50%); }
 .header nav[aria-label="Primary navigation"] { gap: clamp(20px,2.6vw,44px); }
 .header nav[aria-label="Primary navigation"] > a,
 .header nav[aria-label="Primary navigation"] > div > a { font-size: 15px; font-weight: 400; }
 .header nav[aria-label="Primary navigation"] > a::after,
 .header nav[aria-label="Primary navigation"] > div > a::after { height: 1px; background: #b58a46; }
-.header .quoteButton { border-radius: 0; background: #0b3054; padding: 17px 26px; font-weight: 500; font-size: 14px; }
-.header .quoteButton > svg { display: none; }
-.header > div > a:first-child img { width: 190px; height: auto; max-height: 74px; object-fit: contain; }
+.header .quoteButton { cursor: pointer; border-radius: 0; background: #0b3054; padding: 17px 26px; font-weight: 500; font-size: 14px; }
+.header .quoteButton > svg { flex-shrink: 0; transition: transform 220ms ease; }
+.header .quoteButton:hover > svg,
+.header .quoteButton:focus-visible > svg { transform: translate(4px,-3px); }
+.headerNav > a:first-child img { width: 190px; height: auto; max-height: 74px; object-fit: contain; }
 .footer { background: #071d32; color: #f7f3ed; font-family: var(--font-home-sans), Arial, sans-serif; }
 .footerContainer { width: 90%; max-width: 1440px; margin-inline: auto; padding: 76px 0 40px; }
-.footerGrid { display: grid; grid-template-columns: 1.55fr .8fr .8fr 1fr; gap: 70px; padding-bottom: 75px; }
+.footerGrid { display: grid; grid-template-columns: 1.35fr .65fr .65fr .95fr 1.15fr; gap: clamp(28px,3vw,58px); padding-bottom: 75px; }
 .footerLogo { width: 270px; height: auto; max-height: 105px; object-fit: contain; object-position: left center; }
 .brand p { max-width: 340px; margin: 27px 0 0; font-size: 20px; line-height: 1.65; color: #dedfe1; }
-.footerGrid nav h2 { color: #d5b274; font-size: 17px; font-weight: 500; margin: 0 0 22px; }
+.footerGrid h2 { color: #d5b274; font-size: 17px; font-weight: 500; margin: 0 0 22px; }
 .footerGrid nav a { display: block; width: fit-content; font-size: 19px; line-height: 1.65; padding: 8px 0; color: #f7f3ed; }
 .footerGrid a:hover { color: #d5b274; }
 .footer a:focus-visible { outline-color: #d5b274; }
+.contactList { display: grid; gap: 12px; margin: 0; font-style: normal; }
+.contactItem { display: grid; grid-template-columns: 42px minmax(0,1fr); align-items: center; gap: 14px; min-width: 0; color: #dedfe1; font-size: 15px; line-height: 1.45; }
+.contactItem > span:last-child { overflow-wrap: anywhere; }
+.contactPhoneList { display: grid; gap: 5px; }
+.contactPhoneList a { width: fit-content; color: inherit; }
+.contactIcon { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgb(213 178 116 / 38%); color: #d5b274; }
 .footerBottom { display: flex; justify-content: space-between; gap: 20px; padding-top: 35px; border-top: 1px solid #ac8c50; font-size: 14px; }
 @media (max-width: 1279px) {
-  .header > div:first-child { height: 88px; }
-  .header > div > a:first-child img { width: 165px; max-height: 62px; }
+  .headerNav { height: 88px; }
+  .headerNav > a:first-child img { width: 165px; max-height: 62px; }
   .footerGrid { gap: 35px; grid-template-columns: 1.3fr .7fr .7fr 1fr; }
+  .contactColumn { grid-column: 1 / -1; }
+  .contactList { grid-template-columns: repeat(4,minmax(0,1fr)); }
 }
 @media (max-width: 899px) {
   .footerGrid { grid-template-columns: repeat(3,1fr); gap: 38px; }
   .brand { grid-column: 1 / -1; }
   .footerLogo { width: 230px; }
   .brand p { max-width: 480px; }
+  .contactList { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 539px) {
-  .header > div:first-child { width: calc(100% - 40px); }
-  .header > div > a:first-child img { width: 150px; max-height: 58px; }
+  .headerNav { width: calc(100% - 40px); }
+  .headerNav > a:first-child img { width: 150px; max-height: 58px; }
+  .topContactInner { display: grid; grid-template-columns: 1fr; gap: 3px; width: calc(100% - 40px); padding: 7px 0 8px; font-size: 11px; }
+  .topContactPhones { justify-content: space-between; gap: 18px; }
+  .topContactPhones a + a::before { left: -9px; }
   .footerContainer { width: calc(100% - 40px); padding: 48px 0 30px; }
   .footerGrid { grid-template-columns: 1fr 1fr; gap: 28px 25px; padding-bottom: 34px; }
-  .footerGrid nav:last-child { grid-column: 1 / -1; }
-  .footerGrid nav:last-child a { display: inline-block; width: 50%; padding-right: 8px; font-size: 14px; }
+  .footerGrid nav:last-of-type { grid-column: 1 / -1; }
+  .footerGrid nav:last-of-type a { display: inline-block; width: 50%; padding-right: 8px; font-size: 14px; }
   .brand p { font-size: 16px; }
+  .contactList { grid-template-columns: 1fr; }
+  .contactItem { font-size: 14px; }
   .footerBottom { flex-direction: column; gap: 13px; font-size: 12px; padding-top: 25px; }
 }
