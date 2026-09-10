@@ -43,7 +43,7 @@ export default function CaseStudiesPage() {
       <section className="border-t border-[var(--line)] py-10">
         <div className="site-container flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-xl text-lg font-semibold text-[var(--navy)]">Turn the reading into a product shortlist.</p>
-          <Link href="/guides" className="button-secondary self-start">Explore buying guides<ArrowRight size={18} aria-hidden="true" /></Link>
+          <Link href="/blog" className="button-secondary self-start">Explore buying guides<ArrowRight size={18} aria-hidden="true" /></Link>
         </div>
       </section>
     </>
