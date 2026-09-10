@@ -41,6 +41,8 @@ export type PublicProduct = {
   categoryHeroImage: string;
   summary: string;
   description: string;
+  seoTitle: string | null;
+  seoDescription: string | null;
   content: string;
   hasRichContent: boolean;
   sourceUrl: string | null;
@@ -93,6 +95,8 @@ function serializeProduct(product: PublicProductRecord): PublicProduct {
     categoryHeroImage: fallbackCategory?.image ?? "/images/home/category-drinkware.webp",
     summary: product.summary,
     description: product.description,
+    seoTitle: product.seoTitle,
+    seoDescription: product.seoDescription,
     content: product.content,
     hasRichContent: hasRenderableStoredContent(product.content),
     sourceUrl: product.sourceUrl,

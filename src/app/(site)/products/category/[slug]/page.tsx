@@ -4,8 +4,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CategoryMenu } from "@/components/site/category-menu";
+import { CategoryBuyingNotes } from "@/components/site/category-buying-notes";
 import { ProductCard } from "@/components/site/product-card";
 import { ProductPagination } from "@/components/product-pagination";
+import { getCategoryBuyingContent } from "@/data/category-buying-content";
 import { getPageNumber, productPageHref } from "@/lib/product-pagination";
 import { getPublicCategoryPage, getPublicCategoryTree } from "@/lib/public-products";
 import { getClustersForCategory } from "@/data/guide-clusters";
@@ -18,9 +20,10 @@ export async function generateMetadata({ params, searchParams }: CategoryPagePro
   const { slug } = await params;
   const data = await getPublicCategoryPage(slug, getPageNumber((await searchParams).page));
   if (!data) return { title: "Category not found", robots: { index: false, follow: false } };
+  const buyingContent = getCategoryBuyingContent(data.category.slug);
   return {
-    title: data.category.label,
-    description: `Browse ${data.category.label} glassware products and related Glarivo collections.`,
+    title: buyingContent?.seoTitle ?? data.category.label,
+    description: buyingContent?.seoDescription ?? `Browse ${data.category.label} glassware products and related Glarivo collections.`,
     alternates: { canonical: productPageHref(`/products/category/${data.category.slug}`, data.pagination.page) },
   };
 }
@@ -34,6 +37,7 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
   if (!data) notFound();
   const { category, breadcrumbs, products, pagination } = data;
   const buyingGuides = getClustersForCategory(category.slug);
+  const buyingContent = getCategoryBuyingContent(category.slug);
 
   return (
     <>
@@ -60,6 +64,7 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
         <CategoryMenu categories={categoryTree} activeSlug={category.slug} />
         <div className="min-w-0">
           {buyingGuides.length > 0 && <nav aria-label="Related buying guides" className="mb-6 rounded-xl border border-[var(--line)] bg-[var(--surface)] p-4"><p className="text-sm font-semibold text-[var(--navy)]">Need help choosing?</p><div className="mt-2 flex flex-wrap gap-3">{buyingGuides.map((guide) => <Link key={guide.slug} href={`/guides/${guide.slug}`} className="text-sm font-bold text-[var(--blue)] underline underline-offset-4">{guide.title} guide →</Link>)}</div></nav>}
+          {buyingContent ? <CategoryBuyingNotes categoryLabel={category.label} content={buyingContent} /> : null}
           <div className="flex flex-col gap-3 border-b border-[var(--line)] pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-[-0.035em] text-[var(--navy)]">{category.label}</h2>

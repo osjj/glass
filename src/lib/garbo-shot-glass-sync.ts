@@ -12,6 +12,7 @@ import {
   type GarboParsedProduct,
 } from "@/lib/garbo-shot-glass";
 import { prisma } from "@/lib/prisma";
+import { CATALOG_REVIEWED_COPY_MARKER, cleanCatalogBody, cleanCatalogLabel, hasSupplierVoice } from "@/lib/catalog-public-copy";
 import { uploadImageToR2, type UploadedR2Image } from "@/lib/r2";
 
 const SYNC_CONCURRENCY = 5;
@@ -545,6 +546,7 @@ async function refreshImportedCandidateFromAuthorizedSource(
       sourceCategorySlug: true,
       sourceCategoryPath: true,
       normalizedPayload: true,
+      reviewNotes: true,
       product: {
         select: {
           id: true,
@@ -589,9 +591,11 @@ async function refreshImportedCandidateFromAuthorizedSource(
   }
 
   const source = normalizedPayload.data;
-  const summary = truncateSourceValue(source.summary || source.name, 500);
-  const description = truncateSourceValue(source.description, 20_000);
+  const preserveReviewedCopy = candidate.reviewNotes?.includes(CATALOG_REVIEWED_COPY_MARKER) ?? false;
+  const summary = truncateSourceValue(hasSupplierVoice(source.summary) ? cleanCatalogLabel(source.name) : source.summary || cleanCatalogLabel(source.name), 500);
+  const description = truncateSourceValue(cleanCatalogBody(source.description), 20_000);
   const features = source.detailBullets
+    .filter((value) => !hasSupplierVoice(value))
     .map((value) => truncateSourceValue(value, 5_000))
     .filter(Boolean)
     .slice(0, 100);
@@ -599,14 +603,14 @@ async function refreshImportedCandidateFromAuthorizedSource(
     ...source.galleryImages.map((sourceUrl, sortOrder) => ({
       role: "GALLERY" as const,
       sourceUrl,
-      alt: `${source.name} - image ${sortOrder + 1}`,
+      alt: `${cleanCatalogLabel(source.name)} - image ${sortOrder + 1}`,
       sectionKey: "gallery",
       sortOrder,
     })),
     ...source.detailImages.map((image, sortOrder) => ({
       role: "DETAIL" as const,
       sourceUrl: image.url,
-      alt: image.alt || `${source.name} - product detail ${sortOrder + 1}`,
+      alt: cleanCatalogLabel(image.alt) || `${cleanCatalogLabel(source.name)} - product detail ${sortOrder + 1}`,
       sectionKey: image.sectionKey,
       sortOrder,
     })),
@@ -625,13 +629,13 @@ async function refreshImportedCandidateFromAuthorizedSource(
     candidate.product.images.every(
       (image) => image.storageKey && image.sha256 && image.rightsStatus === "AUTHORIZED",
     );
-  const textIsCurrent =
+  const textIsCurrent = preserveReviewedCopy || (
     candidate.product.summary === summary &&
     candidate.product.description === description &&
     currentFeatures.length === features.length &&
     currentFeatures.every((value, index) => value === features[index]) &&
     detailsSection?.title === "Product Details" &&
-    detailsSection.body === "";
+    detailsSection.body === "");
   if (mediaIsCurrent && textIsCurrent) return { ok: true, changed: false, mediaFailed: 0 };
 
   try {
@@ -691,7 +695,7 @@ async function refreshImportedCandidateFromAuthorizedSource(
               sourceKey: "garbo_product_details",
             },
           },
-          update: { title: "Product Details", body: "", sortOrder: 0 },
+          update: preserveReviewedCopy ? {} : { title: "Product Details", body: "", sortOrder: 0 },
           create: {
             productId: candidate.product!.id,
             sourceKey: "garbo_product_details",
@@ -728,24 +732,26 @@ async function refreshImportedCandidateFromAuthorizedSource(
             })),
           });
         }
-        await transaction.productFeature.deleteMany({ where: { productId: candidate.product!.id } });
-        if (features.length) {
-          await transaction.productFeature.createMany({
-            data: features.map((value, sortOrder) => ({
-              productId: candidate.product!.id,
-              value,
-              sortOrder,
-            })),
+        if (!preserveReviewedCopy) {
+          await transaction.productFeature.deleteMany({ where: { productId: candidate.product!.id } });
+          if (features.length) {
+            await transaction.productFeature.createMany({
+              data: features.map((value, sortOrder) => ({
+                productId: candidate.product!.id,
+                value,
+                sortOrder,
+              })),
+            });
+          }
+          await transaction.product.update({
+            where: { id: candidate.product!.id },
+            data: {
+              summary,
+              description,
+              detailsHeading: "Details",
+            },
           });
         }
-        await transaction.product.update({
-          where: { id: candidate.product!.id },
-          data: {
-            summary,
-            description,
-            detailsHeading: "Details",
-          },
-        });
       },
       { maxWait: 15_000, timeout: 30_000 },
     );
@@ -795,7 +801,7 @@ async function importCandidate(
   }
 
   const sourceValue = deferredPublish ? deferredValue : reviewedValue;
-  const proposedName = sourceValue(candidate.fields, "name") || normalizedPayload.data.name;
+  const proposedName = cleanCatalogLabel(sourceValue(candidate.fields, "name") || normalizedPayload.data.name);
   const name = deferredPublish ? truncateSourceValue(proposedName, 180) : proposedName;
   if (!name) return { ok: false, error: "missing-name" };
   if (name.length > 180) return { ok: false, error: "invalid-name" };
@@ -813,7 +819,8 @@ async function importCandidate(
     sourceFact("technique"),
     sourceFact("package"),
   ].filter((value): value is string => Boolean(value));
-  const proposedSummary = sourceValue(candidate.fields, "summary") || name;
+  const sourceSummary = sourceValue(candidate.fields, "summary") || name;
+  const proposedSummary = hasSupplierVoice(sourceSummary) ? name : sourceSummary;
   const summary = deferredPublish
     ? truncateSourceValue(
         catalogFacts.length
@@ -832,7 +839,7 @@ async function importCandidate(
         ].filter(Boolean).join(" "),
         20_000,
       )
-    : truncateSourceValue(sourceValue(candidate.fields, "description"), 20_000);
+    : truncateSourceValue(cleanCatalogBody(sourceValue(candidate.fields, "description")), 20_000);
   const itemNumberField = fieldByKey(candidate.fields, "item_no");
   const proposedSku = sourceValue(candidate.fields, "item_no") || null;
   let sku = deferredPublish && itemNumberField?.status === "CONFLICT" ? null : proposedSku;

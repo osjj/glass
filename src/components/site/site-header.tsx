@@ -90,7 +90,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
               <div className="mb-5 flex items-center justify-between border-b border-[var(--line)] pb-4">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--blue)]">Product directory</p>
-                  <p className="mt-1 text-sm text-[var(--ink-muted)]">56 aligned glassware categories</p>
+                  <p className="mt-1 text-sm text-[var(--ink-muted)]">Browse 56 glassware categories</p>
                 </div>
                 <Link href="/products" className="text-sm font-bold text-[var(--blue)] hover:underline">View all products</Link>
               </div>

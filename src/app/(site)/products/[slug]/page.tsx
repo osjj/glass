@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
   const product = await getPublishedProductBySlug(slug);
   if (!product) return {};
   return {
-    title: product.name,
-    description: product.summary,
+    title: product.seoTitle || product.name,
+    description: product.seoDescription || product.summary,
     alternates: { canonical: `/products/${product.slug}` },
   };
 }
@@ -82,7 +82,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,46,76,0.68),rgba(10,47,72,0.2)_47%,rgba(11,42,60,0.48))]" />
         <div className="site-container py-8 text-center [text-shadow:0_2px_4px_rgba(0,0,0,0.34)]">
-          <h1 className="text-3xl font-bold sm:text-5xl">{product.categoryLabel}</h1>
+          <p className="text-3xl font-bold sm:text-5xl">{product.categoryLabel}</p>
           <nav className="mt-4 flex flex-wrap items-center justify-center gap-1 text-xs sm:text-sm" aria-label="Breadcrumb">
             <House className="size-4" aria-hidden="true" />
             <Link href="/">Home</Link>
@@ -121,9 +121,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           <ProductDetailGallery images={gallery} />
 
           <article className="min-w-0 pt-1">
-            <h2 className="border-b border-[#e8e9ea] pb-3 text-[clamp(1.55rem,3vw,2rem)] font-bold leading-[1.35] text-[#075989]">
-              {product.name}
-            </h2>
+              <h1 className="border-b border-[#e8e9ea] pb-3 text-[clamp(1.55rem,3vw,2rem)] font-bold leading-[1.35] text-[#075989]">
+                {product.name}
+              </h1>
             <div className="mt-3 flex gap-2" aria-label="Share product">
               <a href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noreferrer" aria-label="Share on Facebook" className="grid size-7 place-items-center bg-black text-white"><Facebook className="size-4" /></a>
               <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`} target="_blank" rel="noreferrer" aria-label="Share on X" className="grid size-7 place-items-center bg-black text-white"><Twitter className="size-4" /></a>
