@@ -93,12 +93,8 @@ function firstField(fields: Map<string, string>, keys: string[]) {
   return null;
 }
 
-function hasMeasurementUnit(value: string) {
-  return /(?:^|\d\s*)(?:ml|cl|l|oz|mm|cm|m|g|kg|lb|inch|inches|pcs?|ctn)\b|["″]/i.test(value);
-}
-
 function measuredValue(value: string) {
-  return hasMeasurementUnit(value) ? value : `${value} (unit not stated)`;
+  return value;
 }
 
 function factDetails(fields: Map<string, string>) {
