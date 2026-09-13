@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, List, X } from "@phosphor-icons/react";
+import { ArrowUpRight, BookOpen, List, X } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { Logo } from "./logo";
 import { InquiryButton } from "./inquiry-contact";
 import styles from "./home-shell.module.css";
 import { DirectoryContent, ProductDirectory, type HeaderCategory } from "./product-directory";
+import { GLARIVO_CATALOG_URL } from "@/lib/catalog-download";
 
 const navigation = [
   { href: "/", label: "Home" },
@@ -91,16 +92,28 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
           })}
         </nav>
 
-        <InquiryButton
-          className={`${styles.quoteButton} hidden min-h-11 items-center gap-2 rounded-lg px-5 text-sm font-bold transition hover:-translate-y-0.5 xl:inline-flex ${
-            overlay
-              ? "bg-[var(--navy)] text-white shadow-[0_10px_28px_rgba(4,14,32,0.22)] hover:bg-[var(--navy-soft)]"
-              : "bg-[var(--navy)] text-white hover:bg-[var(--navy-soft)]"
-          }`}
-        >
-          Request a quote
-          <ArrowUpRight size={17} weight="bold" aria-hidden="true" />
-        </InquiryButton>
+        <div className="hidden shrink-0 items-center gap-3 xl:flex">
+          <a
+            href={GLARIVO_CATALOG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open Glarivo catalog PDF in a new tab"
+            className={`inline-flex min-h-11 items-center gap-2 whitespace-nowrap border px-3.5 py-3 text-sm font-medium transition ${overlay ? "border-white/55 text-white hover:bg-white/10" : "border-[var(--navy)]/30 text-[var(--navy)] hover:bg-[var(--navy)]/5"}`}
+          >
+            <BookOpen size={18} aria-hidden="true" />
+            Catalog
+          </a>
+          <InquiryButton
+            className={`${styles.quoteButton} inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-lg px-4 text-sm font-bold transition hover:-translate-y-0.5 ${
+              overlay
+                ? "bg-[var(--navy)] text-white shadow-[0_10px_28px_rgba(4,14,32,0.22)] hover:bg-[var(--navy-soft)]"
+                : "bg-[var(--navy)] text-white hover:bg-[var(--navy-soft)]"
+            }`}
+          >
+            Request a quote
+            <ArrowUpRight size={17} weight="bold" aria-hidden="true" />
+          </InquiryButton>
+        </div>
 
         <button
           type="button"
@@ -131,6 +144,16 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
                 {item.label}
               </Link>
             ))}
+            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[var(--line)] pt-4">
+              <a href={GLARIVO_CATALOG_URL} target="_blank" rel="noopener noreferrer" aria-label="Open Glarivo catalog PDF in a new tab" onClick={() => setOpen(false)} className="inline-flex min-h-11 items-center gap-2 border border-[var(--navy)]/30 px-3 text-sm font-medium">
+                <BookOpen size={18} aria-hidden="true" />
+                Catalog
+              </a>
+              <InquiryButton className="inline-flex min-h-11 items-center gap-2 bg-[var(--navy)] px-3 text-sm font-semibold text-white">
+                Request a quote
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </InquiryButton>
+            </div>
           </div>
         </nav>
       ) : null}

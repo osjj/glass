@@ -20,11 +20,11 @@ export function InquiryProvider({ children }: { children: ReactNode }) {
   function open(product?: InquiryContext) { setRequest({ id: crypto.randomUUID(), product }); }
   return <InquiryContextValue.Provider value={open}>
     {children}
-    {pathname === "/" && <aside className={styles.rail} aria-label="Contact sales">
+    <aside className={styles.rail} aria-label="Contact sales">
       <a href={`mailto:${SALES_EMAIL}`} title={SALES_EMAIL}><EnvelopeSimple size={25} weight="regular" aria-hidden="true" /><span>Email</span></a>
       <a className={styles.whatsapp} href={SALES_WHATSAPP} target="_blank" rel="noopener noreferrer" title="WhatsApp +86 18825913441"><WhatsappLogo size={27} weight="regular" aria-hidden="true" /><span>WhatsApp</span></a>
       <button className={styles.inquire} type="button" onClick={() => open()} aria-haspopup="dialog"><ChatTeardropText size={25} weight="regular" aria-hidden="true" /><span>Inquire</span></button>
-    </aside>}
+    </aside>
     {request && <InquiryModal key={request.id} submissionId={request.id} product={request.product} sourcePath={pathname} onClose={() => setRequest(null)} />}
   </InquiryContextValue.Provider>;
 }
