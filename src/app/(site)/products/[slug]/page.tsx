@@ -17,6 +17,8 @@ import { ProductDetailGallery } from "@/components/site/product-detail-gallery";
 import { InquiryButton } from "@/components/site/inquiry-contact";
 import { getPublicCategories, getPublishedProductBySlug } from "@/lib/public-products";
 import { getSiteUrl } from "@/lib/site-url";
+import styles from "@/components/site/editorial-pages.module.css";
+import productStyles from "@/components/site/product-pages.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -35,9 +37,9 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-center text-[clamp(1.55rem,3vw,2rem)] font-semibold leading-tight text-[#075989]">
+    <h2 className={productStyles.sectionTitle}>
       {children}
-      <span className="mx-auto mt-3 block h-0.5 w-12 bg-[#075989]" aria-hidden="true" />
+      <span className={styles.rule} aria-hidden="true" />
     </h2>
   );
 }
@@ -70,33 +72,36 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const shareText = encodeURIComponent(product.name);
 
   return (
-    <>
-      <section className="relative isolate grid min-h-44 place-items-center overflow-hidden text-white sm:min-h-[11.25rem]">
+    <div className={`${styles.page} ${productStyles.detail}`}>
+      <section data-editorial-hero className={`${styles.hero} ${productStyles.detailHero}`}>
         <Image
           src={product.categoryHeroImage}
           alt=""
           fill
-          priority
+          preload
           sizes="100vw"
-          className="-z-20 object-cover"
+          className={styles.heroImage}
         />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,46,76,0.68),rgba(10,47,72,0.2)_47%,rgba(11,42,60,0.48))]" />
-        <div className="site-container py-8 text-center [text-shadow:0_2px_4px_rgba(0,0,0,0.34)]">
-          <p className="text-3xl font-bold sm:text-5xl">{product.categoryLabel}</p>
-          <nav className="mt-4 flex flex-wrap items-center justify-center gap-1 text-xs sm:text-sm" aria-label="Breadcrumb">
+        <div className={styles.heroShade} />
+        <div className={`${styles.container} ${productStyles.detailHeroContent}`}>
+          <p className={styles.kicker}>Glarivo collection</p>
+          <p className={productStyles.collectionTitle}>{product.categoryLabel}</p>
+          <nav className={productStyles.breadcrumb} aria-label="Breadcrumb">
             <House className="size-4" aria-hidden="true" />
             <Link href="/">Home</Link>
             <ChevronRight className="size-4" aria-hidden="true" />
             <Link href="/products">Products</Link>
             <ChevronRight className="size-4" aria-hidden="true" />
-            <span aria-current="page">{product.categoryLabel}</span>
+            <Link href={`/products/category/${product.category}`}>{product.categoryLabel}</Link>
+            <ChevronRight className="size-4" aria-hidden="true" />
+            <span aria-current="page">{product.name}</span>
           </nav>
         </div>
       </section>
 
-      <section className="mx-auto grid w-[calc(100%-2rem)] max-w-[1218px] gap-8 py-8 sm:w-[calc(100%-3rem)] sm:py-12 lg:grid-cols-[16.625rem_minmax(0,1fr)]">
-        <aside className="hidden self-start border border-[#edf0f2] bg-white shadow-[0_10px_28px_rgba(24,48,66,0.08)] lg:block">
-          <h2 className="bg-[#075989] px-4 py-4 text-xl font-medium uppercase text-white">Product Categories</h2>
+      <section className={`${styles.container} ${styles.catalog} ${productStyles.detailCatalog}`}>
+        <aside className={productStyles.categories}>
+          <h2>Product Categories</h2>
           <nav className="max-h-[calc(100vh-12rem)] overflow-y-auto" aria-label="Product categories">
             {categoryLinks.map((category) => {
               const active = category.slug === product.category;
@@ -117,20 +122,21 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </nav>
         </aside>
 
-        <div className="grid min-w-0 gap-7 xl:grid-cols-[minmax(24rem,1.08fr)_minmax(20rem,0.92fr)] xl:gap-14">
-          <ProductDetailGallery images={gallery} />
+        <div className={productStyles.productIntro}>
+          <div className={productStyles.gallery}><ProductDetailGallery images={gallery} /></div>
 
-          <article className="min-w-0 pt-1">
-              <h1 className="border-b border-[#e8e9ea] pb-3 text-[clamp(1.55rem,3vw,2rem)] font-bold leading-[1.35] text-[#075989]">
+          <article className={productStyles.productInfo}>
+              <p className={styles.kicker}>{product.categoryLabel}</p>
+              <h1>
                 {product.name}
               </h1>
-            <div className="mt-3 flex gap-2" aria-label="Share product">
+            <div className={productStyles.share} aria-label="Share product">
               <a href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noreferrer" aria-label="Share on Facebook" className="grid size-7 place-items-center bg-black text-white"><Facebook className="size-4" /></a>
               <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`} target="_blank" rel="noreferrer" aria-label="Share on X" className="grid size-7 place-items-center bg-black text-white"><Twitter className="size-4" /></a>
               <a href={`mailto:?subject=${shareText}&body=${shareUrl}`} aria-label="Share by email" className="grid size-7 place-items-center bg-black text-white"><Share2 className="size-4" /></a>
             </div>
 
-            <dl className="mt-4 space-y-4 text-sm text-[#4e555b]">
+            <dl className={productStyles.overview}>
               {product.sku ? (
                 <div className="grid grid-cols-[max-content_1fr] gap-1">
                   <dt className="flex items-start gap-1"><ChevronRight className="mt-0.5 size-4 fill-[#1e489f] text-[#1e489f]" />Item No.:</dt>
@@ -145,28 +151,28 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               ))}
             </dl>
 
-            <div className="mt-7 grid grid-cols-2 gap-3 max-sm:sticky max-sm:bottom-0 max-sm:z-20 max-sm:-mx-4 max-sm:gap-0 max-sm:shadow-[0_-7px_20px_rgba(12,42,64,0.12)]">
-              <InquiryButton product={{ name: product.name, sku: product.sku }} className="flex min-h-12 items-center justify-center gap-2 bg-[#075989] px-4 text-sm font-bold uppercase text-white hover:bg-[#06496f]">
+            <div className={productStyles.actions}>
+              <InquiryButton product={{ name: product.name, sku: product.sku }} className={styles.button}>
                 <MessageSquareText className="size-5" /> Inquire now
               </InquiryButton>
-              <Link href="/products" className="flex min-h-12 items-center justify-center gap-2 border border-[#075989] bg-white px-4 text-sm font-bold uppercase text-[#075989]">
-                Next product <ArrowRight className="size-4" />
+              <Link href="/products" className={productStyles.outlineButton}>
+                All products <ArrowRight className="size-4" />
               </Link>
             </div>
           </article>
         </div>
       </section>
 
-      <section className="mx-auto grid w-[calc(100%-2rem)] max-w-[1218px] gap-8 pb-20 sm:w-[calc(100%-3rem)] lg:grid-cols-[16.625rem_minmax(0,1fr)]">
-        <aside className="hidden self-start bg-[linear-gradient(150deg,#0f345c,#075989)] p-6 text-white shadow-[0_16px_28px_rgba(15,52,92,0.15)] lg:sticky lg:top-28 lg:block" id="inquiry">
-          <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#bcd2df]">Need a custom glass?</p>
-          <h2 className="mt-3 text-2xl font-bold leading-tight">Talk to our sourcing team</h2>
-          <InquiryButton product={{ name: product.name, sku: product.sku }} className="mt-6 flex min-h-11 w-full items-center justify-center gap-2 bg-[var(--lime)] px-4 text-sm font-extrabold uppercase text-[var(--navy)]">
+      <section className={`${styles.container} ${productStyles.detailsLayout}`}>
+        <aside className={productStyles.inquiryCard} id="inquiry">
+          <p className={styles.kicker}>Need a custom glass?</p>
+          <h2>Talk to our sourcing team</h2>
+          <InquiryButton product={{ name: product.name, sku: product.sku }} className={productStyles.outlineButton}>
             Send inquiry <ArrowRight className="size-4" />
           </InquiryButton>
         </aside>
 
-        <article className="min-w-0">
+        <article className={productStyles.detailsContent}>
           {product.features.length || product.description ? (
             <section className="mb-10">
               <SectionTitle>{product.detailsHeading}</SectionTitle>
@@ -188,8 +194,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           {product.specifications.length ? (
             <section className="mb-10">
               <SectionTitle>{product.specificationHeading}</SectionTitle>
-              <div className="mt-6 overflow-x-auto border border-[#d9dddf]">
-                <table className="w-full min-w-[34rem] border-collapse text-left text-sm">
+              <div className={productStyles.specifications}>
+                <table>
                   <tbody>
                     {product.specifications.map((specification) => (
                       <tr key={`${specification.label}-${specification.value}`} className="border-b border-[#d9dddf] last:border-b-0">
@@ -233,6 +239,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           ) : null}
         </article>
       </section>
-    </>
+    </div>
   );
 }

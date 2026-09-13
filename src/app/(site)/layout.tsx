@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { InquiryProvider } from "@/components/site/inquiry-contact";
+import { GoogleAnalytics } from "@/components/site/google-analytics";
 import { getPublicCategoryTree } from "@/lib/public-products";
 
 type HeaderCategories = Awaited<ReturnType<typeof getPublicCategoryTree>>;
@@ -37,6 +38,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       }))} />
       <main className="site-main flex-1 pt-[88px]">{children}</main>
       <SiteFooter />
+      <GoogleAnalytics />
     </div></InquiryProvider>
   );
 }

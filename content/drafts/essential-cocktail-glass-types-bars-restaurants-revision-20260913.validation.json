@@ -1,0 +1,32 @@
+{
+  "verifiedDate": "2026-09-13",
+  "draftId": "cmtzj71vu0000icumgyldcjxs",
+  "databaseReadbackMatchesPayload": true,
+  "status": "DRAFT",
+  "publishedAt": null,
+  "featured": false,
+  "publiclyEligible": 0,
+  "blocks": 68,
+  "bodyImages": 3,
+  "coverImages": 1,
+  "newR2ImagesVerified": 4,
+  "signedKnownObjectGet": 200,
+  "r2Verification": "Signed HEAD and public GET; image/webp, dimensions and byte lengths verified",
+  "publicDraftStatus": 404,
+  "originalArticleStatus": 200,
+  "originalDatabasePostUnchanged": true,
+  "oldContactPathStatus": 404,
+  "oldContactLinkRemoved": true,
+  "topicPageStatus": 200,
+  "shotCategoryStatus": 200,
+  "preview": {
+    "kind": "standalone local HTML, not authenticated admin editor",
+    "desktopViewport": [1365, 1000],
+    "mobileViewport": [390, 844],
+    "desktopScreenshot": "output/playwright/cocktail-review-desktop.png",
+    "mobileScreenshot": "output/playwright/cocktail-review-mobile.png",
+    "screenshotsVisuallyInspected": true,
+    "unrelatedConsoleError": "Preview-only favicon.ico 404"
+  },
+  "deploymentPerformed": false
+}

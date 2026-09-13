@@ -16,7 +16,8 @@ const links = [
 
 export function SiteFooter() {
   const pathname = usePathname();
-  if (pathname === "/" || pathname === "/about") return <HomeFooter />;
+  if (["/", "/about", "/products", "/case-studies", "/blog"].includes(pathname)
+    || ["/products/", "/case-studies/", "/guides/", "/blog/"].some((prefix) => pathname.startsWith(prefix))) return <HomeFooter />;
   return (
     <footer className="bg-[var(--navy)] text-white">
       <div className="site-container py-14 sm:py-20">

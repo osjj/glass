@@ -1,0 +1,42 @@
+[
+  {
+    "name": "hero",
+    "prompt": "Use case: product-mockup. Create a photorealistic editorial website hero for an English wholesale buying guide to six cocktail glass shapes. Wide landscape 16:9 composition. Exactly SIX empty colorless clear glasses, completely visible with separate non-overlapping silhouettes, aligned on a warm pale limestone bar top. From left to right: short broad straight rocks tumbler, tall slim straight highball tumbler, shallow wide rounded coupe on slender stem, smaller upright tulip-bowl Nick and Nora on slender stem, angular classic V-bowl martini on slender stem, tiny short shot glass with thick base. Correct realistic relative scale: shot substantially smaller than rocks, highball taller than rocks, Nick and Nora bowl narrower and deeper than coupe, martini visibly angular. Refined softly blurred navy hotel bar background, soft daylight and subtle amber reflections, crisp natural glass edges. All glasses empty so silhouettes are clear. Plenty of breathing room around outer glasses and above stems; no cropping. No lettering, logos, watermarks, bottles, people, hands, packaging, measuring marks or extra glasses. Illustrative generic glassware, not a representation of any actual brand product.",
+    "source": "C:\\Users\\osjj\\.codex\\generated_images\\01a099c4-64d5-7501-9446-9417f7e64cd8\\exec-8435a0fa-e396-4fdb-8c4b-88735eeb550c.png",
+    "localPath": "public/images/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/hero.webp",
+    "sha256": "ae1b775eee12881b9e5241f71a29630669886987ca35a46805e961b8ffd40bd9",
+    "width": 1600,
+    "height": 900,
+    "bytes": 117016
+  },
+  {
+    "name": "tumblers",
+    "prompt": "Use case: product-mockup. Photorealistic editorial photo for a wholesale cocktail glass selection guide. Horizontal 4:3. Exactly two glasses fully visible side by side with ample separation on warm pale limestone: left a short broad clear heavy-base rocks tumbler with a single large ice cube and a small amber drink below mid-bowl, right a tall slim clear straight-sided highball with clear ice and transparent sparkling drink with one narrow citrus peel. Both leave visible headspace. Clear unbranded glass with physically realistic refraction and proportions. Soft daylight, amber rim highlights, softly blurred navy upscale restaurant bar. Camera close at glass height, complete bases and rims visible, no hands, people, words, logos, watermarks, bottles, extra glassware or measuring marks.",
+    "source": "C:\\Users\\osjj\\.codex\\generated_images\\01a099c4-64d5-7501-9446-9417f7e64cd8\\exec-3300d85b-a55f-46a9-92f1-14e066bea357.png",
+    "localPath": "public/images/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/tumblers.webp",
+    "sha256": "57802aa83e2269469d4d4d9fbda1c1945d7afa46d383496d60cc9911abdfc608",
+    "width": 1200,
+    "height": 900,
+    "bytes": 132876
+  },
+  {
+    "name": "stemware",
+    "prompt": "Use case: product-mockup. Photorealistic editorial glassware comparison photo for hospitality procurement. Landscape 4:3. Exactly three EMPTY colorless stemmed glasses in a separated lineup on warm pale limestone: LEFT a wide SHALLOW rounded coupe bowl on a fine stem; CENTER a compact upright rounded tulip Nick and Nora bowl that is clearly narrower and deeper than the coupe, on a fine stem; RIGHT a classic sharp angular V-shaped martini bowl on a fine stem. Show all rims, stems and feet, never overlap glasses, realistic symmetry and relative proportions. Soft daylight, amber rim highlights, softly blurred navy restaurant bar background, crisp clear glass edges. No drinks, text, captions, logo, watermark, people, hands, bottles or extra objects.",
+    "source": "C:\\Users\\osjj\\.codex\\generated_images\\01a099c4-64d5-7501-9446-9417f7e64cd8\\exec-95e6ddba-b11a-44bb-9a6b-194170655ab3.png",
+    "localPath": "public/images/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/stemware.webp",
+    "sha256": "180377bf0194898b80432f721176a66ba8eeef79f74b4c206f47ee9cdd9d79f6",
+    "width": 1200,
+    "height": 900,
+    "bytes": 102004
+  },
+  {
+    "name": "shot-service",
+    "prompt": "Use case: photorealistic-natural. Editorial close photograph for a hospitality wholesale guide showing tasting service fit. Landscape 4:3. A simple rectangular dark walnut tasting board has exactly three round shallow recesses holding exactly three identical small EMPTY colorless thick-base shot glasses in a row. The glasses have clear cylindrical walls, true small shot proportions, and sit securely on the board. Full board and all glass rims visible with generous room around them. Warm pale limestone bar counter, softly blurred deep navy hotel bar background, diffuse natural light with subtle amber rim highlights, physically plausible clear glass. No liquid, markings, measurement scales, lettering, logo, watermark, bottles, people, hands or other glassware.",
+    "source": "C:\\Users\\osjj\\.codex\\generated_images\\01a099c4-64d5-7501-9446-9417f7e64cd8\\exec-c58d19be-00ed-4748-8b93-e6660cf4d712.png",
+    "localPath": "public/images/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/shot-service.webp",
+    "sha256": "20aed43f8a02601a763aba43c06648250802c96dc1b60bdfe8688b8ce7f9137b",
+    "width": 1200,
+    "height": 900,
+    "bytes": 88358
+  }
+]

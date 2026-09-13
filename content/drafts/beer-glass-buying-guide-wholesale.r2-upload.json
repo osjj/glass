@@ -1,0 +1,54 @@
+{
+  "bucket": "glarivoglass-media",
+  "updatedAt": "2026-09-13T07:20:03.407Z",
+  "records": [
+    {
+      "name": "hero.webp",
+      "key": "site/blog/beer-glass-buying-guide-wholesale/hero-afe52470ace1.webp",
+      "url": "https://media.glarivoglass.com/site/blog/beer-glass-buying-guide-wholesale/hero-afe52470ace1.webp",
+      "width": 1600,
+      "height": 900,
+      "bytes": 194696,
+      "sha256": "afe52470ace103388f07c775c048a3fb6b931f24c395b0646532d134736fa15f",
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "name": "pour-and-foam.webp",
+      "key": "site/blog/beer-glass-buying-guide-wholesale/pour-and-foam-cfc7c011a50d.webp",
+      "url": "https://media.glarivoglass.com/site/blog/beer-glass-buying-guide-wholesale/pour-and-foam-cfc7c011a50d.webp",
+      "width": 1200,
+      "height": 900,
+      "bytes": 111920,
+      "sha256": "cfc7c011a50d23beaea740a36c7f60d05d61b0029bf181c779f4f8fe546f12ee",
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "name": "logo-samples.webp",
+      "key": "site/blog/beer-glass-buying-guide-wholesale/logo-samples-49157bfdaa8f.webp",
+      "url": "https://media.glarivoglass.com/site/blog/beer-glass-buying-guide-wholesale/logo-samples-49157bfdaa8f.webp",
+      "width": 1200,
+      "height": 900,
+      "bytes": 127228,
+      "sha256": "49157bfdaa8f3f23d60a6ff05c84d96fedfb134b87111caf631c1df3cdb21427",
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "name": "protective-packing.webp",
+      "key": "site/blog/beer-glass-buying-guide-wholesale/protective-packing-5f4a8f2ea5bf.webp",
+      "url": "https://media.glarivoglass.com/site/blog/beer-glass-buying-guide-wholesale/protective-packing-5f4a8f2ea5bf.webp",
+      "width": 1200,
+      "height": 900,
+      "bytes": 145520,
+      "sha256": "5f4a8f2ea5bfb0021ba16e697d3b247f8efc10fd2bb686537a3781ea85bdb8f3",
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "bucket": "glarivoglass-media",
+  "updatedAt": "2026-09-13T06:46:55.851Z",
+  "records": [
+    {
+      "name": "hero.webp",
+      "key": "site/blog/mason-jar-glass-storage-buying-guide/hero-217e284ff358.webp",
+      "url": "https://media.glarivoglass.com/site/blog/mason-jar-glass-storage-buying-guide/hero-217e284ff358.webp",
+      "sha256": "217e284ff358f75fb2be0684e994234a5a4d1fa28a6f234350a05f0771cd8ad6",
+      "bytes": 113404,
+      "width": 1600,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "name": "two-piece-lid.webp",
+      "key": "site/blog/mason-jar-glass-storage-buying-guide/two-piece-lid-947588c7f6e6.webp",
+      "url": "https://media.glarivoglass.com/site/blog/mason-jar-glass-storage-buying-guide/two-piece-lid-947588c7f6e6.webp",
+      "sha256": "947588c7f6e60c21e1d72d7030875daec4308916243984b6c2599895298c16b1",
+      "bytes": 133202,
+      "width": 1200,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "name": "fill-level.webp",
+      "key": "site/blog/mason-jar-glass-storage-buying-guide/fill-level-141da6762678.webp",
+      "url": "https://media.glarivoglass.com/site/blog/mason-jar-glass-storage-buying-guide/fill-level-141da6762678.webp",
+      "sha256": "141da67626789000b99adce21a8ee7e29751ef975340566f26d56fdc52681623",
+      "bytes": 97266,
+      "width": 1200,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "name": "jar-packing.webp",
+      "key": "site/blog/mason-jar-glass-storage-buying-guide/jar-packing-d1844aa86cbd.webp",
+      "url": "https://media.glarivoglass.com/site/blog/mason-jar-glass-storage-buying-guide/jar-packing-d1844aa86cbd.webp",
+      "sha256": "d1844aa86cbdfcca7be2151e9f1e38e0fb0759156c109078489f370ea74f6d4c",
+      "bytes": 186334,
+      "width": 1200,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    }
+  ]
+}

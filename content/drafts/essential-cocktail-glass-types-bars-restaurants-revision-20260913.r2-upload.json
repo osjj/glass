@@ -1,0 +1,54 @@
+[
+  {
+    "key": "site/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/hero-ae1b775eee12.webp",
+    "url": "https://media.glarivoglass.com/site/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/hero-ae1b775eee12.webp",
+    "width": 1600,
+    "height": 900,
+    "size": 102748,
+    "contentType": "image/webp",
+    "name": "hero",
+    "sourceSha256": "ae1b775eee12881b9e5241f71a29630669886987ca35a46805e961b8ffd40bd9",
+    "publicStatus": 200,
+    "verifiedSha256": "70b4e2bd31a4ed14757ab7db62cffd43c609e2c33c8d7c101aff14f695ad1ce1",
+    "verifiedAt": "2026-09-13T08:06:13.315Z"
+  },
+  {
+    "key": "site/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/tumblers-57802aa83e22.webp",
+    "url": "https://media.glarivoglass.com/site/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/tumblers-57802aa83e22.webp",
+    "width": 1200,
+    "height": 900,
+    "size": 117626,
+    "contentType": "image/webp",
+    "name": "tumblers",
+    "sourceSha256": "57802aa83e2269469d4d4d9fbda1c1945d7afa46d383496d60cc9911abdfc608",
+    "publicStatus": 200,
+    "verifiedSha256": "752a31df613f22dbbfbfa603e7a5211343cbbff6d212a34774ddaf8a43922d18",
+    "verifiedAt": "2026-09-13T08:06:15.724Z"
+  },
+  {
+    "key": "site/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/stemware-180377bf0194.webp",
+    "url": "https://media.glarivoglass.com/site/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/stemware-180377bf0194.webp",
+    "width": 1200,
+    "height": 900,
+    "size": 90582,
+    "contentType": "image/webp",
+    "name": "stemware",
+    "sourceSha256": "180377bf0194898b80432f721176a66ba8eeef79f74b4c206f47ee9cdd9d79f6",
+    "publicStatus": 200,
+    "verifiedSha256": "6a683763745e0715c77cc42b2b45602038c966c4e2cc3ef3b9c6e23d9f647bfd",
+    "verifiedAt": "2026-09-13T08:06:17.409Z"
+  },
+  {
+    "key": "site/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/shot-service-20aed43f8a02.webp",
+    "url": "https://media.glarivoglass.com/site/blog/essential-cocktail-glass-types-bars-restaurants-revision-20260913/shot-service-20aed43f8a02.webp",
+    "width": 1200,
+    "height": 900,
+    "size": 74234,
+    "contentType": "image/webp",
+    "name": "shot-service",
+    "sourceSha256": "20aed43f8a02601a763aba43c06648250802c96dc1b60bdfe8688b8ce7f9137b",
+    "publicStatus": 200,
+    "verifiedSha256": "b3a967b4b90a36a0ecac816b30000bc3d3808d69ec496571d28ce0bd2930b478",
+    "verifiedAt": "2026-09-13T08:06:19.547Z"
+  }
+]
