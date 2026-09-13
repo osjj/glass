@@ -1,0 +1,32 @@
+[
+  {
+    "name": "hero",
+    "source": "exec-8176c948-8ce6-462f-b94d-c5a8850d673f.png",
+    "width": 1600,
+    "height": 900,
+    "localPath": "public/images/blog/glassware-food-contact-safety-fda-lfgb-prop-65/hero.webp",
+    "sha256": "1ce3d15f8a0763661d0c0c365e5a5548f73097b26806240c11f68d72184a1ca9",
+    "bytes": 112026,
+    "key": "site/blog/glassware-food-contact-safety-fda-lfgb-prop-65/hero-1ce3d15f8a07.webp"
+  },
+  {
+    "name": "components",
+    "source": "exec-c1512f3f-b814-422a-91c4-6b67e256254a.png",
+    "width": 1200,
+    "height": 900,
+    "localPath": "public/images/blog/glassware-food-contact-safety-fda-lfgb-prop-65/components.webp",
+    "sha256": "c1c73d8078e0326cd8e0b7d3a6276e5c19922bb3204b16dea04f0ed6f8320348",
+    "bytes": 126420,
+    "key": "site/blog/glassware-food-contact-safety-fda-lfgb-prop-65/components-c1c73d8078e0.webp"
+  },
+  {
+    "name": "records",
+    "source": "exec-ca61c6c9-bbcb-4a78-8c18-4c7f06ee8ec7.png",
+    "width": 1200,
+    "height": 900,
+    "localPath": "public/images/blog/glassware-food-contact-safety-fda-lfgb-prop-65/records.webp",
+    "sha256": "927249e9a8f479b6ad3d3902bc48d26f6bc40dcf3b1d798bc224df8951133986",
+    "bytes": 136070,
+    "key": "site/blog/glassware-food-contact-safety-fda-lfgb-prop-65/records-927249e9a8f4.webp"
+  }
+]
