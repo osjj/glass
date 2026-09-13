@@ -98,10 +98,11 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Open Glarivo catalog PDF in a new tab"
-            className={`inline-flex min-h-11 items-center gap-2 whitespace-nowrap border px-3.5 py-3 text-sm font-medium transition ${overlay ? "border-white/55 text-white hover:bg-white/10" : "border-[var(--navy)]/30 text-[var(--navy)] hover:bg-[var(--navy)]/5"}`}
+            className={`group inline-flex min-h-11 items-center gap-2 whitespace-nowrap px-1 py-3 text-sm font-medium outline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-current ${overlay ? "text-white/90 hover:text-white" : "text-[var(--navy)]/80 hover:text-[var(--navy)]"}`}
           >
             <BookOpen size={18} aria-hidden="true" />
-            Catalog
+            <span className="underline-offset-4 group-hover:underline">View Catalog</span>
+            <ArrowUpRight size={15} aria-hidden="true" />
           </a>
           <InquiryButton
             className={`${styles.quoteButton} inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-lg px-4 text-sm font-bold transition hover:-translate-y-0.5 ${
@@ -145,9 +146,10 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
               </Link>
             ))}
             <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[var(--line)] pt-4">
-              <a href={GLARIVO_CATALOG_URL} target="_blank" rel="noopener noreferrer" aria-label="Open Glarivo catalog PDF in a new tab" onClick={() => setOpen(false)} className="inline-flex min-h-11 items-center gap-2 border border-[var(--navy)]/30 px-3 text-sm font-medium">
+              <a href={GLARIVO_CATALOG_URL} target="_blank" rel="noopener noreferrer" aria-label="Open Glarivo catalog PDF in a new tab" onClick={() => setOpen(false)} className="group inline-flex min-h-11 items-center gap-2 px-1 py-3 text-sm font-medium text-[var(--navy)] outline-offset-4 focus-visible:outline-2 focus-visible:outline-current">
                 <BookOpen size={18} aria-hidden="true" />
-                Catalog
+                <span className="underline-offset-4 group-hover:underline">View Catalog</span>
+                <ArrowUpRight size={15} aria-hidden="true" />
               </a>
               <InquiryButton className="inline-flex min-h-11 items-center gap-2 bg-[var(--navy)] px-3 text-sm font-semibold text-white">
                 Request a quote
