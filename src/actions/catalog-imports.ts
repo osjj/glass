@@ -15,6 +15,7 @@ import {
   parseGarboCategorySource,
   type GarboCategorySource,
 } from "@/lib/garbo-shot-glass";
+import { discoverSunwinProductUrls, parseSunwinCategorySource } from "@/lib/sunwin";
 import { prisma } from "@/lib/prisma";
 
 const idSchema = z.string().trim().min(1).max(100);
@@ -22,6 +23,7 @@ const idSchema = z.string().trim().min(1).max(100);
 const categoryImportSchema = z.object({
   sourceCategoryId: idSchema,
   categoryId: idSchema,
+  mode: z.enum(["draft", "publish"]).default("draft"),
   limit: z.enum(["5", "10", "25", "50", "all"]).default("25"),
 });
 
@@ -53,30 +55,34 @@ function categoryInput(formData: FormData) {
     sourceCategoryId: formData.get("sourceCategoryId"),
     categoryId: formData.get("categoryId"),
     limit: formData.get("limit") || "25",
+    mode: formData.get("mode") || "draft",
   });
 }
 
 function importQueryBase(sourceCategoryId?: string, categoryId?: string, sourceUrl?: string) {
   const query = new URLSearchParams();
   if (sourceCategoryId) query.set("sourceCategoryId", sourceCategoryId);
-  if (sourceUrl) query.set("sourceUrl", sourceUrl);
+  if (sourceUrl) {
+    query.set("sourceUrl", sourceUrl);
+    query.set("provider", new URL(sourceUrl).hostname === "www.sunwin2001.com" ? "SUNWIN" : "GARBO");
+  }
   if (categoryId) query.set("categoryId", categoryId);
   return query;
 }
 
-async function resolveGarboSourceCategory(sourceCategoryId: string) {
+async function resolveCatalogSourceCategory(sourceCategoryId: string) {
   const sourceCategory = await prisma.externalSourceCategory.findFirst({
     where: {
       id: sourceCategoryId,
-      provider: GARBO_PROVIDER,
+      provider: { in: ["GARBO", "SUNWIN"] },
       isActive: true,
       isImportable: true,
     },
-    select: { id: true, sourceName: true, sourceUrl: true },
+    select: { id: true, provider: true, sourceName: true, sourceUrl: true },
   });
   if (!sourceCategory) return null;
   try {
-    return { ...sourceCategory, source: parseGarboCategorySource(sourceCategory.sourceUrl) };
+    return { ...sourceCategory, source: sourceCategory.provider === "SUNWIN" ? parseSunwinCategorySource(sourceCategory.sourceUrl) : parseGarboCategorySource(sourceCategory.sourceUrl) };
   } catch {
     return null;
   }
@@ -90,7 +96,7 @@ async function validateImportTarget(source: GarboCategorySource, categoryId: str
     }),
     prisma.externalCategoryMapping.findUnique({
       where: {
-        provider_sourcePath: { provider: GARBO_PROVIDER, sourcePath: source.path },
+        provider_sourcePath: { provider: source.provider ?? GARBO_PROVIDER, sourcePath: source.path },
       },
       select: { categoryId: true, category: { select: { name: true } } },
     }),
@@ -117,7 +123,7 @@ export async function previewGarboCategoryImport(formData: FormData): Promise<vo
     redirect(`/admin/imports?${query.toString()}`);
   }
 
-  const sourceRecord = await resolveGarboSourceCategory(input.data.sourceCategoryId);
+  const sourceRecord = await resolveCatalogSourceCategory(input.data.sourceCategoryId);
   if (!sourceRecord) {
     const query = importQueryBase(input.data.sourceCategoryId, input.data.categoryId);
     query.set("error", "invalid-source");
@@ -137,7 +143,9 @@ export async function previewGarboCategoryImport(formData: FormData): Promise<vo
 
   let discovery: Awaited<ReturnType<typeof discoverGarboProductUrls>>;
   try {
-    discovery = await discoverGarboProductUrls(source);
+    discovery = source.provider === "SUNWIN"
+      ? await discoverSunwinProductUrls(parseSunwinCategorySource(source.url))
+      : await discoverGarboProductUrls(source);
   } catch (error) {
     console.error("Garbo category preview failed", {
       sourceCategoryPath: source.path,
@@ -165,6 +173,7 @@ export async function previewGarboCategoryImport(formData: FormData): Promise<vo
   query.set("products", String(discovery.productUrls.length));
   query.set("pages", String(discovery.categoryPages.length));
   query.set("limit", input.data.limit);
+  query.set("mode", input.data.mode);
   redirect(`/admin/imports?${query.toString()}`);
 }
 
@@ -173,7 +182,7 @@ export async function syncAndPublishGarboCategory(formData: FormData): Promise<v
   const input = categoryInput(formData);
   if (!input.success) redirect("/admin/imports?error=invalid-input");
 
-  const sourceRecord = await resolveGarboSourceCategory(input.data.sourceCategoryId);
+  const sourceRecord = await resolveCatalogSourceCategory(input.data.sourceCategoryId);
   if (!sourceRecord) {
     redirect("/admin/imports?error=invalid-source");
   }
@@ -193,7 +202,7 @@ export async function syncAndPublishGarboCategory(formData: FormData): Promise<v
     try {
       await prisma.externalCategoryMapping.create({
         data: {
-          provider: GARBO_PROVIDER,
+          provider: source.provider ?? GARBO_PROVIDER,
           sourceSlug: source.slug,
           sourceName: sourceRecord.sourceName,
           sourcePath: source.path,
@@ -215,7 +224,7 @@ export async function syncAndPublishGarboCategory(formData: FormData): Promise<v
   const limit = input.data.limit === "all" ? undefined : Number.parseInt(input.data.limit, 10);
   let result: Awaited<ReturnType<typeof syncAndPublishGarboCategoryCatalog>>;
   try {
-    result = await syncAndPublishGarboCategoryCatalog(source, admin.id, { limit });
+    result = await syncAndPublishGarboCategoryCatalog(source, admin.id, { limit, mode: input.data.mode });
   } catch (error) {
     console.error("Garbo category one-click import failed", {
       sourceCategoryPath: source.path,
@@ -232,10 +241,13 @@ export async function syncAndPublishGarboCategory(formData: FormData): Promise<v
   revalidatePath("/");
   revalidatePath("/products");
   revalidatePath("/sitemap.xml");
+  revalidatePath("/products/[slug]", "page");
+  revalidatePath("/products/category/[slug]", "page");
   const query = importQueryBase(sourceRecord.id, target.category.id, source.url);
   query.set("sourcePath", source.path);
   query.set("categoryName", target.category.name);
   query.set("completed", source.slug);
+  query.set("mode", input.data.mode);
   Object.entries({
     discovered: String(result.sync.discovered),
     created: String(result.sync.created),

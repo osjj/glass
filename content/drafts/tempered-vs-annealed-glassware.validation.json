@@ -1,0 +1,29 @@
+{
+  "category": "Restaurant & Bar Glassware",
+  "blocks": 53,
+  "images": [
+    {
+      "name": "hero.webp",
+      "width": 1600,
+      "height": 900,
+      "bytes": 117800
+    },
+    {
+      "name": "dishwasher-rack.webp",
+      "width": 1200,
+      "height": 900,
+      "bytes": 125696
+    },
+    {
+      "name": "decoration-samples.webp",
+      "width": 1200,
+      "height": 900,
+      "bytes": 98946
+    }
+  ],
+  "readTimeMinutes": 9,
+  "status": "LOCAL_DRAFT_ONLY",
+  "databaseWritten": false,
+  "imageStorage": "R2",
+  "r2PublicImagesVerified": 3
+}

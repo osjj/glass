@@ -1,0 +1,42 @@
+{
+  "bucket": "glarivoglass-media",
+  "uploadedAt": "2026-09-13T05:32:45.948Z",
+  "records": [
+    {
+      "name": "hero.webp",
+      "key": "site/blog/tempered-vs-annealed-glassware/hero-064a4fb1df86.webp",
+      "url": "https://media.glarivoglass.com/site/blog/tempered-vs-annealed-glassware/hero-064a4fb1df86.webp",
+      "sha256": "064a4fb1df86d0303177f31c2e2e68ca4e9ee6a2decd378775fc8a769de41848",
+      "bytes": 117800,
+      "width": 1600,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "name": "dishwasher-rack.webp",
+      "key": "site/blog/tempered-vs-annealed-glassware/dishwasher-rack-90c2d370171b.webp",
+      "url": "https://media.glarivoglass.com/site/blog/tempered-vs-annealed-glassware/dishwasher-rack-90c2d370171b.webp",
+      "sha256": "90c2d370171bd66f54d256d089778d16ddc00952a8e0958512abd51549f45fe3",
+      "bytes": 125696,
+      "width": 1200,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "name": "decoration-samples.webp",
+      "key": "site/blog/tempered-vs-annealed-glassware/decoration-samples-9637478a585c.webp",
+      "url": "https://media.glarivoglass.com/site/blog/tempered-vs-annealed-glassware/decoration-samples-9637478a585c.webp",
+      "sha256": "9637478a585cb068a92f8badac58cb10f15bc02f716d77a422b623d71d5c6eca",
+      "bytes": 98946,
+      "width": 1200,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true,
+      "httpStatus": 200
+    }
+  ]
+}

@@ -140,7 +140,7 @@ export async function verifyGlarivoCategoryAlignment() {
   const snapshotSlugs = new Set(GARBO_CATEGORY_SNAPSHOT.map((item) => item.sourceSlug));
   const [activeCategories, mappingCount, sourcedProducts] = await Promise.all([
     prisma.category.findMany({
-      where: { isActive: true },
+      where: { isActive: true, externalMappings: { some: { provider: GARBO } } },
       select: { id: true, slug: true, parentId: true },
     }),
     prisma.externalCategoryMapping.count({ where: { provider: GARBO } }),

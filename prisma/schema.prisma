@@ -70,6 +70,7 @@ enum ImportCandidateStatus {
 
 enum SourceProvider {
   GARBO
+  SUNWIN
   MANUAL
 }
 
@@ -416,9 +417,11 @@ model ProductImportCandidate {
   sourceUrl            String
   sourceCategorySlug   String
   sourceCategoryPath   String
+  sourceCategoryPaths  String[]              @default([])
   sourceTitle          String
   sourceSku            String?
   rawPayload           Json
+  appliedPayload       Json?
   normalizedPayload    Json?
   warnings             Json?
   sourceHash           String
@@ -441,6 +444,7 @@ model ProductImportCandidate {
   @@index([provider, sourceCategorySlug, status])
   @@index([status, updatedAt])
   @@index([productId])
+  @@index([sourceCategoryPaths], type: Gin)
 }
 
 model ProductImportField {

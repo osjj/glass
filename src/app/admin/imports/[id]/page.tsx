@@ -34,12 +34,12 @@ function messageForError(error: string | undefined, count: string | undefined) {
   if (error === "not-approved") return "Approve the fully reviewed candidate before importing it.";
   if (error === "not-eligible") return "Rejected or error candidates cannot use quick publishing. Move the candidate back to Pending or In review first.";
   if (error === "already-imported") return "This candidate is already linked to a product and cannot be imported twice.";
-  if (error === "invalid-payload") return "The normalized source payload is incomplete or no longer matches the Garbo category importer.";
+  if (error === "invalid-payload") return "The normalized source payload is incomplete or no longer matches the category importer.";
   if (error === "missing-name") return "A verified product name is required for draft import.";
   if (error === "invalid-name") return "The verified product name is too long for the product catalog.";
   if (error === "invalid-summary") return "The verified short summary is too long for the product catalog.";
   if (error === "invalid-sku") return "The verified Item No. is too long for the product catalog.";
-  if (error === "missing-category") return "The active Garbo source-to-category mapping is missing.";
+  if (error === "missing-category") return "The active source-to-category mapping is missing.";
   if (error === "duplicate-sku") return "The verified Item No. is already used by another product or variant.";
   if (error === "duplicate-slug") return "A product already uses this source-derived slug.";
   if (error === "database-error") return "The draft could not be created. No partial product was kept; check the server log.";

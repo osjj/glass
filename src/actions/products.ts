@@ -118,7 +118,7 @@ const productSchema = z
   summary: z.string().trim().min(1, "Short summary is required").max(500),
   description: z.string().trim().max(20000).default(""),
   content: productContentSchema,
-  sourceProvider: z.enum(["GARBO", "MANUAL"]).nullable(),
+  sourceProvider: z.enum(["GARBO", "SUNWIN", "MANUAL"]).nullable(),
   sourceUrl: z.preprocess(
     (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
     z.string().trim().url("Use a complete source URL").max(2000).optional(),

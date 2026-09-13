@@ -1,0 +1,58 @@
+{
+  "verifiedAt": "2026-09-13T06:15:11.708Z",
+  "pageUrl": "https://www.glarivoglass.com/blog/shot-glass-buying-guide-for-wholesale-buyers",
+  "httpStatus": 200,
+  "textCheck": {
+    "nonImageBlocks": 49,
+    "links": 8,
+    "titlePreserved": true,
+    "publishedAtPreserved": true
+  },
+  "images": [
+    "https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/buying-guide-v2-50e58b459190.webp",
+    "https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/capacity-check-v2-f30caea7a2f7.webp",
+    "https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/mini-mug-v2-09db81a8a45d.webp"
+  ],
+  "openGraphUpdated": true,
+  "recordId": "bf8b01d4-c457-46c4-a6d9-3e43d498c6c5",
+  "publicationMethod": "Existing published repository article mirrored into CMS at the same slug; only image URLs and captions changed",
+  "publishedAt": "2026-09-05T00:00:00.000Z",
+  "assets": [
+    {
+      "name": "buying-guide-v2",
+      "local": "public/images/guides/shot-glass/buying-guide-v2.webp",
+      "key": "site/blog/shot-glass-buying-guide-for-wholesale-buyers/buying-guide-v2-50e58b459190.webp",
+      "url": "https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/buying-guide-v2-50e58b459190.webp",
+      "sha256": "50e58b45919048b61913ada89a92b02caad9beab9b63d3489fcebb874d8a8ee0",
+      "bytes": 143318,
+      "width": 1600,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true
+    },
+    {
+      "name": "capacity-check-v2",
+      "local": "public/images/guides/shot-glass/capacity-check-v2.webp",
+      "key": "site/blog/shot-glass-buying-guide-for-wholesale-buyers/capacity-check-v2-f30caea7a2f7.webp",
+      "url": "https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/capacity-check-v2-f30caea7a2f7.webp",
+      "sha256": "f30caea7a2f736a6bc56025af0c046bac72f72c2fda3a5b840021c2343e2390b",
+      "bytes": 63738,
+      "width": 1200,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true
+    },
+    {
+      "name": "mini-mug-v2",
+      "local": "public/images/guides/shot-glass/mini-mug-v2.webp",
+      "key": "site/blog/shot-glass-buying-guide-for-wholesale-buyers/mini-mug-v2-09db81a8a45d.webp",
+      "url": "https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/mini-mug-v2-09db81a8a45d.webp",
+      "sha256": "09db81a8a45dc4fb17618f3f10bd135398e31a45b90f36794d89287aeb0d564b",
+      "bytes": 105132,
+      "width": 1200,
+      "height": 900,
+      "signedReadbackVerified": true,
+      "publicVerified": true
+    }
+  ]
+}

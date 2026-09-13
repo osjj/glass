@@ -7,7 +7,7 @@ export function ImportSubmitButton({
   mode = "import",
   className = "button-primary min-w-60 justify-center",
 }: {
-  mode?: "preview" | "import";
+  mode?: "preview" | "import" | "draft";
   className?: string;
 }) {
   const { pending } = useFormStatus();
@@ -18,12 +18,12 @@ export function ImportSubmitButton({
       {pending ? (
         <>
           <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
-          {preview ? "Scanning Garbo…" : "Importing products…"}
+          {preview ? "Scanning source…" : "Importing products…"}
         </>
       ) : (
         <>
           {preview ? <FileSearch className="size-4" aria-hidden="true" /> : <Rocket className="size-4" aria-hidden="true" />}
-          {preview ? "Scan & preview" : "Import & publish"}
+          {preview ? "Scan & preview" : mode === "draft" ? "Import as drafts" : "Import & publish"}
         </>
       )}
     </button>

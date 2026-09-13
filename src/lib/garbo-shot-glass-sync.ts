@@ -11,6 +11,7 @@ import {
   type GarboCandidateField,
   type GarboParsedProduct,
 } from "@/lib/garbo-shot-glass";
+import { assertSunwinUrl, fetchSunwinResource, discoverSunwinProductUrls, fetchAndParseSunwinProduct, parseSunwinCategorySource, type CatalogProvider } from "@/lib/sunwin";
 import { prisma } from "@/lib/prisma";
 import { CATALOG_REVIEWED_COPY_MARKER, cleanCatalogBody, cleanCatalogLabel, hasSupplierVoice } from "@/lib/catalog-public-copy";
 import { uploadImageToR2, type UploadedR2Image } from "@/lib/r2";
@@ -27,6 +28,7 @@ export type GarboCategorySyncResult = {
   unchanged: number;
   locked: number;
   failed: number;
+  sourceUrls?: string[];
 };
 
 export type ShotGlassSyncResult = GarboCategorySyncResult;
@@ -45,7 +47,8 @@ type CandidateImportError =
   | "missing-category"
   | "duplicate-sku"
   | "duplicate-slug"
-  | "database-error";
+  | "database-error"
+  | "media-failed";
 
 export type DraftImportResult =
   | { ok: true; productId: string; slug: string }
@@ -75,6 +78,8 @@ type GarboMediaCache = Map<string, Promise<GarboMediaCacheEntry>>;
 
 export type GarboCategoryBulkPublishOptions = {
   limit?: number;
+  mode?: "draft" | "publish";
+  sourceUrls?: string[];
 };
 
 export type GarboCategoryOneClickImportResult = {
@@ -101,22 +106,36 @@ function candidateFieldData(field: GarboCandidateField) {
   };
 }
 
-async function persistCandidate(parsed: GarboParsedProduct) {
-  const existing = await prisma.productImportCandidate.findUnique({
+export async function persistCatalogCandidate(parsed: GarboParsedProduct, provider: CatalogProvider = GARBO_PROVIDER, database: typeof prisma = prisma) {
+  return database.$transaction(async (transaction) => {
+    await transaction.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`${provider}:${parsed.sourceUrl}`}, 0))::text`;
+    return persistCandidateInTransaction(parsed, provider, transaction);
+  }, { maxWait: 15_000, timeout: 30_000 });
+}
+
+async function persistCandidateInTransaction(parsed: GarboParsedProduct, provider: CatalogProvider, transaction: Prisma.TransactionClient) {
+  const existing = await transaction.productImportCandidate.findUnique({
     where: {
       provider_sourceUrl: {
-        provider: GARBO_PROVIDER,
+        provider,
         sourceUrl: parsed.sourceUrl,
       },
     },
     include: { fields: true },
   });
+  const selectedPath = parsed.normalizedPayload.sourceCategoryPath;
+  const sourceCategoryPaths = [...new Set([...(existing?.sourceCategoryPaths ?? []), ...(existing ? [existing.sourceCategoryPath] : []), selectedPath])];
+  if (existing && provider === "SUNWIN") {
+    // A second category adds membership without moving the original source/primary category.
+    parsed.normalizedPayload.sourceCategoryPath = existing.sourceCategoryPath;
+    parsed.normalizedPayload.sourceCategorySlug = existing.sourceCategorySlug;
+  }
   const fetchedAt = new Date();
 
   if (!existing) {
-    await prisma.productImportCandidate.create({
+    await transaction.productImportCandidate.create({
       data: {
-        provider: GARBO_PROVIDER,
+        provider,
         sourceUrl: parsed.sourceUrl,
         sourceCategorySlug: parsed.normalizedPayload.sourceCategorySlug,
         sourceCategoryPath: parsed.normalizedPayload.sourceCategoryPath,
@@ -129,6 +148,7 @@ async function persistCandidate(parsed: GarboParsedProduct) {
         conflictCount: parsed.conflictCount,
         warningCount: parsed.warnings.length,
         fetchedAt,
+        sourceCategoryPaths,
         sourceLastModifiedAt: parsed.sourceLastModifiedAt,
         status: "PENDING",
         fields: { create: parsed.fields.map(candidateFieldData) },
@@ -138,7 +158,7 @@ async function persistCandidate(parsed: GarboParsedProduct) {
   }
 
   if (existing.sourceHash === parsed.sourceHash) {
-    await prisma.productImportCandidate.update({
+    await transaction.productImportCandidate.update({
       where: { id: existing.id },
       data: {
         sourceCategorySlug: parsed.normalizedPayload.sourceCategorySlug,
@@ -146,6 +166,7 @@ async function persistCandidate(parsed: GarboParsedProduct) {
         sourceTitle: parsed.sourceTitle,
         sourceSku: parsed.sourceSku,
         fetchedAt,
+        sourceCategoryPaths,
         sourceLastModifiedAt: parsed.sourceLastModifiedAt,
       },
     });
@@ -166,8 +187,6 @@ async function persistCandidate(parsed: GarboParsedProduct) {
   });
   const conflictCount = mergedFields.filter((field) => field.status === "CONFLICT").length;
 
-  await prisma.$transaction(
-    async (transaction) => {
       await transaction.productImportField.deleteMany({ where: { candidateId: existing.id } });
       await transaction.productImportCandidate.update({
         where: { id: existing.id },
@@ -183,22 +202,20 @@ async function persistCandidate(parsed: GarboParsedProduct) {
           conflictCount,
           warningCount: parsed.warnings.length,
           fetchedAt,
+          sourceCategoryPaths,
           sourceLastModifiedAt: parsed.sourceLastModifiedAt,
-          status: existing.productId ? "IMPORTED" : "IN_REVIEW",
+          status: existing.productId ? "IMPORTED" : provider === "SUNWIN" && existing.status === "REJECTED" ? "REJECTED" : "IN_REVIEW",
           reviewedAt: existing.productId ? existing.reviewedAt : null,
           fields: { create: mergedFields },
         },
       });
-    },
-    { maxWait: 10_000, timeout: 20_000 },
-  );
   return "updated" as const;
 }
 
-async function flagDuplicateItemNumbers(sourceCategoryPath: string) {
+async function flagDuplicateItemNumbers(sourceCategoryPath: string, provider: CatalogProvider = GARBO_PROVIDER) {
   const candidates = await prisma.productImportCandidate.findMany({
     where: {
-      provider: GARBO_PROVIDER,
+      provider,
       sourceCategoryPath,
       productId: null,
       sourceSku: { not: null },
@@ -239,9 +256,9 @@ async function flagDuplicateItemNumbers(sourceCategoryPath: string) {
     const matchesProduct = productSkus.has(key);
     if (!matchesCandidate && !matchesProduct) continue;
     const note = matchesCandidate && matchesProduct
-      ? `Item No. is shared by ${group.length} Garbo source pages and is already used by a catalog product.`
+      ? `Item No. is shared by ${group.length} source pages and is already used by a catalog product.`
       : matchesCandidate
-        ? `Item No. is shared by ${group.length} Garbo source pages; confirm whether these are duplicate listings or distinct products.`
+        ? `Item No. is shared by ${group.length} source pages; confirm whether these are duplicate listings or distinct products.`
         : "Item No. is already used by a catalog product.";
     const ids = group.map((candidate) => candidate.id);
     const updated = await prisma.productImportField.updateMany({
@@ -279,9 +296,11 @@ function uniqueCaseInsensitive(values: string[]) {
 export async function syncGarboCategoryCatalog(
   source: GarboCategorySource,
 ): Promise<GarboCategorySyncResult> {
-  const discovery = await discoverGarboProductUrls(source);
+  const provider = source.provider ?? GARBO_PROVIDER;
+  const discovery = provider === "SUNWIN" ? await discoverSunwinProductUrls(parseSunwinCategorySource(source.url)) : await discoverGarboProductUrls(source);
   const result: GarboCategorySyncResult = {
     discovered: discovery.productUrls.length,
+    sourceUrls: [],
     created: 0,
     updated: 0,
     unchanged: 0,
@@ -294,8 +313,11 @@ export async function syncGarboCategoryCatalog(
     while (index < discovery.productUrls.length) {
       const sourceUrl = discovery.productUrls[index++];
       try {
-        const parsed = await fetchAndParseGarboProduct(sourceUrl, source);
-        const outcome = await persistCandidate(parsed);
+        const parsed = provider === "SUNWIN"
+          ? await fetchAndParseSunwinProduct(sourceUrl, parseSunwinCategorySource(source.url))
+          : await fetchAndParseGarboProduct(sourceUrl, source);
+        const outcome = await persistCatalogCandidate(parsed, provider);
+        result.sourceUrls!.push(sourceUrl);
         result[outcome] += 1;
       } catch (error) {
         result.failed += 1;
@@ -309,9 +331,9 @@ export async function syncGarboCategoryCatalog(
   }
 
   await Promise.all(
-    Array.from({ length: Math.min(SYNC_CONCURRENCY, discovery.productUrls.length) }, () => worker()),
+    Array.from({ length: Math.min(provider === "SUNWIN" ? 2 : SYNC_CONCURRENCY, discovery.productUrls.length) }, () => worker()),
   );
-  await flagDuplicateItemNumbers(source.path);
+  await flagDuplicateItemNumbers(source.path, provider);
   return result;
 }
 
@@ -399,7 +421,8 @@ async function availableProductSlug(
   return candidates.find((candidate) => !used.has(candidate)) ?? null;
 }
 
-function assertAuthorizedGarboMediaUrl(value: string) {
+function assertAuthorizedGarboMediaUrl(value: string, provider: CatalogProvider = GARBO_PROVIDER) {
+  if (provider === "SUNWIN") return assertSunwinUrl(value, "image").href;
   const url = new URL(value);
   if (url.protocol !== "https:" || !GARBO_MEDIA_HOSTS.has(url.hostname.toLowerCase())) {
     throw new Error("The media source is not an authorized Garbo HTTPS URL.");
@@ -486,13 +509,13 @@ function authorizedMediaKey(sha256: string) {
   return `products/garbo/assets/${sha256}.webp`;
 }
 
-function uploadAuthorizedGarboMedia(sourceUrl: string, cache: GarboMediaCache) {
+function uploadAuthorizedGarboMedia(sourceUrl: string, cache: GarboMediaCache, provider: CatalogProvider = GARBO_PROVIDER) {
   const cached = cache.get(sourceUrl);
   if (cached) return cached;
   const pending = (async () => {
-    const data = await downloadAuthorizedGarboMedia(sourceUrl);
+    const data = provider === "SUNWIN" ? await fetchSunwinResource(sourceUrl, "image") : await downloadAuthorizedGarboMedia(sourceUrl);
     const sha256 = createHash("sha256").update(data).digest("hex");
-    const uploaded = await uploadImageToR2({ data, key: authorizedMediaKey(sha256) });
+    const uploaded = await uploadImageToR2({ data, key: provider === "SUNWIN" ? `products/sunwin/assets/${sha256}.webp` : authorizedMediaKey(sha256) });
     return { ...uploaded, sha256 };
   })();
   cache.set(sourceUrl, pending);
@@ -531,14 +554,20 @@ function specificationGroup(fieldKey: string) {
   return "GENERAL" as const;
 }
 
-async function refreshImportedCandidateFromAuthorizedSource(
+export async function refreshImportedCandidateFromAuthorizedSource(
   candidateId: string,
   mediaCache: GarboMediaCache,
+  database: typeof prisma = prisma,
 ): Promise<
   | { ok: true; changed: boolean; mediaFailed: number }
-  | { ok: false; error: CandidateImportError }
+  | { ok: false; error: CandidateImportError; mediaFailed?: number }
 > {
-  const candidate = await prisma.productImportCandidate.findUnique({
+  const identity = await database.productImportCandidate.findUnique({ where: { id: candidateId }, select: { provider: true } });
+  if (!identity || (identity.provider !== "SUNWIN" && identity.provider !== "GARBO")) return { ok: false, error: "not-found" };
+  const provider = identity.provider;
+  const sourcePrefix = provider === "SUNWIN" ? "https://www.sunwin2001.com/" : "https://www.garboglass.com/";
+  const sectionKey = provider === "SUNWIN" ? "sunwin_product_details" : "garbo_product_details";
+  const candidate = await database.productImportCandidate.findUnique({
     where: { id: candidateId },
     select: {
       id: true,
@@ -546,6 +575,8 @@ async function refreshImportedCandidateFromAuthorizedSource(
       sourceCategorySlug: true,
       sourceCategoryPath: true,
       normalizedPayload: true,
+      appliedPayload: true,
+      fields: { select: { fieldKey: true, rawValue: true, normalizedValue: true, status: true, unit: true } },
       reviewNotes: true,
       product: {
         select: {
@@ -553,9 +584,11 @@ async function refreshImportedCandidateFromAuthorizedSource(
           slug: true,
           summary: true,
           description: true,
+          specifications: { where: { key: "capacity" }, select: { id: true, value: true, reviewStatus: true } },
+          overviewFields: { where: { key: "capacity" }, select: { id: true, value: true, reviewStatus: true } },
           features: { orderBy: { sortOrder: "asc" }, select: { value: true } },
           images: {
-            where: { sourceUrl: { startsWith: "https://www.garboglass.com/" } },
+            where: { sourceUrl: { startsWith: sourcePrefix } },
             select: {
               url: true,
               alt: true,
@@ -573,7 +606,7 @@ async function refreshImportedCandidateFromAuthorizedSource(
             },
           },
           contentSections: {
-            where: { sourceKey: "garbo_product_details" },
+            where: { sourceKey: sectionKey },
             select: { id: true, title: true, body: true },
           },
         },
@@ -591,7 +624,10 @@ async function refreshImportedCandidateFromAuthorizedSource(
   }
 
   const source = normalizedPayload.data;
-  const preserveReviewedCopy = candidate.reviewNotes?.includes(CATALOG_REVIEWED_COPY_MARKER) ?? false;
+  const baseline = garboNormalizedProductSchema.safeParse(candidate.appliedPayload);
+  const preserveReviewedCopy = (candidate.reviewNotes?.includes(CATALOG_REVIEWED_COPY_MARKER) ?? false) ||
+    (provider === "SUNWIN" && baseline.success &&
+      (candidate.product.summary !== baseline.data.summary || candidate.product.description !== baseline.data.description));
   const summary = truncateSourceValue(hasSupplierVoice(source.summary) ? cleanCatalogLabel(source.name) : source.summary || cleanCatalogLabel(source.name), 500);
   const description = truncateSourceValue(cleanCatalogBody(source.description), 20_000);
   const features = source.detailBullets
@@ -615,7 +651,7 @@ async function refreshImportedCandidateFromAuthorizedSource(
       sortOrder,
     })),
   ];
-  expectedImages.forEach((image) => assertAuthorizedGarboMediaUrl(image.sourceUrl));
+  expectedImages.forEach((image) => assertAuthorizedGarboMediaUrl(image.sourceUrl, provider));
 
   const expectedImageKeys = expectedImages.map((image) => `${image.role}|${image.sourceUrl}`).sort();
   const currentImageKeys = candidate.product.images
@@ -636,7 +672,11 @@ async function refreshImportedCandidateFromAuthorizedSource(
     currentFeatures.every((value, index) => value === features[index]) &&
     detailsSection?.title === "Product Details" &&
     detailsSection.body === "");
-  if (mediaIsCurrent && textIsCurrent) return { ok: true, changed: false, mediaFailed: 0 };
+  const capacityField = candidate.fields.find((field) => field.fieldKey === "capacity" && field.status !== "REJECTED");
+  const capacity = capacityField ? (capacityField.normalizedValue || capacityField.rawValue) : undefined;
+  const previousCapacity = baseline.success ? baseline.data.specificationValues?.capacity : undefined;
+  const capacityChanged = provider === "SUNWIN" && capacity !== previousCapacity;
+  if (mediaIsCurrent && textIsCurrent && !capacityChanged) return { ok: true, changed: false, mediaFailed: 0 };
 
   try {
     const existingMedia = new Map(
@@ -662,7 +702,7 @@ async function refreshImportedCandidateFromAuthorizedSource(
         };
       }
       try {
-        const uploaded = await uploadAuthorizedGarboMedia(image.sourceUrl, mediaCache);
+        const uploaded = await uploadAuthorizedGarboMedia(image.sourceUrl, mediaCache, provider);
         return {
           ...image,
           url: uploaded.url,
@@ -678,6 +718,7 @@ async function refreshImportedCandidateFromAuthorizedSource(
     });
     const media = attemptedMedia.filter((image): image is NonNullable<typeof image> => Boolean(image));
     const mediaFailed = expectedImages.length - media.length;
+    if (mediaFailed && provider === "SUNWIN") return { ok: false, error: "media-failed", mediaFailed };
     if (mediaFailed) {
       console.warn("Some authorized Garbo source images remained unavailable after retries", {
         candidateId,
@@ -686,19 +727,19 @@ async function refreshImportedCandidateFromAuthorizedSource(
       });
     }
 
-    await prisma.$transaction(
+    await database.$transaction(
       async (transaction) => {
         const section = await transaction.productContentSection.upsert({
           where: {
             productId_sourceKey: {
               productId: candidate.product!.id,
-              sourceKey: "garbo_product_details",
+              sourceKey: sectionKey,
             },
           },
           update: preserveReviewedCopy ? {} : { title: "Product Details", body: "", sortOrder: 0 },
           create: {
             productId: candidate.product!.id,
-            sourceKey: "garbo_product_details",
+            sourceKey: sectionKey,
             title: "Product Details",
             body: "",
             sortOrder: 0,
@@ -708,7 +749,7 @@ async function refreshImportedCandidateFromAuthorizedSource(
         await transaction.productImage.deleteMany({
           where: {
             productId: candidate.product!.id,
-            sourceUrl: { startsWith: "https://www.garboglass.com/" },
+            sourceUrl: { startsWith: sourcePrefix },
           },
         });
         if (media.length) {
@@ -731,6 +772,26 @@ async function refreshImportedCandidateFromAuthorizedSource(
               sortOrder: image.sortOrder,
             })),
           });
+        }
+        if (provider === "SUNWIN") {
+          // Only source-owned, unreviewed values follow source changes; manual edits remain intact.
+          if (capacityChanged && capacityField && capacity) {
+            for (const spec of candidate.product!.specifications) {
+              if (spec.value === previousCapacity && spec.reviewStatus === "UNREVIEWED") {
+                await transaction.productSpecification.updateMany({ where: { id: spec.id, value: spec.value, reviewStatus: "UNREVIEWED" },
+                  data: { value: capacity, rawValue: capacityField.rawValue, unit: capacityField.unit } });
+              }
+            }
+            for (const overview of candidate.product!.overviewFields) {
+              if (overview.value === previousCapacity && overview.reviewStatus === "UNREVIEWED") {
+                await transaction.productOverviewField.updateMany({ where: { id: overview.id, value: overview.value, reviewStatus: "UNREVIEWED" },
+                  data: { value: capacity, rawValue: capacityField.rawValue, normalizedValue: capacityField.normalizedValue } });
+              }
+            }
+          }
+          await transaction.productImportCandidate.update({ where: { id: candidate.id }, data: {
+            appliedPayload: jsonValue({ ...source, specificationValues: capacity ? { capacity } : {} }),
+          } });
         }
         if (!preserveReviewedCopy) {
           await transaction.productFeature.deleteMany({ where: { productId: candidate.product!.id } });
@@ -770,14 +831,18 @@ async function refreshImportedCandidateFromAuthorizedSource(
 async function importCandidate(
   candidateId: string,
   reviewerId: string | null,
-  mode: "reviewed-draft" | "deferred-publish",
+  mode: "reviewed-draft" | "deferred-publish" | "deferred-draft",
+  database: typeof prisma = prisma,
 ): Promise<DraftImportResult> {
-  const candidate = await prisma.productImportCandidate.findUnique({
+  const candidate = await database.productImportCandidate.findUnique({
     where: { id: candidateId },
     include: { fields: true },
   });
   if (!candidate) return { ok: false, error: "not-found" };
-  const deferredPublish = mode === "deferred-publish";
+  const deferredPublish = mode !== "reviewed-draft";
+  const publishNow = mode === "deferred-publish";
+  if (candidate.provider !== "GARBO" && candidate.provider !== "SUNWIN") return { ok: false, error: "invalid-payload" };
+  if (candidate.provider === "SUNWIN" && ["REJECTED", "ERROR"].includes(candidate.status)) return { ok: false, error: "not-eligible" };
   if (candidate.productId || (!deferredPublish && candidate.status === "IMPORTED")) {
     return { ok: false, error: "already-imported" };
   }
@@ -848,10 +913,10 @@ async function importCandidate(
     sku = null;
   }
 
-  const mapping = await prisma.externalCategoryMapping.findUnique({
+  const mapping = await database.externalCategoryMapping.findUnique({
     where: {
       provider_sourcePath: {
-        provider: GARBO_PROVIDER,
+        provider: candidate.provider,
         sourcePath: candidate.sourceCategoryPath,
       },
     },
@@ -866,13 +931,13 @@ async function importCandidate(
       candidate.sourceUrl,
     ),
     sku
-      ? prisma.product.findFirst({
+      ? database.product.findFirst({
           where: { sku: { equals: sku, mode: "insensitive" } },
           select: { id: true },
         })
       : null,
     sku
-      ? prisma.productVariant.findFirst({
+      ? database.productVariant.findFirst({
           where: { sku: { equals: sku, mode: "insensitive" } },
           select: { id: true },
         })
@@ -963,12 +1028,14 @@ async function importCandidate(
     : [];
   const importedAt = new Date();
   const deferredReviewNote = deferredPublish
-    ? `[Deferred verification ${importedAt.toISOString()}] Source text and specifications were quick-published before field verification. Existing field statuses and conflicts were preserved. Conflicting or duplicate Item No. values were not copied, certificate claims remain unverified, and source images were not attached.`
+    ? `[Deferred verification ${importedAt.toISOString()}] Source text and specifications were imported before field verification. Existing field statuses and conflicts were preserved. Conflicting or duplicate Item No. values were not copied, certificate claims remain unverified, and source images were not attached.`
     : null;
 
   try {
-    const product = await prisma.$transaction(
+    const product = await database.$transaction(
       async (transaction) => {
+        const locked = await transaction.$queryRaw<Array<{ productId: string | null }>>`SELECT "productId" FROM "ProductImportCandidate" WHERE "id" = ${candidate.id} FOR UPDATE`;
+        if (!locked.length || locked[0].productId) throw new Error("Candidate already imported by another operation.");
         const created = await transaction.product.create({
           data: {
             name,
@@ -979,7 +1046,7 @@ async function importCandidate(
             description,
             content: "",
             pageTemplate: "GARBO_DETAIL",
-            sourceProvider: "GARBO",
+            sourceProvider: candidate.provider,
             sourceUrl: candidate.sourceUrl,
             sourceCategoryPath: candidate.sourceCategoryPath,
             detailsHeading: "Details",
@@ -992,10 +1059,10 @@ async function importCandidate(
             moq: null,
             unit: null,
             stock: 0,
-            status: deferredPublish ? "PUBLISHED" : "DRAFT",
+            status: publishNow ? "PUBLISHED" : "DRAFT",
             featured: false,
             sortOrder: 0,
-            publishedAt: deferredPublish ? importedAt : null,
+            publishedAt: publishNow ? importedAt : null,
             categories: {
               create: { categoryId: mapping.category.id, isPrimary: true, sortOrder: 0 },
             },
@@ -1050,6 +1117,10 @@ async function importCandidate(
   }
 }
 
+export async function importCandidateAsUnreviewedDraft(candidateId: string, reviewerId: string | null, database: typeof prisma = prisma): Promise<DraftImportResult> {
+  return importCandidate(candidateId, reviewerId, "deferred-draft", database);
+}
+
 export async function importApprovedCandidateAsDraft(
   candidateId: string,
   reviewerId: string,
@@ -1069,17 +1140,21 @@ export async function publishAllGarboCategoryCandidatesWithDeferredReview(
   reviewerId: string | null,
   options: GarboCategoryBulkPublishOptions = {},
 ): Promise<GarboCategoryBulkPublishResult> {
+  const provider = source.provider ?? GARBO_PROVIDER;
   const discoveredCandidates = await prisma.productImportCandidate.findMany({
     where: {
-      provider: GARBO_PROVIDER,
-      sourceCategoryPath: source.path,
+      provider,
+      ...(options.sourceUrls ? { sourceUrl: { in: options.sourceUrls } } : { sourceCategoryPath: source.path }),
+      ...(provider === "SUNWIN" ? { status: { notIn: ["REJECTED", "ERROR"] as ("REJECTED" | "ERROR")[] } } : {}),
     },
     orderBy: [{ sourceUrl: "asc" }],
-    select: { id: true, sourceTitle: true, productId: true },
+    select: { id: true, sourceTitle: true, productId: true, normalizedPayload: true, appliedPayload: true, product: { select: { status: true } } },
   });
   discoveredCandidates.sort((left, right) => {
     const linkOrder = Number(Boolean(left.productId)) - Number(Boolean(right.productId));
-    return linkOrder || left.sourceTitle.localeCompare(right.sourceTitle);
+    const pending = (item: typeof left) => provider === "SUNWIN" &&
+      (JSON.stringify(item.appliedPayload) !== JSON.stringify(item.normalizedPayload) || (options.mode === "publish" && item.product?.status === "DRAFT"));
+    return linkOrder || Number(pending(right)) - Number(pending(left)) || left.sourceTitle.localeCompare(right.sourceTitle);
   });
   const candidates = options.limit
     ? discoveredCandidates.slice(0, Math.max(0, options.limit))
@@ -1096,9 +1171,20 @@ export async function publishAllGarboCategoryCandidatesWithDeferredReview(
   const mediaCache: GarboMediaCache = new Map();
 
   for (const candidate of candidates) {
+    if (provider === "SUNWIN" && candidate.productId) {
+      const mapping = await prisma.externalCategoryMapping.findUnique({ where: { provider_sourcePath: { provider, sourcePath: source.path } } });
+      if (mapping) await prisma.productCategory.upsert({
+        where: { productId_categoryId: { productId: candidate.productId, categoryId: mapping.categoryId } },
+        create: { productId: candidate.productId, categoryId: mapping.categoryId, isPrimary: false }, update: {},
+      });
+    }
     if (candidate.productId) {
       const refreshed = await refreshImportedCandidateFromAuthorizedSource(candidate.id, mediaCache);
+      if (refreshed.ok && options.mode === "publish") {
+        await prisma.product.updateMany({ where: { id: candidate.productId, status: "DRAFT" }, data: { status: "PUBLISHED", publishedAt: new Date() } });
+      }
       if (!refreshed.ok) {
+        result.mediaFailed += refreshed.mediaFailed ?? 0;
         result.failed += 1;
         if (result.failures.length < 20) {
           result.failures.push({
@@ -1115,11 +1201,20 @@ export async function publishAllGarboCategoryCandidatesWithDeferredReview(
       }
       continue;
     }
-    const imported = await importCandidate(candidate.id, reviewerId, "deferred-publish");
+    const imported = await importCandidate(candidate.id, reviewerId, options.mode === "draft" || provider === "SUNWIN" ? "deferred-draft" : "deferred-publish");
     if (imported.ok) {
       result.imported += 1;
+      if (provider === "SUNWIN") {
+        const record = await prisma.productImportCandidate.findUnique({ where: { id: candidate.id }, select: { sourceCategoryPaths: true } });
+        const mappings = await prisma.externalCategoryMapping.findMany({ where: { provider, sourcePath: { in: record?.sourceCategoryPaths ?? [source.path] }, category: { isActive: true } } });
+        await prisma.productCategory.createMany({ data: mappings.map((mapping) => ({ productId: imported.productId, categoryId: mapping.categoryId, isPrimary: false })), skipDuplicates: true });
+      }
       const refreshed = await refreshImportedCandidateFromAuthorizedSource(candidate.id, mediaCache);
+      if (refreshed.ok && options.mode === "publish") {
+        await prisma.product.updateMany({ where: { id: imported.productId, status: "DRAFT" }, data: { status: "PUBLISHED", publishedAt: new Date() } });
+      }
       if (!refreshed.ok) {
+        result.mediaFailed += refreshed.mediaFailed ?? 0;
         result.failed += 1;
         if (result.failures.length < 20) {
           result.failures.push({
@@ -1156,7 +1251,7 @@ export async function syncAndPublishGarboCategoryCatalog(
   const publish = await publishAllGarboCategoryCandidatesWithDeferredReview(
     source,
     reviewerId,
-    options,
+    { ...options, sourceUrls: sync.sourceUrls },
   );
   return { sync, publish };
 }

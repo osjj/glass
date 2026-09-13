@@ -1,6 +1,7 @@
 import "server-only";
 
 import { requireAdmin } from "@/lib/admin-auth";
+import type { CatalogProvider } from "@/lib/sunwin";
 import { prisma } from "@/lib/prisma";
 
 const importStatuses = [
@@ -32,11 +33,13 @@ export async function getImportCandidates(
   status?: ImportStatusFilter,
   sourceCategoryPath?: string,
   limit = 100,
+  provider?: CatalogProvider,
 ) {
   await requireAdmin();
   const where = {
     ...(status ? { status } : {}),
-    ...(sourceCategoryPath ? { sourceCategoryPath } : {}),
+    ...(provider ? { provider } : {}),
+    ...(sourceCategoryPath ? { OR: [{ sourceCategoryPath }, { sourceCategoryPaths: { has: sourceCategoryPath } }] } : {}),
   };
   const [candidates, grouped] = await Promise.all([
     prisma.productImportCandidate.findMany({
@@ -56,13 +59,13 @@ export async function getImportCandidates(
         fetchedAt: true,
         status: true,
         updatedAt: true,
-        product: { select: { id: true, slug: true, name: true } },
+        product: { select: { id: true, slug: true, name: true, status: true } },
         _count: { select: { fields: true } },
       },
     }),
     prisma.productImportCandidate.groupBy({
       by: ["status"],
-      where: sourceCategoryPath ? { sourceCategoryPath } : undefined,
+      where: { ...where, status: undefined },
       _count: { _all: true },
     }),
   ]);
@@ -111,7 +114,7 @@ function categoryOptionLabels(categories: CategoryOptionRecord[]) {
     .sort((left, right) => left.label.localeCompare(right.label));
 }
 
-export async function getGarboImportSetup() {
+export async function getGarboImportSetup(provider: CatalogProvider = "GARBO") {
   await requireAdmin();
   const [categories, sourceCategories, mappings, candidateCounts] = await Promise.all([
     prisma.category.findMany({
@@ -119,7 +122,7 @@ export async function getGarboImportSetup() {
       select: { id: true, name: true, slug: true, parentId: true, isActive: true },
     }),
     prisma.externalSourceCategory.findMany({
-      where: { provider: "GARBO", isActive: true, isImportable: true },
+      where: { provider, isActive: true, isImportable: true },
       orderBy: [{ sortOrder: "asc" }, { sourceName: "asc" }],
       select: {
         id: true,
@@ -133,7 +136,7 @@ export async function getGarboImportSetup() {
       },
     }),
     prisma.externalCategoryMapping.findMany({
-      where: { provider: "GARBO" },
+      where: { provider },
       orderBy: [{ sourcePath: "asc" }],
       select: {
         id: true,
@@ -145,7 +148,7 @@ export async function getGarboImportSetup() {
     }),
     prisma.productImportCandidate.groupBy({
       by: ["sourceCategoryPath"],
-      where: { provider: "GARBO" },
+      where: { provider },
       _count: { _all: true },
     }),
   ]);
@@ -160,10 +163,11 @@ export async function getGarboImportSetup() {
         ? `${category.parent.sourceName} / ${category.sourceName}`
         : category.sourceName,
       candidateCount: countByPath.get(category.sourcePath) ?? 0,
+      targetCategoryId: mappings.find((mapping) => mapping.sourcePath === category.sourcePath)?.categoryId,
     })),
     mappings: mappings.map((mapping) => ({
       ...mapping,
-      sourceUrl: `https://www.garboglass.com${mapping.sourcePath}`,
+      sourceUrl: `${provider === "SUNWIN" ? "https://www.sunwin2001.com" : "https://www.garboglass.com"}${mapping.sourcePath}`,
       candidateCount: countByPath.get(mapping.sourcePath) ?? 0,
     })),
   };

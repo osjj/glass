@@ -25,7 +25,7 @@ Do not assume a shot glass filled to the rim represents the intended serving. A 
 
 Ask for volume in milliliters and identify the unit convention if an offer also uses fluid ounces. One US fluid ounce is approximately 29.57 mL: 1.5 US fl oz is approximately 44.4 mL and 2 US fl oz approximately 59.1 mL. These are conversions, not recommended serving sizes or proof that a particular glass holds that volume. [NIST's conversion table](https://www.nist.gov/pml/owm/metric-si/unit-conversion/approximate-conversions-us-customary-measures-metric) provides the underlying conversion.
 
-![Capacity-check illustration showing brimful volume, intended fill level, outside height and rim diameter. Schematic only; not a calibrated serving measure.](/images/guides/shot-glass/capacity-check.svg)
+![Capacity-check illustration showing brimful level, intended fill level, headspace, outside height and rim diameter. Schematic only; not a calibrated serving measure.](https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/capacity-check-v2-f30caea7a2f7.webp)
 
 Record outside height, rim diameter, base diameter and weight alongside capacity. Two glasses with similar internal volume may need different shelf clearance, tray spacing or protective inserts. Request explicit units and dimensional tolerances rather than copying bare numbers from a specification table.
 
@@ -39,7 +39,7 @@ The following examples show how to read a shortlist. Their values reflect the pu
 - **Tall, decorated profile:** [GB070203H-TH-QT-580A souvenir shot glass](/products/personalized-shot-glasses-greece-beaches-decal-promotional-tall-shot-glasses) lists 65 mL capacity, 102 mm height and 40 mm top and bottom diameters. Its taller body offers a different artwork layout from the short glass. Confirm the printable area on the selected blank rather than scaling artwork from a photograph.
 - **Handled mini-mug profile:** [GB095002 mini shot mug](/products/mini-1-9oz-beer-shot-glasses-mug-with-heavy-base-for-bar) provides a handle-based alternative. Ask for the overall width including the handle and a confirmed capacity with units. The body diameter alone is not enough to design a box insert.
 
-![Handled mini glasses shown in the Glarivo GB095002 product gallery. This photograph illustrates the handled profile; the pieces are not shown as a measured size comparison or a confirmed set configuration.](/images/guides/shot-glass/mini-mug.webp)
+![AI-generated illustration of a handled mini shot glass, highlighting the rim, thick base and projecting handle. Generic profile only; not a photograph of GB095002 or a measured product specification.](https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/mini-mug-v2-09db81a8a45d.webp)
 
 A thick base, a heavy feel or a clear appearance should not be treated as proof of impact resistance, a particular glass composition or suitability for machine washing. Confirm those properties separately for the exact finished item.
 
@@ -134,9 +134,9 @@ export const editorialPosts: PublicBlogPost[] = [{
   readTimeMinutes,
   readTime: `${readTimeMinutes} min read`,
   content: JSON.stringify(markdownToArticleEditorData(shotGlassGuideMarkdown)),
-  coverImage: "/images/guides/shot-glass/buying-guide.png",
+  coverImage: "https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/buying-guide-v2-50e58b459190.webp",
   coverImageFit: "contain",
-  coverImageAlt: "Illustrative short shot glass, tall shooter and handled mini mug profiles; compare capacity, shape and finish.",
+  coverImageAlt: "AI-generated illustration of a short thick-base shot glass, tall shooter and handled mini mug on a stone surface; generic profiles, not to scale.",
   featured: true,
   publishedAt,
   publishedLabel: "Sep 5, 2026",

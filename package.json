@@ -19,6 +19,9 @@
     "catalog:shot-glass:import": "tsx scripts/import-garbo-shot-glass.ts",
     "catalog:garbo-categories:sync": "tsx scripts/sync-garbo-categories.ts",
     "catalog:glarivo-categories:sync": "tsx scripts/sync-glarivo-categories.ts",
+    "catalog:sunwin:categories": "tsx scripts/sync-sunwin-categories.ts",
+    "catalog:sunwin:check": "tsx scripts/check-sunwin-catalog.ts",
+    "test:catalog": "tsx --test tests/sunwin.test.ts",
     "r2:smoke": "tsx scripts/r2-smoke-test.ts"
   },
   "dependencies": {

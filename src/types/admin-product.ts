@@ -38,7 +38,7 @@ export type AdminProductInput = {
   summary: string;
   description: string;
   content: string;
-  sourceProvider: "GARBO" | "MANUAL" | null;
+  sourceProvider: "GARBO" | "SUNWIN" | "MANUAL" | null;
   sourceUrl: string | null;
   sourceCategoryPath: string | null;
   detailsHeading: string;

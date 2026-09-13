@@ -61,6 +61,7 @@ const fieldSortOrder: Record<string, number> = {
 export type GarboReviewStatus = "UNREVIEWED" | "CONFLICT";
 
 export type GarboCategorySource = {
+  provider?: "GARBO" | "SUNWIN";
   url: string;
   path: string;
   slug: string;
@@ -86,10 +87,11 @@ export type GarboCandidateField = {
 export const garboNormalizedProductSchema = z.object({
   version: z.literal(1),
   sourceCategorySlug: z.string().min(1).max(180).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-  sourceCategoryPath: z.string().min(3).max(190).regex(/^\/[a-z0-9]+(?:-[a-z0-9]+)*\/$/),
+  sourceCategoryPath: z.string().min(3).max(190).regex(/^(?:\/[a-z0-9]+(?:-[a-z0-9]+)*\/|\/product_category\/(?:9|10|11)\.html)$/),
   slug: z.string().min(1).max(180).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   name: z.string().min(1).max(500),
   sourceSku: z.string().max(200).nullable(),
+  specificationValues: z.record(z.string(), z.string()).optional(),
   summary: z.string().max(5_000),
   description: z.string().max(50_000),
   detailBullets: z.array(z.string().max(5_000)).max(100),
