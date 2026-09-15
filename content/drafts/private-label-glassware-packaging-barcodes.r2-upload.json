@@ -1,0 +1,47 @@
+[
+  {
+    "name": "hero",
+    "source": "exec-b9fe6768-1036-4513-987f-732287cd4080.png",
+    "width": 1600,
+    "height": 900,
+    "localPath": "public/images/blog/private-label-glassware-packaging-barcodes/hero.webp",
+    "sha256": "f541a2a9bba0d2ccac78bf6ad2c9e636a32799c808a476313e6254f54b341ef7",
+    "bytes": 182930,
+    "key": "site/blog/private-label-glassware-packaging-barcodes/hero-f541a2a9bba0.webp",
+    "url": "https://media.glarivoglass.com/site/blog/private-label-glassware-packaging-barcodes/hero-f541a2a9bba0.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-14T13:23:38.619Z"
+  },
+  {
+    "name": "pack-levels",
+    "source": "exec-5f160b33-78f1-4c18-9d87-069602df849e.png",
+    "width": 1200,
+    "height": 900,
+    "localPath": "public/images/blog/private-label-glassware-packaging-barcodes/pack-levels.webp",
+    "sha256": "714a932688fd9e5bd664cfecd78325b83adbd45605e1936411977ab6d67f5da0",
+    "bytes": 76202,
+    "key": "site/blog/private-label-glassware-packaging-barcodes/pack-levels-714a932688fd.webp",
+    "url": "https://media.glarivoglass.com/site/blog/private-label-glassware-packaging-barcodes/pack-levels-714a932688fd.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-14T13:23:41.771Z"
+  },
+  {
+    "name": "artwork-review",
+    "source": "exec-d301af1a-9056-40a8-af2a-de1423d3770f.png",
+    "width": 1200,
+    "height": 900,
+    "localPath": "public/images/blog/private-label-glassware-packaging-barcodes/artwork-review.webp",
+    "sha256": "d9d51f466c43771e72b32a38d8125df91382fe760d8f1038e2231aa2321bb653",
+    "bytes": 111944,
+    "key": "site/blog/private-label-glassware-packaging-barcodes/artwork-review-d9d51f466c43.webp",
+    "url": "https://media.glarivoglass.com/site/blog/private-label-glassware-packaging-barcodes/artwork-review-d9d51f466c43.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-14T13:23:45.637Z"
+  }
+]

@@ -98,7 +98,7 @@ export default function AboutPage() {
     <section id="partner-conversations" className={`${styles.container} ${styles.partners}`} aria-labelledby="partners-heading">
       <p className={styles.kicker}>05 Partner conversations</p><h2 id="partners-heading">From first conversation to shared understanding.</h2>
       <figure>
-        <a href="/images/about/partner-conversations-user-20260908.png" aria-label="Enlarge the illustrative partner conversation gallery"><Image src="/images/about/partner-conversations-user-20260908.png" alt="Glassware collection discussions in a sample room, a sample and packaging review in the workshop, and a group factory visit" width={2172} height={724} sizes="90vw" className={styles.galleryImage} /></a>
+        <a href="/images/about/partner-conversations-user-20260915.png" aria-label="Enlarge the illustrative partner conversation gallery"><Image src="/images/about/partner-conversations-user-20260915.png" alt="Glassware collection discussions in a sample room, a sample and packaging review in the workshop, and a group factory visit" width={2172} height={724} sizes="90vw" className={styles.galleryImage} /></a>
         <div className={styles.conversationGrid}>{conversations.map((item) => <div key={item.title}><h3>{item.title}</h3><p>{item.text}</p></div>)}</div>
         <figcaption>Illustrative scenarios — not documented client cases. <span className={styles.enlargeHint}>Select the image to enlarge.</span></figcaption>
       </figure>

@@ -53,7 +53,7 @@ If a warning is needed, confirm the current wording and delivery requirements fo
 
 ## 5. Read the report before accepting the word “pass”
 
-Replace a generic table of “typical” heavy-metal limits with a report review that preserves the actual units, scope and method. Ask the laboratory to resolve any mismatch before shipment.
+Read every result alongside its units, scope, method and applicable acceptance criterion. Generic tables of “typical” heavy-metal limits cannot establish whether a particular report supports your order. Ask the laboratory to resolve any mismatch before shipment.
 
 1. **Sample match:** do the photographs, model reference, colour, artwork and components identify the ordered item?
 2. **Coverage:** were the body, relevant decoration and closure components assessed as needed? Is any component explicitly excluded?
@@ -78,7 +78,7 @@ Keep a file linked to each SKU or to a documented product family, with an explic
 - Traceability records connecting supplied lots to the manufacturer and controlled specification.
 - Review owner, review date, agreed retest policy and product-change procedure.
 
-Do not invent a universal expiry period for reports. Ask whether a legal, certification-scheme or customer-specific rule sets a validity period. Record that basis. A report can also stop representing the current product when relevant materials, decoration, suppliers or use conditions change, even if it is recent.
+Establish the review period for each file. Ask whether a legal, certification-scheme or customer-specific rule sets a validity period, and record that basis. A report can also stop representing the current product when relevant materials, decoration, suppliers or use conditions change, even if it is recent.
 
 ![Matching glass samples, a sample carton and a document binder for traceability review. AI-generated illustration, not an actual compliance record.](https://media.glarivoglass.com/site/blog/glassware-food-contact-safety-fda-lfgb-prop-65/records-927249e9a8f4.webp)
 
