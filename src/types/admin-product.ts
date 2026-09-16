@@ -36,6 +36,11 @@ export type AdminProductInput = {
   categorySlug: string;
   categoryName: string;
   summary: string;
+  seoTitle: string;
+  seoDescription: string;
+  updatedAt: string;
+  copyProtectedFields: string[];
+  copyNeedsReview: boolean;
   description: string;
   content: string;
   sourceProvider: "GARBO" | "SUNWIN" | "MANUAL" | null;

@@ -232,10 +232,26 @@ model Product {
   importCandidates     ProductImportCandidate[]
   overviewFields       ProductOverviewField[]
   contentSections      ProductContentSection[]
+  copyProtectedFields  String[]                    @default([])
+  copyNeedsReview      Boolean                     @default(false)
+  copyRevisions        ProductCopyRevision[]
 
   @@index([status, sortOrder])
   @@index([sourceProvider, sourceCategoryPath])
   @@index([legacyCategory], map: "Product_category_idx")
+}
+
+model ProductCopyRevision {
+  id        String   @id @default(cuid())
+  productId String
+  snapshot  Json
+  changedFields String[]
+  reason    String
+  adminId   String
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, createdAt])
 }
 
 model ProductOverviewField {

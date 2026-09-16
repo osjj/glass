@@ -48,7 +48,7 @@ export default async function EditProductPage({ params, searchParams }: EditProd
           </div>
         </div>
       ) : null}
-      <ProductForm product={product} categories={categories} />
+      <ProductForm key={`${product.id}:${product.updatedAt}`} product={product} categories={categories} />
     </div>
   );
 }

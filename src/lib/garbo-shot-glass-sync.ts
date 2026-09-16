@@ -187,6 +187,13 @@ async function persistCandidateInTransaction(parsed: GarboParsedProduct, provide
   });
   const conflictCount = mergedFields.filter((field) => field.status === "CONFLICT").length;
 
+  if (existing.productId) {
+    await transaction.product.updateMany({
+      where: { id: existing.productId, copyProtectedFields: { isEmpty: false } },
+      data: { copyNeedsReview: true },
+    });
+  }
+
       await transaction.productImportField.deleteMany({ where: { candidateId: existing.id } });
       await transaction.productImportCandidate.update({
         where: { id: existing.id },
@@ -582,6 +589,8 @@ export async function refreshImportedCandidateFromAuthorizedSource(
         select: {
           id: true,
           slug: true,
+          updatedAt: true,
+          copyProtectedFields: true,
           summary: true,
           description: true,
           specifications: { where: { key: "capacity" }, select: { id: true, value: true, reviewStatus: true } },
@@ -627,7 +636,9 @@ export async function refreshImportedCandidateFromAuthorizedSource(
   const baseline = garboNormalizedProductSchema.safeParse(candidate.appliedPayload);
   const preserveReviewedCopy = (candidate.reviewNotes?.includes(CATALOG_REVIEWED_COPY_MARKER) ?? false) ||
     (provider === "SUNWIN" && baseline.success &&
-      (candidate.product.summary !== baseline.data.summary || candidate.product.description !== baseline.data.description));
+      ((!candidate.product.copyProtectedFields.includes("summary") && candidate.product.summary !== baseline.data.summary) ||
+        (!candidate.product.copyProtectedFields.includes("description") && candidate.product.description !== baseline.data.description)));
+  const protectedCopy = (field: string) => preserveReviewedCopy || candidate.product!.copyProtectedFields.includes(field);
   const summary = truncateSourceValue(hasSupplierVoice(source.summary) ? cleanCatalogLabel(source.name) : source.summary || cleanCatalogLabel(source.name), 500);
   const description = truncateSourceValue(cleanCatalogBody(source.description), 20_000);
   const features = source.detailBullets
@@ -665,13 +676,11 @@ export async function refreshImportedCandidateFromAuthorizedSource(
     candidate.product.images.every(
       (image) => image.storageKey && image.sha256 && image.rightsStatus === "AUTHORIZED",
     );
-  const textIsCurrent = preserveReviewedCopy || (
-    candidate.product.summary === summary &&
-    candidate.product.description === description &&
-    currentFeatures.length === features.length &&
-    currentFeatures.every((value, index) => value === features[index]) &&
-    detailsSection?.title === "Product Details" &&
-    detailsSection.body === "");
+  const textIsCurrent =
+    (protectedCopy("summary") || candidate.product.summary === summary) &&
+    (protectedCopy("description") || candidate.product.description === description) &&
+    (protectedCopy("features") || (currentFeatures.length === features.length && currentFeatures.every((value, index) => value === features[index]))) &&
+    (protectedCopy("contentSections") || (detailsSection?.title === "Product Details" && detailsSection.body === ""));
   const capacityField = candidate.fields.find((field) => field.fieldKey === "capacity" && field.status !== "REJECTED");
   const capacity = capacityField ? (capacityField.normalizedValue || capacityField.rawValue) : undefined;
   const previousCapacity = baseline.success ? baseline.data.specificationValues?.capacity : undefined;
@@ -729,6 +738,9 @@ export async function refreshImportedCandidateFromAuthorizedSource(
 
     await database.$transaction(
       async (transaction) => {
+        await transaction.$queryRaw`SELECT "id" FROM "Product" WHERE "id" = ${candidate.product!.id} FOR UPDATE`;
+        const latest = await transaction.product.findUniqueOrThrow({ where: { id: candidate.product!.id }, select: { updatedAt: true } });
+        if (latest.updatedAt.getTime() !== candidate.product!.updatedAt.getTime()) throw new Error("Product changed during sync; retry with current copy protection.");
         const section = await transaction.productContentSection.upsert({
           where: {
             productId_sourceKey: {
@@ -736,7 +748,7 @@ export async function refreshImportedCandidateFromAuthorizedSource(
               sourceKey: sectionKey,
             },
           },
-          update: preserveReviewedCopy ? {} : { title: "Product Details", body: "", sortOrder: 0 },
+          update: protectedCopy("contentSections") ? {} : { title: "Product Details", body: "", sortOrder: 0 },
           create: {
             productId: candidate.product!.id,
             sourceKey: sectionKey,
@@ -793,7 +805,7 @@ export async function refreshImportedCandidateFromAuthorizedSource(
             appliedPayload: jsonValue({ ...source, specificationValues: capacity ? { capacity } : {} }),
           } });
         }
-        if (!preserveReviewedCopy) {
+        if (!protectedCopy("features")) {
           await transaction.productFeature.deleteMany({ where: { productId: candidate.product!.id } });
           if (features.length) {
             await transaction.productFeature.createMany({
@@ -804,15 +816,15 @@ export async function refreshImportedCandidateFromAuthorizedSource(
               })),
             });
           }
-          await transaction.product.update({
-            where: { id: candidate.product!.id },
-            data: {
-              summary,
-              description,
-              detailsHeading: "Details",
-            },
-          });
         }
+        await transaction.product.update({
+          where: { id: candidate.product!.id },
+          data: {
+            ...(!protectedCopy("summary") ? { summary } : {}),
+            ...(!protectedCopy("description") ? { description } : {}),
+            ...(!preserveReviewedCopy && !candidate.product!.copyProtectedFields.length ? { detailsHeading: "Details" } : {}),
+          },
+        });
       },
       { maxWait: 15_000, timeout: 30_000 },
     );

@@ -10,6 +10,8 @@ import {
   serializeStoredProductContentForEditor,
 } from "@/lib/article-content-server";
 import { prisma } from "@/lib/prisma";
+import { COPY_FIELDS, copySnapshot } from "@/lib/product-copy";
+import { recordCopyChange } from "@/lib/product-copy-store";
 import { getProductPagination, PRODUCTS_PER_PAGE } from "@/lib/product-pagination";
 import {
   PRODUCT_DETAIL_STATEMENT_MAX_ITEMS,
@@ -117,6 +119,12 @@ const productSchema = z
   ),
   summary: z.string().trim().min(1, "Short summary is required").max(500),
   description: z.string().trim().max(20000).default(""),
+  seoTitle: z.string().trim().max(180).default(""),
+  seoDescription: z.string().trim().max(500).default(""),
+  expectedUpdatedAt: z.string().max(40),
+  copyAdoptedFields: z.array(z.enum(COPY_FIELDS)).max(7),
+  copyChangeReason: z.enum(["Manual", "AI assisted", "Restore"]),
+  copyReviewed: z.boolean(),
   content: productContentSchema,
   sourceProvider: z.enum(["GARBO", "SUNWIN", "MANUAL"]).nullable(),
   sourceUrl: z.preprocess(
@@ -186,6 +194,12 @@ function parseFormData(formData: FormData) {
     sku: formData.get("sku"),
   summary: formData.get("summary"),
   description: formData.get("description"),
+  seoTitle: formData.get("seoTitle") ?? "",
+  seoDescription: formData.get("seoDescription") ?? "",
+  expectedUpdatedAt: formData.get("expectedUpdatedAt") ?? "",
+  copyAdoptedFields: parseJsonField(formData, "copyAdoptedFields", []),
+  copyChangeReason: formData.get("copyChangeReason") || "Manual",
+  copyReviewed: formData.get("copyReviewed") === "on",
   content: formData.get("content"),
   sourceProvider: formData.get("sourceProvider") || null,
   sourceUrl: formData.get("sourceUrl"),
@@ -269,6 +283,8 @@ function productData(data: z.infer<typeof productSchema>, categorySlug: string) 
     sku: data.sku ?? null,
     summary: data.summary,
     description: data.description,
+    seoTitle: data.seoTitle || null,
+    seoDescription: data.seoDescription || null,
     content: data.content,
     pageTemplate: "GARBO_DETAIL" as const,
     sourceProvider: data.sourceProvider,
@@ -352,6 +368,7 @@ export async function createProduct(
         const created = await transaction.product.create({
           data: {
             ...productData(result.data, category.slug),
+            copyProtectedFields: result.data.copyAdoptedFields,
             ...relationData(result.data),
             categories: {
               create: { categoryId: category.id, isPrimary: true, sortOrder: 0 },
@@ -386,7 +403,7 @@ export async function updateProduct(
   _previousState: ProductFormState,
   formData: FormData,
 ): Promise<ProductFormState> {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const result = parseFormData(formData);
   if (!result.success) return { errors: result.error.flatten().fieldErrors };
 
@@ -407,6 +424,47 @@ export async function updateProduct(
 
     await prisma.$transaction(
       async (transaction) => {
+        const locked = await recordCopyChange(transaction, {
+          productId, expectedUpdatedAt: result.data.expectedUpdatedAt,
+          next: copySnapshot(result.data), adopted: result.data.copyAdoptedFields,
+          reason: result.data.copyChangeReason, adminId: admin.id, reviewed: result.data.copyReviewed,
+        });
+        // Copy-only edits preserve IDs, provenance and review status of factual/media records.
+        const data = result.data;
+        const scalar = productData(data, category.slug);
+        const copyKeys = new Set(["name", "summary", "description", "seoTitle", "seoDescription", "publishedAt"]);
+        const scalarUnchanged = Object.entries(scalar).every(([key, value]) => {
+          if (copyKeys.has(key)) return true;
+          if (key === "content") {
+            const normalized = prepareProductContentForStorage(serializeStoredProductContentForEditor(locked.content));
+            return normalized.success && normalized.value === value;
+          }
+          const stored = locked[key as keyof typeof locked];
+          if (["price", "comparePrice", "cost"].includes(key)) return (stored === null ? null : Number(stored)) === value;
+          return stored === value;
+        });
+        const pairsEqual = (a: { label: string; value: string }[], b: { label: string; value: string }[]) =>
+          JSON.stringify(a.map(({ label, value }) => ({ label, value }))) === JSON.stringify(b);
+        const imagesEqual = (a: typeof locked.images, b: z.infer<typeof imageSchema>[]) => a.length === b.length && b.every((image, i) =>
+          Object.entries(image).every(([key, value]) => (a[i][key as keyof typeof image] ?? null) === (value ?? null)));
+        const sectionsUnchanged = locked.contentSections.length === data.contentSections.length && data.contentSections.every((section, i) =>
+          section.sourceKey === locked.contentSections[i].sourceKey && imagesEqual(locked.contentSections[i].images, section.images));
+        if (scalarUnchanged && locked.categories.some((c) => c.categoryId === category.id) &&
+          pairsEqual(locked.overviewFields, data.overviewFields) && pairsEqual(locked.attributes, data.attributes) &&
+          pairsEqual(locked.specifications, data.specifications) && imagesEqual(locked.images, data.images) && sectionsUnchanged) {
+          await transaction.product.update({ where: { id: productId }, data: {
+            name: data.name, summary: data.summary, description: data.description,
+            seoTitle: data.seoTitle || null, seoDescription: data.seoDescription || null,
+          } });
+          if (JSON.stringify(locked.features.map((f) => f.value)) !== JSON.stringify(data.features)) {
+            await transaction.productFeature.deleteMany({ where: { productId } });
+            if (data.features.length) await transaction.productFeature.createMany({ data: data.features.map((value, sortOrder) => ({ productId, value, sortOrder })) });
+          }
+          for (const section of data.contentSections) await transaction.productContentSection.update({
+            where: { productId_sourceKey: { productId, sourceKey: section.sourceKey } }, data: { title: section.title, body: section.body },
+          });
+          return;
+        }
         await transaction.productSpecification.deleteMany({
           where: { productId, variantId: null, componentId: null },
         });
@@ -524,6 +582,11 @@ export async function getAdminProduct(productId: string): Promise<AdminProductIn
     categorySlug: primaryCategory?.slug ?? product.legacyCategory,
     categoryName: primaryCategory?.name ?? product.legacyCategory,
     summary: product.summary,
+    seoTitle: product.seoTitle ?? "",
+    seoDescription: product.seoDescription ?? "",
+    updatedAt: product.updatedAt.toISOString(),
+    copyProtectedFields: product.copyProtectedFields,
+    copyNeedsReview: product.copyNeedsReview,
     description: product.description,
     content: serializeStoredProductContentForEditor(product.content),
     sourceProvider: product.sourceProvider,

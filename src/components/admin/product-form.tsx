@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { createProduct, updateProduct } from "@/actions/products";
 import { AiImageEditorModal } from "@/components/admin/ai-image-editor-modal";
+import { ProductCopyEditor } from "@/components/admin/product-copy-editor";
+import { copySnapshot, type CopyField, type ProductCopy, type RewriteRequest } from "@/lib/product-copy";
 import {
   PRODUCT_DETAIL_STATEMENT_MAX_ITEMS,
   PRODUCT_DETAIL_STATEMENT_MAX_LENGTH,
@@ -215,12 +217,19 @@ export function ProductForm({
   const pending = actionPending || transitionPending;
   const formRef = useRef<HTMLFormElement>(null);
   const [name, setName] = useState(product?.name ?? "");
+  const [summary, setSummary] = useState(product?.summary ?? "");
+  const [description, setDescription] = useState(product?.description ?? "");
+  const [seoTitle, setSeoTitle] = useState(product?.seoTitle ?? "");
+  const [seoDescription, setSeoDescription] = useState(product?.seoDescription ?? "");
+  const [copyBusy, setCopyBusy] = useState(false);
+  const [copyAdoptedFields, setCopyAdoptedFields] = useState<CopyField[]>([]);
+  const [copyChangeReason, setCopyChangeReason] = useState("Manual");
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [images, setImages] = useState<AdminProductImageInput[]>(product?.images ?? []);
   const [overviewFields, setOverviewFields] = useState<ProductPairInput[]>(product?.overviewFields.length ? product.overviewFields : defaultOverviewFields());
   const [specifications, setSpecifications] = useState<ProductPairInput[]>(product?.specifications ?? []);
   const [features, setFeatures] = useState<string[]>(product?.features ?? []);
-  const [contentSections, setContentSections] = useState<AdminProductContentSectionInput[]>(product?.contentSections.length ? product.contentSections : defaultContentSections());
+  const [contentSections, setContentSections] = useState<AdminProductContentSectionInput[]>(product ? product.contentSections : defaultContentSections());
   const [pricingMode, setPricingMode] = useState(product?.pricingMode ?? "REQUEST_QUOTE");
   const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState("");
@@ -272,6 +281,23 @@ export function ProductForm({
     }))
     .filter((section) => section.title || section.body || section.images.length);
   const validationMessages = Object.entries(state.errors ?? {}).flatMap(([field, messages]) => messages.map((message) => `${field}: ${message}`));
+
+  const currentCopy = copySnapshot({ name, summary, description, seoTitle, seoDescription, features: submittedFeatures, contentSections: submittedSections });
+  function copyFacts(): RewriteRequest["facts"] {
+    const data = formRef.current ? new FormData(formRef.current) : null;
+    return { sku: String(data?.get("sku") ?? ""), category: categories.find((c) => c.id === data?.get("categoryId"))?.label ?? "",
+      overview: submittedOverview, specifications: submittedSpecifications };
+  }
+  function applyCopy(copy: ProductCopy, fields: CopyField[], reason: "AI assisted" | "Restore") {
+    setName(copy.name); setSummary(copy.summary); setDescription(copy.description);
+    setSeoTitle(copy.seoTitle); setSeoDescription(copy.seoDescription); setFeatures(copy.features);
+    if (fields.includes("contentSections")) setContentSections((sections) => sections.map((section, index) => {
+      const saved = copy.contentSections.find((s) => s.sourceKey === buildSectionKey(section.sourceKey || section.title, index));
+      return saved ? { ...section, title: saved.title, body: saved.body } : section;
+    }));
+    setCopyAdoptedFields((previous) => [...new Set([...previous, ...fields])]);
+    setCopyChangeReason(reason);
+  }
 
   async function uploadFiles(files: File[], target: string) {
     if (!files.length) return [];
@@ -336,6 +362,7 @@ export function ProductForm({
 
   function submitProduct(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (copyBusy || pending) return;
     const form = formRef.current;
     if (!form) return;
     startTransition(() => action(new FormData(form)));
@@ -343,12 +370,15 @@ export function ProductForm({
 
   return (
     <form ref={formRef} onSubmit={submitProduct} className="mt-7 space-y-6">
+      <input type="hidden" name="expectedUpdatedAt" value={product?.updatedAt ?? ""} />
+      <input type="hidden" name="copyAdoptedFields" value={JSON.stringify(copyAdoptedFields)} />
+      <input type="hidden" name="copyChangeReason" value={copyChangeReason} />
       <input type="hidden" name="images" value={JSON.stringify(submittedImages)} />
       <input type="hidden" name="overviewFields" value={JSON.stringify(submittedOverview)} />
       <input type="hidden" name="specifications" value={JSON.stringify(submittedSpecifications)} />
       <input type="hidden" name="features" value={JSON.stringify(submittedFeatures)} />
       <input type="hidden" name="contentSections" value={JSON.stringify(submittedSections)} />
-      <input type="hidden" name="attributes" value="[]" />
+      <input type="hidden" name="attributes" value={JSON.stringify(product?.attributes ?? [])} />
       <input type="hidden" name="content" value={product?.content || emptyEditorContent} />
 
       {(state.error || validationMessages.length > 0) ? (
@@ -359,15 +389,23 @@ export function ProductForm({
         </div>
       ) : null}
 
-      <SectionCard title="1. Source and identity" description="The fields Garbo exposes at the top of a product page, plus Glarivo publication controls." icon={FileInput}>
+      <ProductCopyEditor productId={product?.id} copy={currentCopy} getFacts={copyFacts} onApply={applyCopy} disabled={pending} onBusyChange={setCopyBusy} protectedFields={[...new Set([...(product?.copyProtectedFields ?? []), ...copyAdoptedFields])]} />
+      {product?.copyNeedsReview ? <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <p>来源资料已变化，已编辑文案受保护。请核对最新同步资料和参数，再确认文案是否需要更新。</p>
+        <Link className="mt-2 inline-block underline" href={`/admin/imports?provider=${product.sourceProvider ?? "GARBO"}`}>查看同步资料</Link>
+        <label className="mt-3 flex items-center gap-2"><input type="checkbox" name="copyReviewed" />已核对来源变化，保存时清除本次复核提示</label>
+      </div> : null}
+      <SectionCard title="1. Source and identity" description="Product identity, source records, and Glarivo publication controls." icon={FileInput}>
         <div className="grid gap-5 sm:grid-cols-2">
-          <label className="text-sm font-black sm:col-span-2">Product name <span className="text-[#a33c32]">*</span><input className={inputClass} name="name" value={name} onChange={(event) => { const value = event.target.value; setName(value); if (!slug || slug === buildSlug(name)) setSlug(buildSlug(value)); }} required /></label>
+          <label className="text-sm font-black sm:col-span-2">Product name <span className="text-[#a33c32]">*</span><input className={inputClass} name="name" value={name} onChange={(event) => { const value = event.target.value; setName(value); if (!product && (!slug || slug === buildSlug(name))) setSlug(buildSlug(value)); }} required /></label>
           <label className="text-sm font-black">Slug <span className="text-[#a33c32]">*</span><input className={inputClass} name="slug" value={slug} onChange={(event) => setSlug(event.target.value)} required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" /></label>
           <label className="text-sm font-black">Item No. / SKU<input className={inputClass} name="sku" defaultValue={product?.sku ?? ""} placeholder="GB070103H" /></label>
           <label className="text-sm font-black">Source<select className={inputClass} name="sourceProvider" defaultValue={product?.sourceProvider ?? "MANUAL"}><option value="MANUAL">Manual</option><option value="GARBO">Garbo</option><option value="SUNWIN">Sunwin</option></select></label>
           <label className="text-sm font-black">Source category path<input className={inputClass} name="sourceCategoryPath" defaultValue={product?.sourceCategoryPath ?? ""} placeholder="/shot-glass/" /></label>
           <label className="text-sm font-black sm:col-span-2">Source URL<input className={inputClass} type="url" name="sourceUrl" defaultValue={product?.sourceUrl ?? ""} placeholder="https://www.garboglass.com/shot-glass/...html" /></label>
-          <label className="text-sm font-black sm:col-span-2">Catalog summary <span className="text-[#a33c32]">*</span><textarea className={`${textareaClass} min-h-24`} name="summary" defaultValue={product?.summary ?? ""} required maxLength={500} /></label>
+          <label className="text-sm font-black sm:col-span-2">Catalog summary <span className="text-[#a33c32]">*</span><textarea className={`${textareaClass} min-h-24`} name="summary" value={summary} onChange={(event) => setSummary(event.target.value)} required maxLength={500} /></label>
+          <label className="text-sm font-black sm:col-span-2">SEO title<input className={inputClass} name="seoTitle" value={seoTitle} onChange={(event) => setSeoTitle(event.target.value)} maxLength={180} placeholder="Leave empty to use the product name" /></label>
+          <label className="text-sm font-black sm:col-span-2">SEO description<textarea className={textareaClass} name="seoDescription" value={seoDescription} onChange={(event) => setSeoDescription(event.target.value)} maxLength={500} placeholder="Leave empty to use the catalog summary" /></label>
         </div>
       </SectionCard>
 
@@ -395,7 +433,7 @@ export function ProductForm({
 
       <SectionCard title="4. Details" description="Garbo's Details heading and ordered selling-point statements." icon={FileText}>
         <label className="block text-sm font-black">Section heading<input className={inputClass} name="detailsHeading" defaultValue={product?.detailsHeading ?? "Details"} required /></label>
-        <label className="mt-5 block text-sm font-black">Fallback description<textarea className={`${textareaClass} min-h-32`} name="description" defaultValue={product?.description ?? ""} placeholder="Used only when no detail bullets are present." /></label>
+        <label className="mt-5 block text-sm font-black">Fallback description<textarea className={`${textareaClass} min-h-32`} name="description" value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Used only when no detail bullets are present." /></label>
         <div className="mt-6 space-y-3">
           {(features.length ? features : [""]).map((feature, index) => (
             <div key={index} className="flex gap-2">
@@ -468,10 +506,10 @@ export function ProductForm({
       </SectionCard>
 
       <div className="sticky bottom-4 z-30 flex flex-col gap-3 rounded-2xl border border-[#c9d0ca] bg-white/95 p-4 shadow-xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-[var(--ink-muted)]">Saving replaces this product&apos;s ordered page sections. Category records are not modified.</p>
+        <p className="text-sm text-[var(--ink-muted)]">Review your changes before saving. AI suggestions take effect only after you adopt and save them.</p>
         <div className="flex justify-end gap-3">
           <Link href="/admin/products" className="button-secondary">Cancel</Link>
-          <button type="submit" className="button-primary" disabled={pending || Boolean(uploadingTarget)}>{pending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}{pending ? "Saving…" : product ? "Save changes" : "Create product"}</button>
+          <button type="submit" className="button-primary" disabled={pending || copyBusy || Boolean(uploadingTarget)}>{pending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}{pending ? "Saving…" : product ? "Save changes" : "Create product"}</button>
         </div>
       </div>
 
