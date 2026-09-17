@@ -2,7 +2,17 @@
 
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
-import { ImageIcon, Loader2, Sparkles, X } from "lucide-react";
+import {
+  ImageIcon,
+  Loader2,
+  Plus,
+  RotateCcw,
+  Save,
+  Settings2,
+  Sparkles,
+  Trash2,
+  X,
+} from "lucide-react";
 import type { AdminProductImageInput } from "@/types/admin-product";
 import { MagnifiableImage } from "@/components/admin/magnifiable-image";
 
@@ -34,6 +44,13 @@ type ImageQuality = (typeof QUALITY_OPTIONS)[number];
 type OutputFormat = (typeof OUTPUT_FORMAT_OPTIONS)[number];
 type ReferenceImage = "none" | "glarivo-blue-logo";
 
+type PromptTemplate = {
+  id: string;
+  label: string;
+  prompt: string;
+  referenceImage: ReferenceImage;
+};
+
 type GeneratedImage = {
   b64Json: string;
   mimeType: string;
@@ -54,6 +71,52 @@ const REMOVE_ICON_PROMPT =
   "去除图片中的品牌 Logo、文字水印和其他图标，保持产品主体、颜色、材质、比例、背景和构图不变，自然修复被遮挡区域。";
 const REPLACE_ICON_PROMPT =
   "去除第一张产品原图中的品牌 Logo、文字水印和其他图标，自然修复被遮挡区域，再添加第二张参考图里的蓝色 GLARIVO GLASSWARE Logo。图标放左上角，与图片边缘保持适当留白，不遮挡产品主体。保持蓝色 Logo 的图形、文字、颜色和比例准确。只保留一个 GLARIVO Logo，产品主体、颜色、材质、比例、背景和构图不得改变。";
+const PROMPT_TEMPLATES_STORAGE_KEY = "glarivo:ai-image-editor:prompt-templates:v1";
+const DEFAULT_PROMPT_TEMPLATES: PromptTemplate[] = [
+  {
+    id: "remove-icon",
+    label: "去除图标",
+    prompt: REMOVE_ICON_PROMPT,
+    referenceImage: "none",
+  },
+  {
+    id: "replace-icon",
+    label: "替换图标",
+    prompt: REPLACE_ICON_PROMPT,
+    referenceImage: "glarivo-blue-logo",
+  },
+];
+
+function isReferenceImage(value: unknown): value is ReferenceImage {
+  return value === "none" || value === "glarivo-blue-logo";
+}
+
+function parsePromptTemplates(value: string | null): PromptTemplate[] | null {
+  if (!value) return null;
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    if (!Array.isArray(parsed)) return null;
+    const templates = parsed.filter(
+      (template): template is PromptTemplate =>
+        typeof template === "object" &&
+        template !== null &&
+        typeof (template as PromptTemplate).id === "string" &&
+        typeof (template as PromptTemplate).label === "string" &&
+        typeof (template as PromptTemplate).prompt === "string" &&
+        isReferenceImage((template as PromptTemplate).referenceImage),
+    );
+    const uniqueIds = new Set(templates.map((template) => template.id));
+    return templates.length === parsed.length && uniqueIds.size === templates.length
+      ? templates
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function createPromptTemplateId() {
+  return `template-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 function isOutputFormat(value: unknown): value is OutputFormat {
   return OUTPUT_FORMAT_OPTIONS.includes(value as OutputFormat);
@@ -94,10 +157,31 @@ export function AiImageEditorModal({
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("webp");
   const [referenceImage, setReferenceImage] = useState<ReferenceImage>("none");
   const [background, setBackground] = useState<string>("original");
+  const [promptTemplates, setPromptTemplates] = useState<PromptTemplate[]>(
+    DEFAULT_PROMPT_TEMPLATES,
+  );
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+  const [configuringTemplates, setConfiguringTemplates] = useState(false);
+  const [templateDrafts, setTemplateDrafts] = useState<PromptTemplate[]>([]);
+  const [templateConfigError, setTemplateConfigError] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<GeneratedImage | null>(null);
   const [generating, setGenerating] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        const storedTemplates = parsePromptTemplates(
+          window.localStorage.getItem(PROMPT_TEMPLATES_STORAGE_KEY),
+        );
+        if (storedTemplates) setPromptTemplates(storedTemplates);
+      } catch {
+        // Keep the defaults when browser storage is unavailable.
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -120,7 +204,7 @@ export function AiImageEditorModal({
 
       const focusable = Array.from(
         dialogRef.current.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), textarea:not([disabled]), select:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+          'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
         ),
       );
       if (!focusable.length) return;
@@ -146,6 +230,56 @@ export function AiImageEditorModal({
   function dismiss() {
     operationAbortRef.current?.abort();
     onClose();
+  }
+
+  function openTemplateConfiguration() {
+    setTemplateDrafts(promptTemplates.map((template) => ({ ...template })));
+    setTemplateConfigError(null);
+    setConfiguringTemplates(true);
+  }
+
+  function saveTemplateConfiguration() {
+    const normalizedTemplates = templateDrafts.map((template) => ({
+      ...template,
+      label: template.label.trim(),
+      prompt: template.prompt.trim(),
+    }));
+    if (normalizedTemplates.some((template) => !template.label || !template.prompt)) {
+      setTemplateConfigError("Each template needs a button name and prompt.");
+      return;
+    }
+    if (normalizedTemplates.some((template) => template.label.length > 40)) {
+      setTemplateConfigError("Button names cannot exceed 40 characters.");
+      return;
+    }
+    if (normalizedTemplates.some((template) => template.prompt.length > 4000)) {
+      setTemplateConfigError("Template prompts cannot exceed 4000 characters.");
+      return;
+    }
+
+    setPromptTemplates(normalizedTemplates);
+    setSelectedTemplateId(null);
+    try {
+      window.localStorage.setItem(
+        PROMPT_TEMPLATES_STORAGE_KEY,
+        JSON.stringify(normalizedTemplates),
+      );
+      setConfiguringTemplates(false);
+      setTemplateConfigError(null);
+    } catch {
+      setTemplateConfigError(
+        "Templates were applied for this session, but this browser could not save them.",
+      );
+    }
+  }
+
+  function applyPromptTemplate(template: PromptTemplate) {
+    setPrompt(template.prompt);
+    setReferenceImage(template.referenceImage);
+    setSelectedTemplateId(template.id);
+    setGeneratedImage(null);
+    setError(null);
+    promptRef.current?.focus();
   }
 
   async function generateImage() {
@@ -373,6 +507,7 @@ export function AiImageEditorModal({
               value={prompt}
               onChange={(event) => {
                 setPrompt(event.target.value);
+                setSelectedTemplateId(null);
                 setGeneratedImage(null);
               }}
               placeholder="Describe what should change and what must remain unchanged…"
@@ -382,44 +517,213 @@ export function AiImageEditorModal({
           </label>
 
           <div className="mt-3">
-            <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--ink-muted)]">
-              Prompt templates
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--ink-muted)]">
+                Prompt templates
+              </p>
               <button
                 type="button"
-                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#c9d0ca] bg-[#f8f9f7] px-3 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent)] hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-                onClick={() => {
-                  setPrompt(REMOVE_ICON_PROMPT);
-                  setReferenceImage("none");
-                  setGeneratedImage(null);
-                  promptRef.current?.focus();
-                }}
+                className="inline-flex min-h-9 items-center gap-2 rounded-lg px-2.5 text-xs font-black text-[var(--accent-dark)] transition hover:bg-[#edf4ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                onClick={
+                  configuringTemplates
+                    ? () => setConfiguringTemplates(false)
+                    : openTemplateConfiguration
+                }
                 disabled={busy}
+                aria-expanded={configuringTemplates}
               >
-                <Sparkles className="size-4 text-[var(--accent-dark)]" aria-hidden="true" />
-                去除图标
-              </button>
-              <button
-                type="button"
-                className={`inline-flex min-h-10 items-center gap-2 rounded-xl border px-3 text-sm font-black transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
-                  referenceImage === "glarivo-blue-logo"
-                    ? "border-[var(--accent)] bg-[#edf4ff] text-[var(--accent-dark)]"
-                    : "border-[#c9d0ca] bg-[#f8f9f7] text-[var(--ink)] hover:border-[var(--accent)] hover:bg-white"
-                }`}
-                onClick={() => {
-                  setPrompt(REPLACE_ICON_PROMPT);
-                  setReferenceImage("glarivo-blue-logo");
-                  setGeneratedImage(null);
-                  promptRef.current?.focus();
-                }}
-                disabled={busy}
-                aria-pressed={referenceImage === "glarivo-blue-logo"}
-              >
-                <ImageIcon className="size-4" aria-hidden="true" />
-                替换图标
+                <Settings2 className="size-4" aria-hidden="true" />
+                {configuringTemplates ? "Close configuration" : "Configure"}
               </button>
             </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {promptTemplates.map((template) => {
+                const selected = selectedTemplateId === template.id;
+                return (
+                  <button
+                    key={template.id}
+                    type="button"
+                    className={`inline-flex min-h-10 items-center gap-2 rounded-xl border px-3 text-sm font-black transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+                      selected
+                        ? "border-[var(--accent)] bg-[#edf4ff] text-[var(--accent-dark)]"
+                        : "border-[#c9d0ca] bg-[#f8f9f7] text-[var(--ink)] hover:border-[var(--accent)] hover:bg-white"
+                    }`}
+                    onClick={() => applyPromptTemplate(template)}
+                    disabled={busy}
+                    aria-pressed={selected}
+                  >
+                    {template.referenceImage === "glarivo-blue-logo" ? (
+                      <ImageIcon className="size-4" aria-hidden="true" />
+                    ) : (
+                      <Sparkles
+                        className="size-4 text-[var(--accent-dark)]"
+                        aria-hidden="true"
+                      />
+                    )}
+                    {template.label}
+                  </button>
+                );
+              })}
+              {!promptTemplates.length ? (
+                <p className="py-2 text-sm text-[var(--ink-muted)]">
+                  No templates configured. Select Configure to add one.
+                </p>
+              ) : null}
+            </div>
+            {configuringTemplates ? (
+              <div className="mt-3 rounded-2xl border border-[#ccd3ce] bg-[#f8f9f7] p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-black">Configure prompt templates</h3>
+                    <p className="mt-1 text-xs leading-5 text-[var(--ink-muted)]">
+                      Changes are saved in this browser and reused for every product image.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="inline-flex min-h-9 items-center gap-2 rounded-lg px-2.5 text-xs font-black text-[var(--ink-muted)] transition hover:bg-white hover:text-[var(--ink)]"
+                    onClick={() => {
+                      setTemplateDrafts(
+                        DEFAULT_PROMPT_TEMPLATES.map((template) => ({ ...template })),
+                      );
+                      setTemplateConfigError(null);
+                    }}
+                  >
+                    <RotateCcw className="size-4" aria-hidden="true" />
+                    Restore defaults
+                  </button>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  {templateDrafts.map((template, index) => (
+                    <div
+                      key={template.id}
+                      className="rounded-xl border border-[#d7dcd8] bg-white p-3"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)]">
+                          <label className="text-xs font-black">
+                            Button name
+                            <input
+                              className="mt-1.5 h-10 w-full rounded-lg border border-[#ccd3ce] px-3 text-sm font-normal focus:border-[var(--accent)]"
+                              value={template.label}
+                              onChange={(event) =>
+                                setTemplateDrafts((current) =>
+                                  current.map((item, itemIndex) =>
+                                    itemIndex === index
+                                      ? { ...item, label: event.target.value }
+                                      : item,
+                                  ),
+                                )
+                              }
+                              maxLength={40}
+                            />
+                          </label>
+                          <label className="text-xs font-black">
+                            Reference image
+                            <select
+                              className="mt-1.5 h-10 w-full rounded-lg border border-[#ccd3ce] bg-white px-3 text-sm font-normal focus:border-[var(--accent)]"
+                              value={template.referenceImage}
+                              onChange={(event) =>
+                                setTemplateDrafts((current) =>
+                                  current.map((item, itemIndex) =>
+                                    itemIndex === index
+                                      ? {
+                                          ...item,
+                                          referenceImage: event.target.value as ReferenceImage,
+                                        }
+                                      : item,
+                                  ),
+                                )
+                              }
+                            >
+                              <option value="none">None</option>
+                              <option value="glarivo-blue-logo">Blue GLARIVO logo</option>
+                            </select>
+                          </label>
+                        </div>
+                        <button
+                          type="button"
+                          className="mt-5 grid size-9 shrink-0 place-items-center rounded-lg text-[#a33c32] transition hover:bg-[#fff0ee]"
+                          onClick={() =>
+                            setTemplateDrafts((current) =>
+                              current.filter((_, itemIndex) => itemIndex !== index),
+                            )
+                          }
+                          aria-label={`Delete ${template.label || `template ${index + 1}`}`}
+                        >
+                          <Trash2 className="size-4" aria-hidden="true" />
+                        </button>
+                      </div>
+                      <label className="mt-3 block text-xs font-black">
+                        Prompt
+                        <textarea
+                          className="mt-1.5 min-h-24 w-full rounded-lg border border-[#ccd3ce] p-3 text-sm font-normal leading-5 focus:border-[var(--accent)]"
+                          value={template.prompt}
+                          onChange={(event) =>
+                            setTemplateDrafts((current) =>
+                              current.map((item, itemIndex) =>
+                                itemIndex === index
+                                  ? { ...item, prompt: event.target.value }
+                                  : item,
+                              ),
+                            )
+                          }
+                          maxLength={4000}
+                        />
+                      </label>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    className="button-secondary"
+                    onClick={() => {
+                      setTemplateDrafts((current) => [
+                        ...current,
+                        {
+                          id: createPromptTemplateId(),
+                          label: "New template",
+                          prompt: "",
+                          referenceImage: "none",
+                        },
+                      ]);
+                      setTemplateConfigError(null);
+                    }}
+                  >
+                    <Plus className="size-4" aria-hidden="true" />
+                    Add template
+                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      className="button-secondary"
+                      onClick={() => {
+                        setConfiguringTemplates(false);
+                        setTemplateConfigError(null);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="button-primary"
+                      onClick={saveTemplateConfiguration}
+                    >
+                      <Save className="size-4" aria-hidden="true" />
+                      Save templates
+                    </button>
+                  </div>
+                </div>
+                {templateConfigError ? (
+                  <p role="alert" className="mt-3 text-sm font-bold text-[#a33c32]">
+                    {templateConfigError}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
             {referenceImage === "glarivo-blue-logo" ? (
               <div className="mt-3 flex items-center gap-3 rounded-xl border border-[#d8e5f7] bg-[#f7faff] p-3">
                 <span className="relative h-10 w-20 shrink-0 overflow-hidden rounded-lg bg-white">
