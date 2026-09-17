@@ -1,0 +1,38 @@
+{
+  "title": "Custom Logo Shot Glasses: Artwork & Sample Approval Checklist",
+  "slug": "custom-logo-shot-glasses-artwork-sample-approval-checklist",
+  "category": "Shot Glass Sourcing",
+  "topicUrl": "https://www.glarivoglass.com/guides/shot-glass-sourcing",
+  "status": "LOCAL_DRAFT",
+  "publishedAt": null,
+  "featured": false,
+  "seoTitle": "Custom Logo Shot Glasses: Artwork & Sample Approval",
+  "seoDescription": "Prepare custom logo shot glass artwork, confirm placement and colors, and use practical checklists to approve decorated samples and packaging.",
+  "excerpt": "Prepare custom logo shot glass artwork, confirm placement and colors, and use practical checklists to approve decorated samples and packaging.",
+  "wordCountApprox": 2129,
+  "readMinutes": 10,
+  "images": [
+    {
+      "file": "D:\\glarivo\\public\\images\\blog\\custom-logo-shot-glasses-artwork-sample-approval-checklist\\hero.webp",
+      "alt": "AI-generated illustration of plain and decorated shot glasses beside an artwork proof and a sample box. Generic concepts, not actual Glarivo products.",
+      "bytes": 180912,
+      "sha256": "c9b8f37c189bec02b0e2710920ab3f2c358628678d049a89b50863b393a2d992"
+    },
+    {
+      "file": "D:\\glarivo\\public\\images\\blog\\custom-logo-shot-glasses-artwork-sample-approval-checklist\\artwork-placement.webp",
+      "alt": "AI-generated illustration comparing a flat artwork proof with a decorated shot glass. Placement marks are schematic, not a dimensioned production template.",
+      "bytes": 89124,
+      "sha256": "f777b57c3736481f4dc64b7141b0de265c7a1f5c6c46d1356b92f6af6c5ff74c"
+    },
+    {
+      "file": "D:\\glarivo\\public\\images\\blog\\custom-logo-shot-glasses-artwork-sample-approval-checklist\\sample-review.webp",
+      "alt": "AI-generated illustration of a decorated shot glass, a packed sample and an inspection notepad. Conceptual scene, not a record of an actual inspection or transport test.",
+      "bytes": 252294,
+      "sha256": "145de18ac13a3e4a17eeffa41b4c4285b413a219aa5870ebe79394ebd11804eb"
+    }
+  ],
+  "publication": "No database write, R2 upload or deployment performed.",
+  "sourceChecked": "https://helpx.adobe.com/photoshop/using/image-essentials.html",
+  "sourceCheckedAt": "2026-09-17",
+  "editorNote": "Markdown includes three tables. The current site EditorJS converter does not support table blocks; preserve tables explicitly or adapt them to labeled list items before a future CMS import."
+}

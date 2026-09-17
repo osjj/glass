@@ -1,0 +1,45 @@
+{
+  "links": [
+    {
+      "url": "https://helpx.adobe.com/photoshop/using/image-essentials.html",
+      "status": 200,
+      "finalUrl": "https://helpx.adobe.com/photoshop/using/image-essentials.html"
+    },
+    {
+      "url": "https://www.glarivoglass.com/blog/private-label-glassware-packaging-barcodes",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/blog/private-label-glassware-packaging-barcodes"
+    },
+    {
+      "url": "https://www.glarivoglass.com/blog/shot-glass-buying-guide-for-wholesale-buyers",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/blog/shot-glass-buying-guide-for-wholesale-buyers"
+    },
+    {
+      "url": "https://www.glarivoglass.com/guides/shot-glass-sourcing",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/guides/shot-glass-sourcing"
+    },
+    {
+      "url": "https://www.glarivoglass.com/products/category/shot-glass",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/products/category/shot-glass"
+    }
+  ],
+  "imagesLoaded": 3,
+  "tables": 3,
+  "brokenTocAnchors": 0,
+  "mobileViewport": 390,
+  "mobileScrollWidth": 390,
+  "visualReview": [
+    "three generated images",
+    "desktop first viewport",
+    "desktop approval table",
+    "mobile first viewport",
+    "mobile sample review table"
+  ],
+  "status": "LOCAL_DRAFT",
+  "databaseWrite": false,
+  "uploaded": false,
+  "published": false
+}

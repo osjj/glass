@@ -1,0 +1,178 @@
+{
+  "slug": "coffee-tea-glassware-buying-guide",
+  "category": "Coffee & Tea Glassware",
+  "localOnly": false,
+  "databaseWritten": true,
+  "uploaded": true,
+  "wordCount": 2020,
+  "blocks": 56,
+  "bodyImages": 2,
+  "mainSections": 9,
+  "images": [
+    {
+      "key": "hero",
+      "file": "public/images/blog/coffee-tea-glassware-buying-guide/hero.webp",
+      "width": 1600,
+      "height": 900,
+      "bytes": 160760,
+      "sha256": "785bffa2dd3419737838ac9010204d01f388ae795f921e4f1c300e73f2ff7540"
+    },
+    {
+      "key": "cup-comparison",
+      "file": "public/images/blog/coffee-tea-glassware-buying-guide/cup-comparison.webp",
+      "width": 1400,
+      "height": 933,
+      "bytes": 101280,
+      "sha256": "255d319f8d8646e1311e46e7042c215f6f4e5e9d88013c4340dc71efc5f34207"
+    },
+    {
+      "key": "teapot-components",
+      "file": "public/images/blog/coffee-tea-glassware-buying-guide/teapot-components.webp",
+      "width": 1400,
+      "height": 933,
+      "bytes": 156390,
+      "sha256": "3fb0b1c23394213fa19d8e5019d320526b05947164d9e87df14cff712539f5ff"
+    }
+  ],
+  "contentValidation": {
+    "passed": true,
+    "blocks": 56,
+    "bodyImages": 2,
+    "faqQuestions": 5
+  },
+  "links": [
+    {
+      "url": "https://www.glarivoglass.com/blog/glassware-spec-sheet-guide-wholesale",
+      "status": 200,
+      "title": "How to Read Glassware Spec Sheets for Wholesale"
+    },
+    {
+      "url": "https://www.glarivoglass.com/products/category/glass-coffee-mugs",
+      "status": 200,
+      "title": "Glass Coffee Mugs"
+    },
+    {
+      "url": "https://www.glarivoglass.com/products/category/double-wall-glass-mug",
+      "status": 200,
+      "title": "Double Wall Glass Mug"
+    },
+    {
+      "url": "https://www.glarivoglass.com/products/category/borosilicate-glass-teapot",
+      "status": 200,
+      "title": "Borosilicate Glass Teapot"
+    },
+    {
+      "url": "https://www.glarivoglass.com/products/category/glass-tea-mug",
+      "status": 200,
+      "title": "Glass Tea Mug"
+    },
+    {
+      "url": "https://global.hario.com/faq/glass_1_en.pdf",
+      "status": 200,
+      "title": ""
+    },
+    {
+      "url": "https://www.glarivoglass.com/blog/glassware-food-contact-safety-fda-lfgb-prop-65",
+      "status": 200,
+      "title": "Glassware Food-Contact Safety: FDA, EU/LFGB & Prop 65"
+    },
+    {
+      "url": "https://www.glarivoglass.com/blog/private-label-glassware-packaging-barcodes",
+      "status": 200,
+      "title": "Private Label Glassware: Packaging, Barcodes & Retail Readiness"
+    },
+    {
+      "url": "https://www.glarivoglass.com/guides/coffee-tea-glassware",
+      "status": 200,
+      "title": "Coffee & Tea Glassware"
+    }
+  ],
+  "visualReview": {
+    "desktop": {
+      "viewport": [
+        1440,
+        1000
+      ],
+      "scrollWidth": 1440,
+      "brokenImages": 0,
+      "reviewed": true
+    },
+    "mobile": {
+      "viewport": [
+        390,
+        844
+      ],
+      "scrollWidth": 390,
+      "loadedImages": 3,
+      "reviewed": true
+    },
+    "screenshots": [
+      "output/playwright/coffee-tea-desktop.png",
+      "output/playwright/coffee-tea-mobile.png",
+      "output/playwright/coffee-tea-desktop-top.png",
+      "output/playwright/coffee-tea-mobile-top.png"
+    ]
+  },
+  "onlineDraft": {
+    "id": "cmu4aaalj0000jwumz78yi834",
+    "title": "Coffee & Tea Glassware Buying Guide: Cups, Mugs & Teapots",
+    "slug": "coffee-tea-glassware-buying-guide",
+    "category": "Coffee & Tea Glassware",
+    "status": "DRAFT",
+    "publishedAt": null,
+    "featured": false,
+    "publiclyEligible": 0,
+    "blocks": 56,
+    "bodyImages": 2,
+    "totalImages": 3,
+    "countBefore": 10,
+    "countAfter": 11,
+    "contentSha256": "4c33b3a0b35c811bd678d123fe584339e1eee40286a0ee9d852bc1866ed386eb",
+    "adminUrl": "https://www.glarivoglass.com/admin/blog/cmu4aaalj0000jwumz78yi834",
+    "verifiedAt": "2026-09-16T15:57:03.384Z"
+  },
+  "r2Assets": [
+    {
+      "key": "hero",
+      "file": "public/images/blog/coffee-tea-glassware-buying-guide/hero.webp",
+      "width": 1600,
+      "height": 900,
+      "bytes": 160760,
+      "sha256": "785bffa2dd3419737838ac9010204d01f388ae795f921e4f1c300e73f2ff7540",
+      "objectKey": "site/blog/coffee-tea-glassware-buying-guide/hero-785bffa2dd34.webp",
+      "url": "https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/hero-785bffa2dd34.webp",
+      "signedReadbackVerified": true,
+      "publicStatus": 200,
+      "publicHashVerified": true,
+      "verifiedAt": "2026-09-16T15:56:24.374Z"
+    },
+    {
+      "key": "cup-comparison",
+      "file": "public/images/blog/coffee-tea-glassware-buying-guide/cup-comparison.webp",
+      "width": 1400,
+      "height": 933,
+      "bytes": 101280,
+      "sha256": "255d319f8d8646e1311e46e7042c215f6f4e5e9d88013c4340dc71efc5f34207",
+      "objectKey": "site/blog/coffee-tea-glassware-buying-guide/cup-comparison-255d319f8d86.webp",
+      "url": "https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/cup-comparison-255d319f8d86.webp",
+      "signedReadbackVerified": true,
+      "publicStatus": 200,
+      "publicHashVerified": true,
+      "verifiedAt": "2026-09-16T15:56:28.436Z"
+    },
+    {
+      "key": "teapot-components",
+      "file": "public/images/blog/coffee-tea-glassware-buying-guide/teapot-components.webp",
+      "width": 1400,
+      "height": 933,
+      "bytes": 156390,
+      "sha256": "3fb0b1c23394213fa19d8e5019d320526b05947164d9e87df14cff712539f5ff",
+      "objectKey": "site/blog/coffee-tea-glassware-buying-guide/teapot-components-3fb0b1c23394.webp",
+      "url": "https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/teapot-components-3fb0b1c23394.webp",
+      "signedReadbackVerified": true,
+      "publicStatus": 200,
+      "publicHashVerified": true,
+      "verifiedAt": "2026-09-16T15:56:33.903Z"
+    }
+  ]
+}

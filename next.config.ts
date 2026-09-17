@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   redirects() {
     return [
       {
+        source: "/blog/cocktail-glassware-buying-guide",
+        destination: "/blog/essential-cocktail-glass-types-bars-restaurants",
+        permanent: true,
+      },
+      {
         source: "/case-studies/garbo-hotel-glassware-color-customization",
         destination: "/case-studies/glarivo-hotel-glassware-customization",
         permanent: true,

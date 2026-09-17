@@ -1,0 +1,44 @@
+[
+  {
+    "key": "hero",
+    "file": "public/images/blog/coffee-tea-glassware-buying-guide/hero.webp",
+    "width": 1600,
+    "height": 900,
+    "bytes": 160760,
+    "sha256": "785bffa2dd3419737838ac9010204d01f388ae795f921e4f1c300e73f2ff7540",
+    "objectKey": "site/blog/coffee-tea-glassware-buying-guide/hero-785bffa2dd34.webp",
+    "url": "https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/hero-785bffa2dd34.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-16T15:56:24.374Z"
+  },
+  {
+    "key": "cup-comparison",
+    "file": "public/images/blog/coffee-tea-glassware-buying-guide/cup-comparison.webp",
+    "width": 1400,
+    "height": 933,
+    "bytes": 101280,
+    "sha256": "255d319f8d8646e1311e46e7042c215f6f4e5e9d88013c4340dc71efc5f34207",
+    "objectKey": "site/blog/coffee-tea-glassware-buying-guide/cup-comparison-255d319f8d86.webp",
+    "url": "https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/cup-comparison-255d319f8d86.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-16T15:56:28.436Z"
+  },
+  {
+    "key": "teapot-components",
+    "file": "public/images/blog/coffee-tea-glassware-buying-guide/teapot-components.webp",
+    "width": 1400,
+    "height": 933,
+    "bytes": 156390,
+    "sha256": "3fb0b1c23394213fa19d8e5019d320526b05947164d9e87df14cff712539f5ff",
+    "objectKey": "site/blog/coffee-tea-glassware-buying-guide/teapot-components-3fb0b1c23394.webp",
+    "url": "https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/teapot-components-3fb0b1c23394.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-16T15:56:33.903Z"
+  }
+]

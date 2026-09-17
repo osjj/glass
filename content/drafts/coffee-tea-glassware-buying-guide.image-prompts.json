@@ -1,0 +1,17 @@
+{
+  "mode": "built-in image_gen",
+  "images": [
+    {
+      "key": "hero",
+      "prompt": "Use case: photorealistic-natural. Asset type: wide editorial hero photograph for a premium wholesale coffee and tea glassware buying guide. Create a natural high-end still life on a pale warm limestone café counter: one clear handled single-wall cup holding black coffee at left, a rounded clear double-wall handled mug containing a latte with a subtle visible air gap in the middle, and a transparent glass teapot with a stainless steel basket infuser holding amber tea at right, with a small plain clear tea cup nearby. All objects fully visible with believable handles, separate rims and bases, realistic transparent glass refraction and restrained reflections. Calm morning side light, warm ivory and muted sage café background softly out of focus, quiet editorial sophistication, no people. Landscape 16:9 composition, objects in the middle with comfortable space at edges and modest negative space above. No text, no branding, no logos, no watermark, no measurements, no packaging, no fake badges. These are generic illustrative glassware designs, not exact catalog products."
+    },
+    {
+      "key": "cup-comparison",
+      "prompt": "Use case: product-mockup. Asset type: landscape supporting photograph for a coffee glassware purchasing article. Two generic clear handled coffee mugs side by side on pale warm stone, left a simple single-wall cylindrical glass mug with a clean C-shaped handle, right a rounded double-wall glass mug with a clear continuous visible air space between inner and outer shells and a believable glass handle attached to the outer shell. Both contain the same modest level of dark coffee well below the rims. Full silhouettes visible, camera slightly above rim height at front three-quarter view, crisp physically plausible glass edges, clean transparent gap visible particularly under the right inner bowl. Soft studio daylight, warm ivory background, elegant restrained editorial product photography, landscape 3:2. No cutaways, no arrows, no text, no numbers, no labels, no logos, no watermark, no steam obscuring details. Not a calibrated size comparison."
+    },
+    {
+      "key": "teapot-components",
+      "prompt": "Use case: product-mockup. Asset type: landscape editorial photograph illustrating glass teapot component checks in a wholesale tea-service buying guide. A generic clean empty round transparent glass teapot with a short practical curved spout and a single coherent clear loop handle rests on a pale warm stone table. Its matching circular glass lid with a simple round knob is removed and placed flat on the table to its right; its separate cylindrical stainless steel fine mesh basket infuser with a rim flange is upright between the teapot and lid. The infuser diameter is visibly a little smaller than the open teapot neck so its flange could rest on the neck. All three pieces completely visible and separate, no floating exploded parts. A small empty plain clear tea cup sits subtly in the background. Realistic glass geometry, fine mesh texture, physically plausible reflections. Soft side daylight, warm ivory background with muted sage tones, premium editorial photography, landscape 3:2 view from 30 degrees above table. No words, labels, numbers, logos, watermarks, brand identifiers, hands or dimensional claims. Illustrative components, not a real product specification."
+    }
+  ]
+}
