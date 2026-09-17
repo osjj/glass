@@ -39,6 +39,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return Response.json({ error: parsed.error.issues[0].message }, { status: 400 });
   try {
     const result = await storeInquiry(parsed.data);
+    if (result === "invalid-product") return Response.json({ error: "This product is no longer available for this inquiry. Refresh the page or send a general inquiry." }, { status: 400 });
     if (result === "limited") return Response.json({ error: "Too many requests. Please try again in an hour or contact us directly." }, { status: 429, headers: { "Retry-After": "3600" } });
     if (result === "conflict") return Response.json({ error: "This request has already been submitted. Close and reopen the form to send a new inquiry." }, { status: 409 });
     return Response.json({ success: true }, { status: 201 });

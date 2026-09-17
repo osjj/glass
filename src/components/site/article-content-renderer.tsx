@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+import { Fragment, type JSX, type ReactNode } from "react";
 import Image from "next/image";
 import {
   plainTextFromEditorHtml,
@@ -35,14 +35,16 @@ function listItems(items: ArticleListItem[], ordered: boolean): JSX.Element[] {
 export function RichContentRenderer({
   content,
   fallbackImageAlt = "Article illustration",
+  insertBeforeHeading,
 }: {
   content: string;
   fallbackImageAlt?: string;
+  insertBeforeHeading?: { id: string; content: ReactNode };
 }) {
   const data = readStoredArticleContent(content);
   const usedHeadingIds = new Set<string>();
 
-  return data.blocks.map((block, index) => {
+  const rendered = data.blocks.map((block, index) => {
     const key = block.id || `${block.type}-${index}`;
 
     if (block.type === "paragraph") {
@@ -129,6 +131,10 @@ export function RichContentRenderer({
 
     return null;
   });
+  if (!insertBeforeHeading) return rendered;
+  const index = data.blocks.findIndex((block, i) => block.type === "header" && headingId(String(block.data.text ?? ""), i) === insertBeforeHeading.id);
+  const position = index < 0 ? rendered.length : index;
+  return [...rendered.slice(0, position), <Fragment key="article-product-insertion">{insertBeforeHeading.content}</Fragment>, ...rendered.slice(position)];
 }
 
 export const ArticleContentRenderer = RichContentRenderer;

@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState, type FormEvent,
 import { usePathname } from "next/navigation";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { ChatTeardropText, EnvelopeSimple, WhatsappLogo } from "@phosphor-icons/react";
-import { inquirySchema, SALES_EMAIL, SALES_WHATSAPP, type InquiryContext } from "@/lib/inquiries";
+import { inquiryAttribution, inquiryMessage, inquirySchema, SALES_EMAIL, SALES_WHATSAPP, type InquiryContext } from "@/lib/inquiries";
 import styles from "./inquiry-contact.module.css";
 
 const InquiryContextValue = createContext<(product?: InquiryContext) => void>(() => {});
@@ -16,8 +16,12 @@ export function InquiryButton({ children, className, product }: { children: Reac
 
 export function InquiryProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const [request, setRequest] = useState<{ id: string; product?: InquiryContext } | null>(null);
-  function open(product?: InquiryContext) { setRequest({ id: crypto.randomUUID(), product }); }
+  const [request, setRequest] = useState<{ id: string; product?: InquiryContext; sourcePath: string; productSlug?: string } | null>(null);
+  function open(product?: InquiryContext) {
+    const context = inquiryAttribution(pathname, window.location.search, product);
+    setRequest({ id: crypto.randomUUID(), sourcePath: context.sourcePath, productSlug: context.productSlug,
+      product: product ? { ...product, slug: context.productSlug, brief: context.brief } : undefined });
+  }
   return <InquiryContextValue.Provider value={open}>
     {children}
     <aside className={styles.rail} aria-label="Contact sales">
@@ -25,17 +29,17 @@ export function InquiryProvider({ children }: { children: ReactNode }) {
       <a className={styles.whatsapp} href={SALES_WHATSAPP} target="_blank" rel="noopener noreferrer" title="WhatsApp +86 18825913441"><WhatsappLogo size={27} weight="regular" aria-hidden="true" /><span>WhatsApp</span></a>
       <button className={styles.inquire} type="button" onClick={() => open()} aria-haspopup="dialog"><ChatTeardropText size={25} weight="regular" aria-hidden="true" /><span>Inquire</span></button>
     </aside>
-    {request && <InquiryModal key={request.id} submissionId={request.id} product={request.product} sourcePath={pathname} onClose={() => setRequest(null)} />}
+    {request && <InquiryModal key={request.id} submissionId={request.id} product={request.product} sourcePath={request.sourcePath} productSlug={request.productSlug} onClose={() => setRequest(null)} />}
   </InquiryContextValue.Provider>;
 }
 
-function InquiryModal({ submissionId, product, sourcePath, onClose }: { submissionId: string; product?: InquiryContext; sourcePath: string; onClose: () => void }) {
+function InquiryModal({ submissionId, product, sourcePath, productSlug, onClose }: { submissionId: string; product?: InquiryContext; sourcePath: string; productSlug?: string; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const submitting = useRef(false);
   const [busy, setBusy] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [values, setValues] = useState({ email: "", countryCode: "", phone: "", name: "", companyName: "", message: product ? `I am interested in ${product.name}${product.sku ? ` (Item No. ${product.sku})` : ""}. Quantity: ` : "", website: "" });
+  const [values, setValues] = useState({ email: "", countryCode: "", phone: "", name: "", companyName: "", message: inquiryMessage(product), website: "" });
 
   useEffect(() => {
     const element = dialog.current;
@@ -53,7 +57,7 @@ function InquiryModal({ submissionId, product, sourcePath, onClose }: { submissi
     event.preventDefault();
     if (submitting.current) return;
     setError("");
-    const parsed = inquirySchema.safeParse({ ...values, email: values.email.trim(), submissionId, sourcePath });
+    const parsed = inquirySchema.safeParse({ ...values, email: values.email.trim(), submissionId, sourcePath, productSlug });
     if (!parsed.success) { setError(parsed.error.issues[0].message); return; }
     submitting.current = true;
     setBusy(true);
@@ -98,7 +102,7 @@ function InquiryModal({ submissionId, product, sourcePath, onClose }: { submissi
             </div>
             <label className={styles.field}><span>Name <b>*</b></span><div className={styles.inputWrap}><input name="name" autoComplete="name" required maxLength={100} placeholder="Please enter your name" value={values.name} onChange={(e) => change("name", e.target.value)} /><small>{values.name.length}/100</small></div></label>
             <label className={styles.field}><span>Company name <em>(optional)</em></span><div className={styles.inputWrap}><input name="companyName" autoComplete="organization" maxLength={200} placeholder="Please enter your company name" value={values.companyName} onChange={(e) => change("companyName", e.target.value)} /><small>{values.companyName.length}/200</small></div></label>
-            <label className={styles.field}><span>Message <b>*</b></span><div className={styles.inputWrap}><textarea name="message" required maxLength={1000} rows={4} placeholder="Which products are you interested in? And what is the quantity?" value={values.message} onChange={(e) => change("message", e.target.value)} /><small>{values.message.length}/1000</small></div></label>
+            <label className={styles.field}><span>Message <b>*</b></span><div className={styles.inputWrap}><textarea name="message" required maxLength={1000} rows={product?.brief === "shot-glass" ? 8 : 4} placeholder="Which products are you interested in? And what is the quantity?" value={values.message} onChange={(e) => change("message", e.target.value)} /><small>{values.message.length}/1000</small></div></label>
             <label className={styles.trap} aria-hidden="true">Website<input tabIndex={-1} autoComplete="off" name="website" value={values.website} onChange={(e) => change("website", e.target.value)} /></label>
           </fieldset>
           {error && <p className={styles.error} role="alert">{error}</p>}

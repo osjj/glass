@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { inquirySchema } from "./inquiries";
+import { inquiryAttribution, inquiryMessage, inquirySchema } from "./inquiries";
+import { articleProductSelections, shotGlassArticleSlug } from "../data/article-products";
 
 const valid = { submissionId: "07c172ed-dbea-4882-9551-a9d9199c21f0", email: "buyer@example.com", countryCode: "", phone: "", name: "Buyer", companyName: "", message: "Please quote 100 glasses.", sourcePath: "/", website: "" };
 
@@ -25,4 +26,27 @@ test("rejects honeypot content and unsafe source links", () => {
   assert.equal(inquirySchema.safeParse({ ...valid, website: "spam" }).success, false);
   for (const sourcePath of ["https://example.com", "//example.com", "/\\example.com", "/?email=private", "/#fragment"]) assert.equal(inquirySchema.safeParse({ ...valid, sourcePath }).success, false);
   assert.equal(inquirySchema.safeParse({ ...valid, sourcePath: "/products/glass-cup" }).success, true);
+});
+
+test("keeps article attribution only for a configured article-product pair", () => {
+  const slug = articleProductSelections[shotGlassArticleSlug][0].slug;
+  const sourcePath = `/blog/${shotGlassArticleSlug}`;
+  assert.deepEqual(inquiryAttribution(`/products/${slug}`, `?fromArticle=${shotGlassArticleSlug}`), { sourcePath, productSlug: slug, brief: "shot-glass" });
+  for (const article of ["unrelated-article", "constructor", "https://outside.example"]) {
+    assert.equal(inquiryAttribution(`/products/${slug}`, `?fromArticle=${article}`).sourcePath, `/products/${slug}`);
+  }
+  assert.equal(inquiryAttribution("/products/unrelated", `?fromArticle=${shotGlassArticleSlug}`).sourcePath, "/products/unrelated");
+  assert.equal(inquiryAttribution(sourcePath, "", { name: "Glass", slug }).productSlug, slug);
+});
+
+test("article inquiries carry validated product references without accepting forged product facts", () => {
+  const parsed = inquirySchema.parse({ ...valid, productSlug: "glass-cup", productSku: "FORGED" });
+  assert.equal(parsed.productSlug, "glass-cup");
+  assert.equal("productSku" in parsed, false);
+  for (const productSlug of ["", "../admin", "/products/cup", "https://example.com", "x".repeat(201)]) {
+    assert.equal(inquirySchema.safeParse({ ...valid, productSlug }).success, false);
+  }
+  assert.match(inquiryMessage({ name: "Glass", sku: "GL-1", slug: "glass", brief: "shot-glass" }), /GL-1/);
+  assert.match(inquiryMessage({ name: "Sourcing", brief: "shot-glass" }), /Destination country:/);
+  assert.equal(inquiryMessage(), "");
 });

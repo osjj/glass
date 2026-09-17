@@ -9,6 +9,9 @@ import { guideClusters } from "@/data/guide-clusters";
 import { plainTextFromEditorHtml, readStoredArticleContent } from "@/lib/article-content-server";
 import { getSiteUrl } from "@/lib/site-url";
 import { ReadingHeader } from "@/components/site/reading-header";
+import { ArticleProducts, ShotGlassInquiry } from "@/components/site/article-products";
+import { getArticleProducts } from "@/lib/article-products";
+import { shotGlassArticleSlug } from "@/data/article-products";
 import theme from "@/components/site/editorial-pages.module.css";
 import styles from "@/components/site/reading-pages.module.css";
 
@@ -40,6 +43,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const article = await getPublishedBlogPostBySlug(slug);
   if (!article) notFound();
+  const isShotGlassGuide = slug === shotGlassArticleSlug;
+  const comparisonProducts = isShotGlassGuide ? await getArticleProducts(slug) : [];
   const cluster = guideClusters.find((item) => item.title === article.category);
   const outline = readStoredArticleContent(article.content).blocks.flatMap((block, index) =>
     block.type === "header" && Number(block.data.level) === 2
@@ -72,9 +77,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </nav></div>}
       <div className={`${theme.container} ${styles.section}`}>
         <div className={`prose-glarivo ${styles.prose}`}>
-          <ArticleContentRenderer content={article.content} />
+          <ArticleContentRenderer content={article.content} insertBeforeHeading={comparisonProducts.length ? {
+            id: "4-specify-the-glass-and-decoration-separately",
+            content: <ArticleProducts products={comparisonProducts} articleSlug={slug} />,
+          } : undefined} />
         </div>
       </div>
+      {isShotGlassGuide && <div className={theme.container}><ShotGlassInquiry /></div>}
       <footer className={styles.articleEnd}><div className={theme.container}><div><p>Keep reading</p><h2>Explore more Glarivo notes.</h2></div><Link href="/blog">All articles<ArrowRight size={17} aria-hidden="true" /></Link></div></footer>
     </article>
   );

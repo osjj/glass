@@ -1,0 +1,41 @@
+[
+  {
+    "file": "D:\\glarivo\\public\\images\\blog\\custom-logo-shot-glasses-artwork-sample-approval-checklist\\hero.webp",
+    "alt": "AI-generated illustration of plain and decorated shot glasses beside an artwork proof and a sample box. Generic concepts, not actual Glarivo products.",
+    "bytes": 180912,
+    "sha256": "c9b8f37c189bec02b0e2710920ab3f2c358628678d049a89b50863b393a2d992",
+    "key": "hero",
+    "objectKey": "site/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/hero-c9b8f37c189b.webp",
+    "url": "https://media.glarivoglass.com/site/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/hero-c9b8f37c189b.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-17T03:11:04.867Z"
+  },
+  {
+    "file": "D:\\glarivo\\public\\images\\blog\\custom-logo-shot-glasses-artwork-sample-approval-checklist\\artwork-placement.webp",
+    "alt": "AI-generated illustration comparing a flat artwork proof with a decorated shot glass. Placement marks are schematic, not a dimensioned production template.",
+    "bytes": 89124,
+    "sha256": "f777b57c3736481f4dc64b7141b0de265c7a1f5c6c46d1356b92f6af6c5ff74c",
+    "key": "artwork-placement",
+    "objectKey": "site/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/artwork-placement-f777b57c3736.webp",
+    "url": "https://media.glarivoglass.com/site/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/artwork-placement-f777b57c3736.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-17T03:11:09.305Z"
+  },
+  {
+    "file": "D:\\glarivo\\public\\images\\blog\\custom-logo-shot-glasses-artwork-sample-approval-checklist\\sample-review.webp",
+    "alt": "AI-generated illustration of a decorated shot glass, a packed sample and an inspection notepad. Conceptual scene, not a record of an actual inspection or transport test.",
+    "bytes": 252294,
+    "sha256": "145de18ac13a3e4a17eeffa41b4c4285b413a219aa5870ebe79394ebd11804eb",
+    "key": "sample-review",
+    "objectKey": "site/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/sample-review-145de18ac13a.webp",
+    "url": "https://media.glarivoglass.com/site/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/sample-review-145de18ac13a.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true,
+    "verifiedAt": "2026-09-17T03:11:13.964Z"
+  }
+]
