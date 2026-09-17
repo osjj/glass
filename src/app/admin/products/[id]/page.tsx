@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CircleCheck } from "lucide-react";
+import { ArrowLeft, CircleCheck, Eye } from "lucide-react";
 import { getAdminCategories, getAdminProduct } from "@/actions/products";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { ProductForm } from "@/components/admin/product-form";
@@ -28,6 +28,12 @@ export default async function EditProductPage({ params, searchParams }: EditProd
         eyebrow="Catalog"
         title="Edit Product"
         description={`Maintain ${product.name} and its related catalog fields.`}
+        action={product.status === "PUBLISHED" ? (
+          <Link href={`/products/${product.slug}`} className="button-secondary">
+            <Eye className="size-4" aria-hidden="true" />
+            View product
+          </Link>
+        ) : undefined}
       />
       {query.saved ? (
         <div className="mt-6 flex items-center gap-3 rounded-2xl border border-[#acd3b0] bg-[#edf9ee] p-4 text-sm font-bold text-[#286a31]" role="status">
