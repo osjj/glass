@@ -2,6 +2,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { InquiryProvider } from "@/components/site/inquiry-contact";
 import { GoogleAnalytics } from "@/components/site/google-analytics";
+import { SiteStructuredData } from "@/components/site/site-structured-data";
 import { getPublicCategoryTree } from "@/lib/public-products";
 
 type HeaderCategories = Awaited<ReturnType<typeof getPublicCategoryTree>>;
@@ -26,6 +27,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const categories = await getHeaderCategories();
   return (
     <InquiryProvider><div className="flex min-h-screen flex-col">
+      <SiteStructuredData />
       <SiteHeader categories={categories.map((category) => ({
         slug: category.slug,
         label: category.label,

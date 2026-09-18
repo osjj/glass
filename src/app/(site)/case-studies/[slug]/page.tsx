@@ -6,6 +6,7 @@ import { CaseStudyArtwork } from "@/components/site/case-study-artwork";
 import { InquiryButton } from "@/components/site/inquiry-contact";
 import { getCaseStudy } from "@/data/case-studies";
 import { getSiteUrl } from "@/lib/site-url";
+import { SITE_NAME } from "@/lib/site-identity";
 import { ReadingHeader } from "@/components/site/reading-header";
 import theme from "@/components/site/editorial-pages.module.css";
 import styles from "@/components/site/reading-pages.module.css";
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: study.title,
     description: study.excerpt,
     alternates: { canonical: `/case-studies/${study.slug}` },
-    openGraph: { title: study.title, description: study.excerpt, type: "article", url: `/case-studies/${study.slug}`, modifiedTime: study.updatedAt },
+    openGraph: { title: study.title, description: study.excerpt, type: "article", siteName: SITE_NAME, url: `/case-studies/${study.slug}`, modifiedTime: study.updatedAt },
   };
 }
 
@@ -33,9 +34,9 @@ export default async function CaseStudyPage({ params }: Props) {
     {
       "@context": "https://schema.org", "@type": "Article",
       headline: study.title, description: study.excerpt, mainEntityOfPage: url,
-      dateModified: study.updatedAt, articleSection: "Glarivo design study",
-      author: { "@type": "Organization", name: "Glarivo", url: baseUrl },
-      publisher: { "@type": "Organization", name: "Glarivo", url: baseUrl },
+      dateModified: study.updatedAt, articleSection: `${SITE_NAME} design study`,
+      author: { "@type": "Organization", "@id": `${baseUrl}/#organization`, name: SITE_NAME, url: `${baseUrl}/` },
+      publisher: { "@type": "Organization", "@id": `${baseUrl}/#organization`, name: SITE_NAME, url: `${baseUrl}/` },
     },
     {
       "@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -53,7 +54,7 @@ export default async function CaseStudyPage({ params }: Props) {
       <ReadingHeader title={study.title} eyebrow="Glarivo design study" description={study.excerpt}
         image="/images/home/editorial/hotel-glassware-case.webp" imageAlt="Illustrative hospitality glassware setting for a design concept"
         navigation={<Link href="/case-studies"><ArrowLeft size={17} aria-hidden="true" />All case studies</Link>}>
-        <p className={styles.meta}>By Glarivo · Updated <time dateTime={study.updatedAt}>{reviewedLabel}</time></p>
+        <p className={styles.meta}>By {SITE_NAME} · Updated <time dateTime={study.updatedAt}>{reviewedLabel}</time></p>
       </ReadingHeader>
       <div className={`${theme.container} ${styles.intro}`}>
         <aside aria-label="Study introduction">

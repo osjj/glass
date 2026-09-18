@@ -47,7 +47,7 @@ export default function AboutPage() {
       <Image src="/images/about/glassware-hero.webp" alt="Illustrative clear glassware collection under warm showroom lighting" fill preload sizes="100vw" className={styles.heroImage} />
       <div className={styles.heroShade} />
       <div className={`${styles.container} ${styles.heroContent}`}>
-        <p className={styles.kicker}>About Glarivo</p>
+        <p className={styles.kicker}>About Glarivo Glassware</p>
         <h1 id="about-heading">Connecting<br />glassware expertise<br />with your market.</h1>
         <span className={styles.rule} aria-hidden="true" />
         <p className={styles.heroDescription}>Glassware sourcing, supported by a manufacturing partner in Guangdong, China.</p>
@@ -56,7 +56,7 @@ export default function AboutPage() {
     <section id="company-profile" className={`${styles.container} ${styles.profile}`} aria-labelledby="profile-heading">
       <div className={styles.profileCopy}>
         <p className={styles.kicker}>01 Company profile</p>
-        <h2 id="profile-heading">About Glarivo Glass</h2>
+        <h2 id="profile-heading">About Glarivo Glassware</h2>
         <figure className={styles.profilePhoto}>
           <Image
             src="/images/about/glarivo-showroom-profile-user-20260908.webp"

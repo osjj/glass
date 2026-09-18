@@ -5,13 +5,15 @@ import { CaseStudyArtwork } from "@/components/site/case-study-artwork";
 import { caseStudies } from "@/data/case-studies";
 import { EditorialHero } from "@/components/site/editorial-hero";
 import styles from "@/components/site/editorial-pages.module.css";
+import { SITE_NAME } from "@/lib/site-identity";
 
 export const metadata: Metadata = {
   title: "Glassware Case Studies",
   description: "Explore Glarivo glassware design studies, from hospitality concepts to product selection, brand details and packaging plans.",
   alternates: { canonical: "/case-studies" },
   openGraph: {
-    title: "Glassware Case Studies | Glarivo",
+    title: `Glassware Case Studies | ${SITE_NAME}`,
+    siteName: SITE_NAME,
     description: "Glarivo glassware concepts for hospitality, customization and packaging.",
     url: "/case-studies",
     type: "website",

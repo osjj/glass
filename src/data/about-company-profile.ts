@@ -8,7 +8,7 @@ export const glarivoCompanyProfile: readonly (readonly ProfileSegment[])[] = [
   [
     { text: "Established in 2008", highlight: true },
     { text: ", ", highlight: false },
-    { text: "Glarivo Glass", highlight: true },
+    { text: "Glarivo Glassware", highlight: true },
     { text: " is an integrated enterprise specializing in the research and development, design, production, and sales of household glassware.", highlight: false },
   ],
   [
@@ -37,7 +37,7 @@ export const glarivoCompanyProfile: readonly (readonly ProfileSegment[])[] = [
   [
     { text: "With ", highlight: false },
     { text: "consistent quality, flexible customization capabilities, and a mature global supply chain", highlight: true },
-    { text: ", Glarivo Glass is committed to becoming a ", highlight: false },
+    { text: ", Glarivo Glassware is committed to becoming a ", highlight: false },
     { text: "reliable long-term glassware partner", highlight: true },
     { text: " for customers worldwide.", highlight: false },
   ],

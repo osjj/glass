@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment } from "react";
 import {
   ArrowRight,
   Check,
@@ -16,6 +17,10 @@ import { RichContentRenderer } from "@/components/site/article-content-renderer"
 import { ProductDetailGallery } from "@/components/site/product-detail-gallery";
 import { InquiryButton } from "@/components/site/inquiry-contact";
 import { getPublicCategories, getPublishedProductBySlug } from "@/lib/public-products";
+import {
+  buildProductPageStructuredData,
+  getProductCategoryTrail,
+} from "@/lib/product-structured-data";
 import { getSiteUrl } from "@/lib/site-url";
 import styles from "@/components/site/editorial-pages.module.css";
 import productStyles from "@/components/site/product-pages.module.css";
@@ -67,12 +72,21 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     categoryLinks.push({ slug: product.category, label: product.categoryLabel });
   }
 
-  const canonicalUrl = `${getSiteUrl()}/products/${product.slug}`;
+  const siteUrl = getSiteUrl();
+  const canonicalUrl = `${siteUrl}/products/${product.slug}`;
+  const categoryTrail = getProductCategoryTrail(product, publicCategories);
+  const structuredData = buildProductPageStructuredData(product, categoryTrail, siteUrl);
   const shareUrl = encodeURIComponent(canonicalUrl);
   const shareText = encodeURIComponent(product.name);
 
   return (
     <div className={`${styles.page} ${productStyles.detail}`}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
       <section data-editorial-hero className={`${styles.hero} ${productStyles.detailHero}`}>
         <Image
           src={product.categoryHeroImage}
@@ -91,8 +105,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             <Link href="/">Home</Link>
             <ChevronRight className="size-4" aria-hidden="true" />
             <Link href="/products">Products</Link>
-            <ChevronRight className="size-4" aria-hidden="true" />
-            <Link href={`/products/category/${product.category}`}>{product.categoryLabel}</Link>
+            {categoryTrail.map((category) => (
+              <Fragment key={category.id}>
+                <ChevronRight className="size-4" aria-hidden="true" />
+                <Link href={`/products/category/${category.slug}`}>{category.label}</Link>
+              </Fragment>
+            ))}
             <ChevronRight className="size-4" aria-hidden="true" />
             <span aria-current="page">{product.name}</span>
           </nav>

@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { SITE_NAME } from "@/lib/site-identity";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -15,13 +17,14 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://glarivo.com";
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: SITE_NAME,
   title: {
-    default: "Glarivo Glassware | Clear collections for confident sourcing",
-    template: "%s | Glarivo",
+    default: `${SITE_NAME} | Clear collections for confident sourcing`,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     "Explore focused Glarivo glassware collections and practical product sourcing guides.",
@@ -29,8 +32,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Glarivo Glassware",
-    title: "Glarivo Glassware | Clear collections for confident sourcing",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} | Clear collections for confident sourcing`,
     description:
       "A focused glassware catalog and practical sourcing knowledge hub.",
     url: siteUrl,

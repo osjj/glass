@@ -8,6 +8,7 @@ import { getPublishedBlogPostBySlug } from "@/lib/public-blog";
 import { guideClusters } from "@/data/guide-clusters";
 import { plainTextFromEditorHtml, readStoredArticleContent } from "@/lib/article-content-server";
 import { getSiteUrl } from "@/lib/site-url";
+import { SITE_NAME } from "@/lib/site-identity";
 import { ReadingHeader } from "@/components/site/reading-header";
 import { ArticleProducts, ShotGlassInquiry } from "@/components/site/article-products";
 import { getArticleProducts } from "@/lib/article-products";
@@ -30,6 +31,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     alternates: { canonical: `/blog/${article.slug}` },
     openGraph: {
       type: "article",
+      siteName: SITE_NAME,
       title: article.title,
       description: article.excerpt,
       publishedTime: article.publishedAt,
@@ -56,7 +58,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     image: new URL(article.coverImage, siteUrl).href,
     datePublished: article.publishedAt, dateModified: article.updatedAt.toISOString(),
     mainEntityOfPage: `${siteUrl}/blog/${article.slug}`,
-    publisher: { "@type": "Organization", name: "Glarivo", url: siteUrl },
+    publisher: {
+      "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
+      name: SITE_NAME,
+      url: `${siteUrl}/`,
+    },
     articleSection: article.category,
   };
 
