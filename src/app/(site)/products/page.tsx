@@ -5,7 +5,7 @@ import { CategoryMenu } from "@/components/site/category-menu";
 import { ProductCard } from "@/components/site/product-card";
 import { ProductPagination } from "@/components/product-pagination";
 import { getPublishedProductPage } from "@/lib/public-products";
-import { getPageNumber, productPageHref } from "@/lib/product-pagination";
+import { getPageNumber, productBrowseCanonical } from "@/lib/product-pagination";
 import { EditorialHero } from "@/components/site/editorial-hero";
 import styles from "@/components/site/editorial-pages.module.css";
 
@@ -18,7 +18,8 @@ export async function generateMetadata({ searchParams }: ProductsPageProps): Pro
   return {
     title: "Products",
     description: "Explore Glarivo glassware by category, browse product images, and find specifications for your next collection.",
-    alternates: { canonical: productPageHref("/products", pagination.page, { category: selectedCategory?.slug ?? "", q: query }) },
+    alternates: { canonical: productBrowseCanonical(pagination.page, selectedCategory?.slug, query) },
+    robots: query ? { index: false, follow: true } : { index: true, follow: true },
   };
 }
 
@@ -80,7 +81,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               {query || knownCategory ? <Link href="/products" className={styles.button}>View all products</Link> : null}
             </div>
           )}
-          <ProductPagination pagination={pagination} path="/products" filters={{ category: knownCategory, q: query }} />
+          <ProductPagination pagination={pagination} path="/products" filters={{ category: knownCategory, q: query }} nofollow={Boolean(query)} />
         </div>
       </section>
     </div>

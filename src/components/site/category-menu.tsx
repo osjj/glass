@@ -18,6 +18,7 @@ export function CategoryMenu({ categories, activeSlug = "", query = "" }: Catego
         <li>
           <Link
             href={allProductsHref}
+            rel={query ? "nofollow" : undefined}
             aria-current={!activeSlug ? "page" : undefined}
             className={`flex min-h-12 items-center justify-between gap-3 border-b border-[#eef0f1] px-5 py-3 text-sm font-semibold transition ${!activeSlug ? "bg-[#e8f1f6] text-[#075989]" : "text-[#4e565c] hover:bg-[#f1f6f9] hover:text-[#075989]"}`}
           >
@@ -35,6 +36,7 @@ export function CategoryMenu({ categories, activeSlug = "", query = "" }: Catego
             <li key={category.id}>
               <Link
                 href={href}
+                rel={query ? "nofollow" : undefined}
                 aria-current={active ? "page" : undefined}
                 style={{ paddingLeft: `${20 + category.depth * 14}px` }}
                 className={`flex min-h-11 items-center justify-between gap-3 border-b border-[#eef0f1] py-3 pr-4 text-sm transition ${active ? "bg-[#e8f1f6] font-semibold text-[#075989]" : "text-[#4e565c] hover:bg-[#f1f6f9] hover:text-[#075989]"}`}

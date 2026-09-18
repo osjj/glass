@@ -26,6 +26,15 @@ export function productPageHref(path: string, page: number, filters: Record<stri
   return params.size ? `${path}?${params}` : path;
 }
 
+export function productBrowseCanonical(page: number, category = "", query = "") {
+  const path = category ? `/products/category/${category}` : "/products";
+
+  // On-site search results are utility pages, not standalone landing pages.
+  // Point them at the stable browse page and keep pagination only for indexable
+  // catalog/category listings.
+  return query ? path : productPageHref(path, page);
+}
+
 export function getVisiblePages(page: number, totalPages: number) {
   const pages = new Set([1, totalPages]);
   const start = Math.max(1, Math.min(page - 1, totalPages - 2));

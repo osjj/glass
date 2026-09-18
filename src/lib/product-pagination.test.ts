@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getPageNumber, getProductPagination, getVisiblePages, productPageHref } from "./product-pagination";
+import { getPageNumber, getProductPagination, getVisiblePages, productBrowseCanonical, productPageHref } from "./product-pagination";
 
 test("invalid and repeated URL page values are normalized", () => {
   for (const value of [undefined, "", "0", "-1", "1.5", "2abc", "Infinity", "9007199254740992"]) {
@@ -32,6 +32,15 @@ test("pagination preserves encoded filters and omits page=1", () => {
   assert.equal(next.searchParams.get("page"), "2");
   assert.equal(new URL(productPageHref("/products", 1, filters), next).searchParams.has("page"), false);
   assert.equal(productPageHref("/admin/products", 1), "/admin/products");
+});
+
+test("product browse canonicals exclude search and legacy category parameters", () => {
+  assert.equal(productBrowseCanonical(1), "/products");
+  assert.equal(productBrowseCanonical(2), "/products?page=2");
+  assert.equal(productBrowseCanonical(1, "shot-glass"), "/products/category/shot-glass");
+  assert.equal(productBrowseCanonical(3, "shot-glass"), "/products/category/shot-glass?page=3");
+  assert.equal(productBrowseCanonical(4, "shot-glass", "glass cup"), "/products/category/shot-glass");
+  assert.equal(productBrowseCanonical(4, "", "glass cup"), "/products");
 });
 
 test("visible page numbers include current and endpoints and remain bounded", () => {

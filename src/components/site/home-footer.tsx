@@ -7,8 +7,8 @@ const columns = [
   { title: "Explore", links: [{ href: "/", label: "Home" }, { href: "/products", label: "Products" }, { href: "/case-studies", label: "Case Studies" }] },
   { title: "Resources", links: [{ href: "/blog", label: "Blog" }, { href: "/about", label: "About" }] },
   { title: "Collections", links: [
-    { href: "/products?q=glass+cup", label: "Glass Cups" }, { href: "/products?q=shot+glass", label: "Shot Glass" },
-    { href: "/products?q=glass+mug", label: "Glass Mugs" }, { href: "/products?q=glass+pitcher", label: "Glass Pitchers & Teapots" },
+    { href: "/products/category/glass-tumblers", label: "Glass Cups" }, { href: "/products/category/shot-glass", label: "Shot Glass" },
+    { href: "/products/category/glass-mugs", label: "Glass Mugs" }, { href: "/products/category/glass-pitchers-teapot", label: "Glass Pitchers & Teapots" },
   ] },
 ];
 

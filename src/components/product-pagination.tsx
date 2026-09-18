@@ -6,9 +6,10 @@ type ProductPaginationProps = {
   pagination: ReturnType<typeof getProductPagination>;
   path: string;
   filters?: Record<string, string>;
+  nofollow?: boolean;
 };
 
-export function ProductPagination({ pagination, path, filters }: ProductPaginationProps) {
+export function ProductPagination({ pagination, path, filters, nofollow = false }: ProductPaginationProps) {
   const { page, total, totalPages, start, end } = pagination;
   if (!total) return null;
   const pages = getVisiblePages(page, totalPages);
@@ -19,14 +20,14 @@ export function ProductPagination({ pagination, path, filters }: ProductPaginati
     <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-[var(--line)] pt-5 sm:flex-row sm:flex-wrap">
       <p className="text-sm text-[var(--ink-muted)]">Showing {start}–{end} of {total} products</p>
       <nav aria-label="Product pagination" className="flex flex-wrap items-center justify-center gap-1.5">
-        {page > 1 ? <Link href={href(page - 1)} rel="prev" className={`${button} hover:bg-[var(--surface)]`}>Previous</Link> : <span aria-disabled="true" className={`${button} text-[var(--ink-muted)] opacity-50`}>Previous</span>}
+        {page > 1 ? <Link href={href(page - 1)} rel={nofollow ? "prev nofollow" : "prev"} className={`${button} hover:bg-[var(--surface)]`}>Previous</Link> : <span aria-disabled="true" className={`${button} text-[var(--ink-muted)] opacity-50`}>Previous</span>}
         {pages.map((target, index) => (
           <Fragment key={target}>
             {index > 0 && target - pages[index - 1] > 1 ? <span aria-hidden="true" className="px-1 text-[var(--ink-muted)]">…</span> : null}
-            <Link href={href(target)} aria-label={`Page ${target}`} aria-current={target === page ? "page" : undefined} className={`${button} ${target === page ? "border-[var(--navy)] bg-[var(--navy)] text-white" : "hover:bg-[var(--surface)]"}`}>{target}</Link>
+            <Link href={href(target)} rel={nofollow ? "nofollow" : undefined} aria-label={`Page ${target}`} aria-current={target === page ? "page" : undefined} className={`${button} ${target === page ? "border-[var(--navy)] bg-[var(--navy)] text-white" : "hover:bg-[var(--surface)]"}`}>{target}</Link>
           </Fragment>
         ))}
-        {page < totalPages ? <Link href={href(page + 1)} rel="next" className={`${button} hover:bg-[var(--surface)]`}>Next</Link> : <span aria-disabled="true" className={`${button} text-[var(--ink-muted)] opacity-50`}>Next</span>}
+        {page < totalPages ? <Link href={href(page + 1)} rel={nofollow ? "next nofollow" : "next"} className={`${button} hover:bg-[var(--surface)]`}>Next</Link> : <span aria-disabled="true" className={`${button} text-[var(--ink-muted)] opacity-50`}>Next</span>}
       </nav>
       <form key={href(page)} action={path} method="get" aria-label="Jump to page" className="flex flex-wrap items-center justify-center gap-2 text-sm">
         {Object.entries(filters ?? {}).map(([name, value]) => value && name !== "page" ? <input key={name} type="hidden" name={name} value={value} /> : null)}

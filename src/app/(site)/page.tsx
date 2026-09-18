@@ -91,7 +91,7 @@ export default async function HomePage() {
           <div className={styles.collectionGrid}>
             {homeCollections.map((collection) => {
               const category = categories.find((item) => item.slug === collection.category);
-              const href = category ? "/products/category/" + category.slug : "/products?q=" + encodeURIComponent(collection.query);
+              const href = category ? "/products/category/" + category.slug : "/products";
               return <Link key={collection.label} href={href} className={styles.collectionCard}>
                 <Photo src={"/images/home/editorial/category-" + collection.image + ".webp"} alt={collection.label + " glassware collection"} className={styles.collectionPhoto} sizes="(min-width: 900px) 15vw, (min-width: 540px) 30vw, 45vw" />
                 <h3>{collection.label}</h3><ArrowRight size={25} weight="light" aria-hidden="true" />
