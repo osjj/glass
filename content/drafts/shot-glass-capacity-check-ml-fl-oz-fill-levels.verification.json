@@ -1,0 +1,111 @@
+{
+  "checkedAt": "2026-09-19T04:56:13.432Z",
+  "schemaValidation": "passed using current prepareArticleContentForStorage",
+  "localOnly": true,
+  "status": "DRAFT",
+  "databaseMutation": false,
+  "uploaded": false,
+  "wordCount": 1777,
+  "readTimeMinutes": 9,
+  "blocks": 54,
+  "blockTypes": [
+    "paragraph",
+    "header",
+    "list",
+    "image"
+  ],
+  "h2Count": 9,
+  "h3Count": 5,
+  "coverSeparate": true,
+  "bodyImageCount": 2,
+  "excerptLength": 151,
+  "images": [
+    {
+      "name": "hero",
+      "url": "/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/hero.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 114488,
+      "source": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-9e951791-88d2-4a61-b682-93082e5460b1.png",
+      "sha256": "ff8da334b0176bbb61fe44a963ecc60f38e3f24a6dfa74d3aaf545ed17982d7c"
+    },
+    {
+      "name": "fill-levels",
+      "url": "/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/fill-levels.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 73506,
+      "source": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-c53a654e-ce80-46aa-b43c-f943552856a0.png",
+      "sha256": "4a239d059d808a5c7d3d6c71b46b2d490eb6d16b06ee09f806d6dc1bef4ee16e"
+    },
+    {
+      "name": "sample-check",
+      "url": "/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/sample-check.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 113128,
+      "source": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-eda52517-e879-4547-9e49-cc623aa2fa48.png",
+      "sha256": "c49236f7649dc000ac6632ba9fc49856be905e68ce6487478ca15906434dd990"
+    }
+  ],
+  "links": [
+    "https://www.glarivoglass.com/blog",
+    "https://www.glarivoglass.com/guides/shot-glass-sourcing",
+    "https://www.glarivoglass.com/blog/shot-glass-buying-guide-for-wholesale-buyers",
+    "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8",
+    "https://nvlpubs.nist.gov/nistpubs/ir/2019/NIST.IR.7383-2019.pdf",
+    "https://www.nist.gov/document/gmp-3-reading-meniscus-20190507pdf",
+    "https://www.glarivoglass.com/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist",
+    "https://www.glarivoglass.com/blog/shot-glass-buying-guide-for-wholesale-buyers#shot-glass-product-comparison",
+    "https://www.glarivoglass.com/blog/shot-glass-buying-guide-for-wholesale-buyers#shot-glass-quote"
+  ],
+  "liveInternalLinks": "all target pages HTTP 200; both hub anchors exist",
+  "preview": "standalone approximation of current layout; not a live Next.js rendering",
+  "sourceSha256": "d1fdf250d3ad44dd2ffdd500267fcea759dabf98ec7480249a7a15dec1af8786",
+  "browserReview": {
+    "scope": "standalone local preview only",
+    "desktopViewport": [
+      1440,
+      1000
+    ],
+    "desktopScrollWidth": 1440,
+    "mobileViewport": [
+      390,
+      844
+    ],
+    "mobileScrollWidth": 390,
+    "imagesLoaded": 3,
+    "brokenLocalAnchors": 0,
+    "screenshotsReviewed": [
+      "output/playwright/capacity-desktop-top.png",
+      "output/playwright/capacity-desktop-conversions.png",
+      "output/playwright/capacity-mobile-conversions.png"
+    ],
+    "console": "One local favicon.ico 404; no article image failures."
+  },
+  "arithmetic": {
+    "US": {
+      "1": "29.57",
+      "1.5": "44.36",
+      "2": "59.15"
+    },
+    "Imperial": {
+      "1": "28.41",
+      "1.5": "42.62",
+      "2": "56.83"
+    },
+    "reverse_US": {
+      "45": "1.52",
+      "60": "2.03"
+    },
+    "example": {
+      "mean": 51,
+      "range": 2,
+      "unused": [
+        10,
+        11,
+        12
+      ]
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { inquiryAttribution, inquiryMessage, inquirySchema } from "./inquiries";
-import { articleProductSelections, shotGlassArticleSlug } from "../data/article-products";
+import { articleProductSelections, isArticleProduct, shotGlassArticleSlug, shotGlassCapacityArticleSlug } from "../data/article-products";
 
 const valid = { submissionId: "07c172ed-dbea-4882-9551-a9d9199c21f0", email: "buyer@example.com", countryCode: "", phone: "", name: "Buyer", companyName: "", message: "Please quote 100 glasses.", sourcePath: "/", website: "" };
 
@@ -49,4 +49,18 @@ test("article inquiries carry validated product references without accepting for
   assert.match(inquiryMessage({ name: "Glass", sku: "GL-1", slug: "glass", brief: "shot-glass" }), /GL-1/);
   assert.match(inquiryMessage({ name: "Sourcing", brief: "shot-glass" }), /Destination country:/);
   assert.equal(inquiryMessage(), "");
+});
+
+test("capacity article keeps its source and sample brief through either selected product", () => {
+  const sourcePath = `/blog/${shotGlassCapacityArticleSlug}`;
+  for (const { slug } of articleProductSelections[shotGlassCapacityArticleSlug]) {
+    assert.equal(isArticleProduct(sourcePath, slug), true);
+    const product = { name: "Selected glass", slug, brief: "shot-glass" as const };
+    const expected = { sourcePath, productSlug: slug, brief: "shot-glass" };
+    assert.deepEqual(inquiryAttribution(sourcePath, "", product), expected);
+    assert.deepEqual(inquiryAttribution(`/products/${slug}`, `?fromArticle=${shotGlassCapacityArticleSlug}`, { name: product.name, slug }), expected);
+    assert.match(inquiryMessage({ ...product, brief: expected.brief as "shot-glass" }), /Target capacity:/);
+  }
+  assert.equal(isArticleProduct(sourcePath, "unrelated"), false);
+  assert.equal(inquiryAttribution("/products/unrelated", `?fromArticle=${shotGlassCapacityArticleSlug}`).sourcePath, "/products/unrelated");
 });

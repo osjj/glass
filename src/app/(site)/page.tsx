@@ -228,7 +228,6 @@ export default async function HomePage() {
               </figure>)}
             </div>)}
           </div>
-          <p className={styles.sourceNote}>AI-generated scenes with fictional people, illustrating exhibitions and business conversations.</p>
         </div>
       </section>
 

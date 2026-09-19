@@ -153,7 +153,6 @@
 .exhibitionTitle > span { flex: 0 0 24px; color: var(--gold-light); font-family: var(--font-home-sans), Arial, sans-serif; font-size: 13px; letter-spacing: .08em; }
 .exhibitionTitle h3 { font-size: clamp(23px,2.3vw,30px); font-weight: 400; line-height: 1.2; }
 .exhibitionGrid figcaption > p { font-size: 15px; line-height: 1.6; margin-left: 36px; margin-top: 7px; color: #d3dbe1; }
-.exhibitions .sourceNote { margin-top: 28px; padding: 20px 0 0; border-top: 1px solid #d5b27455; }
 .stories { padding: 64px 0 51px; }
 .stories .heading { font-size: clamp(40px,4.5vw,69px); }
 .storyIntro { margin-top: 22px !important; font-size: 17px; }

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { isArticleProduct, shotGlassArticleSlug } from "@/data/article-products";
+import { getArticleProductSection, isArticleProduct } from "@/data/article-products";
 
 export const SALES_EMAIL = "sales@glarivoglass.com";
 export const SALES_WHATSAPP = "https://wa.me/8618825913441";
@@ -39,6 +39,6 @@ export function inquiryAttribution(pathname: string, search: string, product?: I
   return {
     sourcePath: fromArticle ? articlePath : pathname,
     productSlug: product?.slug || pageProduct,
-    brief: product?.brief || (fromArticle && articleSlug === shotGlassArticleSlug ? "shot-glass" as const : undefined),
+    brief: product?.brief || (fromArticle && articleSlug ? getArticleProductSection(articleSlug)?.brief : undefined),
   };
 }

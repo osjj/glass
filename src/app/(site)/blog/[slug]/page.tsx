@@ -12,7 +12,7 @@ import { SITE_NAME } from "@/lib/site-identity";
 import { ReadingHeader } from "@/components/site/reading-header";
 import { ArticleProducts, ShotGlassInquiry } from "@/components/site/article-products";
 import { getArticleProducts } from "@/lib/article-products";
-import { shotGlassArticleSlug } from "@/data/article-products";
+import { getArticleProductSection, shotGlassArticleSlug } from "@/data/article-products";
 import theme from "@/components/site/editorial-pages.module.css";
 import styles from "@/components/site/reading-pages.module.css";
 
@@ -46,7 +46,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const article = await getPublishedBlogPostBySlug(slug);
   if (!article) notFound();
   const isShotGlassGuide = slug === shotGlassArticleSlug;
-  const comparisonProducts = isShotGlassGuide ? await getArticleProducts(slug) : [];
+  const productSection = getArticleProductSection(slug);
+  const comparisonProducts = productSection ? await getArticleProducts(slug) : [];
   const cluster = guideClusters.find((item) => item.title === article.category);
   const outline = readStoredArticleContent(article.content).blocks.flatMap((block, index) =>
     block.type === "header" && Number(block.data.level) === 2
@@ -84,8 +85,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </nav></div>}
       <div className={`${theme.container} ${styles.section}`}>
         <div className={`prose-glarivo ${styles.prose}`}>
-          <ArticleContentRenderer content={article.content} insertBeforeHeading={comparisonProducts.length ? {
-            id: "4-specify-the-glass-and-decoration-separately",
+          <ArticleContentRenderer content={article.content} insertBeforeHeading={productSection && comparisonProducts.length ? {
+            id: productSection.beforeHeadingId,
             content: <ArticleProducts products={comparisonProducts} articleSlug={slug} />,
           } : undefined} />
         </div>

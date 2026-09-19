@@ -102,7 +102,7 @@ export function ExhibitionCarousel() {
               const clone = index < copies || index >= copies + photos.length;
               return (
                 <div key={`${photo.src}-${index}`} className={styles.slide} role="group" aria-roledescription="slide" aria-label={clone ? undefined : `${index - copies + 1} of ${photos.length}: ${photo.title}`} aria-hidden={clone || undefined}>
-                  <Image src={photo.src} alt={clone ? "" : `AI-generated GLARIVO exhibition scene: ${photo.title.toLowerCase()}`} fill sizes="(max-width: 539px) 90vw, (max-width: 899px) 45vw, (max-width: 1466px) 30vw, 440px" draggable={false} />
+                  <Image src={photo.src} alt={clone ? "" : `GLARIVO exhibition scene: ${photo.title.toLowerCase()}`} fill sizes="(max-width: 539px) 90vw, (max-width: 899px) 45vw, (max-width: 1466px) 30vw, 440px" draggable={false} />
                 </div>
               );
             })}
@@ -112,7 +112,6 @@ export function ExhibitionCarousel() {
         <button type="button" className={`${styles.arrow} ${styles.next}`} aria-label="Next exhibition image" aria-controls="exhibition-slides" onClick={() => move(1)}><ArrowRight size={21} strokeWidth={1.6} aria-hidden="true" /></button>
       </div>
       <div className={styles.footer}>
-        <p className={styles.caption}>AI-generated exhibition scenes.</p>
         <p className={styles.counter} aria-live="polite" aria-atomic="true"><span className={styles.srOnly}>Image </span>{String(active + 1).padStart(2, "0")}<span className={styles.separator}> / </span>{String(photos.length).padStart(2, "0")}</p>
       </div>
     </div>

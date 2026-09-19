@@ -1,0 +1,19 @@
+{
+  "tool": "Built-in image_gen",
+  "date": "2026-09-19",
+  "images": [
+    {
+      "key": "hero",
+      "prompt": "Use case: product-mockup. Create one editorial cover image for a wholesale glassware article 'Shot Glass Capacity: How to Check mL, fl oz & Fill Levels'. Landscape 3:2 high resolution. Quiet premium still life on warm ivory stone with muted deep navy-blue background. Two realistic small clear thick-base shot glasses, a short gently tapered profile and a taller narrow profile, both empty and visually distinct, next to a plain glass laboratory cylinder in the soft-focus background and a blank cream record card. Gentle side daylight, clean rim geometry, realistic transparent glass refraction, tidy composition and breathing room. No alcohol, people, logos, brand, numerical scales, readings, lettering, markings or watermarks. These are generic editorial concepts, not specific products or measured capacity examples. Cylinder only as subtle context, main glasses large and sharp."
+    },
+    {
+      "key": "fill-levels",
+      "prompt": "Use case: scientific-educational. Create one premium editorial 3D-render educational image about two different fill endpoints in the same shot-glass shape. Landscape 3:2 high resolution, ivory background, restrained deep navy-blue and clear pale blue water. Two exactly identical clear mildly tapered thick-base shot glasses side by side, front-facing eye-level cutaway-style render with perfectly horizontal water surfaces. Left glass water reaches the rim plane without any raised mound or spilling; right glass water fills about two-thirds of the interior and leaves a clearly empty region below the rim. Above LEFT glass place the exact label 'BRIMFUL'. Above RIGHT glass place the exact label 'INTENDED FILL'. Small restrained sans-serif uppercase text, precisely those words, no other text. No numerical scales, units, capacities, percentages, measurement arrows, logos or laboratory claims. Same external shape, dimensions and scale for both glasses. Separate objects clearly, crisp simple geometry, attractive realistic material with visibility of surfaces. This is an explanatory concept and not a calibration diagram."
+    },
+    {
+      "key": "sample-check",
+      "prompt": "Use case: product-mockup. Create one premium editorial photographic-style illustration of a buyer's glassware capacity-check setup. Landscape 3:2 high resolution. A single small clear thick-base shot glass containing clear water to a comfortably below-rim level sits upright centered on a compact unbranded electronic bench balance. The balance has a simple dark blank display with NO readings, numbers or symbols. Beside it, a second identical empty shot glass, a plain blank cream notepad with empty horizontal lines and a pencil. All objects fully separate, scale weighing platform clearly supporting the entire glass. Warm ivory work surface, muted deep navy-blue accents, soft natural sidelight, technically plausible glass geometry. No human hands, labels, numbers, scales on the glass, test stamps, approved marks or branding. This is a generic illustrative setup, not a photograph of a real test or laboratory certification. Composition should make the weighing platform and water level clear."
+    }
+  ]
+}
+

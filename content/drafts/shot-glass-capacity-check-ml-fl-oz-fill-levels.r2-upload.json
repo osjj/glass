@@ -1,0 +1,41 @@
+[
+  {
+    "name": "hero",
+    "localUrl": "/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/hero.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/hero-ff8da334b017.webp",
+    "objectKey": "site/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/hero-ff8da334b017.webp",
+    "sha256": "ff8da334b0176bbb61fe44a963ecc60f38e3f24a6dfa74d3aaf545ed17982d7c",
+    "bytes": 114488,
+    "width": 1536,
+    "height": 1024,
+    "signedReadbackVerified": true,
+    "publicHashVerified": true,
+    "publicStatus": 200
+  },
+  {
+    "name": "fill-levels",
+    "localUrl": "/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/fill-levels.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/fill-levels-4a239d059d80.webp",
+    "objectKey": "site/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/fill-levels-4a239d059d80.webp",
+    "sha256": "4a239d059d808a5c7d3d6c71b46b2d490eb6d16b06ee09f806d6dc1bef4ee16e",
+    "bytes": 73506,
+    "width": 1536,
+    "height": 1024,
+    "signedReadbackVerified": true,
+    "publicHashVerified": true,
+    "publicStatus": 200
+  },
+  {
+    "name": "sample-check",
+    "localUrl": "/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/sample-check.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/sample-check-c49236f7649d.webp",
+    "objectKey": "site/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/sample-check-c49236f7649d.webp",
+    "sha256": "c49236f7649dc000ac6632ba9fc49856be905e68ce6487478ca15906434dd990",
+    "bytes": 113128,
+    "width": 1536,
+    "height": 1024,
+    "signedReadbackVerified": true,
+    "publicHashVerified": true,
+    "publicStatus": 200
+  }
+]

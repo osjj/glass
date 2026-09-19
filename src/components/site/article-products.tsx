@@ -2,17 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { InquiryButton } from "@/components/site/inquiry-contact";
 import type { getArticleProducts } from "@/lib/article-products";
+import { getArticleProductSection } from "@/data/article-products";
 import styles from "./article-products.module.css";
 
 export function ArticleProducts({ products, articleSlug }: {
   products: Awaited<ReturnType<typeof getArticleProducts>>;
   articleSlug: string;
 }) {
-  if (!products.length) return null;
+  const section = getArticleProductSection(articleSlug);
+  if (!products.length || !section) return null;
   return <section className={styles.comparison} aria-labelledby="compare-shot-glasses" id="shot-glass-product-comparison">
     <p className={styles.eyebrow}>From guide to shortlist</p>
-    <h3 id="compare-shot-glasses">Compare shot glass profiles</h3>
-    <p className={styles.intro}>Use these catalog examples to prepare your shortlist. Confirm capacity, dimensions and packing for your selected glass and decoration.</p>
+    <h3 id="compare-shot-glasses">{section.title}</h3>
+    <p className={styles.intro}>{section.intro}</p>
     <div className={styles.grid}>
       {products.map((product) => <article key={product.slug} className={styles.card}>
         <Link className={styles.image} href={`/products/${product.slug}?fromArticle=${articleSlug}`} aria-label={`View ${product.sku || product.name}`}>
@@ -26,7 +28,7 @@ export function ArticleProducts({ products, articleSlug }: {
           <p className={styles.note}>{product.buyingNote}</p>
           <div className={styles.actions}>
             <Link href={`/products/${product.slug}?fromArticle=${articleSlug}`}>View product</Link>
-            <InquiryButton className={styles.button} product={{ name: product.name, sku: product.sku, slug: product.slug, brief: "shot-glass" }}>Quote this glass</InquiryButton>
+            <InquiryButton className={styles.button} product={{ name: product.name, sku: product.sku, slug: product.slug, brief: section.brief }}>{section.inquiryLabel}</InquiryButton>
           </div>
         </div>
       </article>)}

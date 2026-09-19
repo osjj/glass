@@ -39,10 +39,10 @@ export const homeServices = [
   { title: "Product Design", description: "Laser engraving or logo printing for your glassware.", image: "service-product-design", alt: "Precision decoration of a clear glass tumbler" },
 ] as const;
 export const homeExhibitions = [
-  { image: "exhibition-display-v3", aspectRatio: "500 / 460", title: "Exhibition displays", description: "Glassware collections presented in person.", alt: "AI-generated Canton Fair-style glassware booth with Glarivo signage" },
-  { image: "exhibition-meeting-v3", aspectRatio: "500 / 240", title: "Trade-show meetings", description: "Product conversations around the table.", alt: "AI-generated two-photo collage of fictional buyers and densely stocked glassware exhibition displays" },
-  { image: "market-research-v3", aspectRatio: "500 / 208", title: "Market research", description: "Listening to customers and local markets.", alt: "AI-generated three-photo collage of fictional international buyers and representatives at glassware booths" },
-  { image: "customer-visit-v3", aspectRatio: "500 / 460", title: "Customer visits", description: "Building understanding through direct contact.", alt: "AI-generated seven-photo collage of fictional customer visits, meetings and glassware exhibition groups" },
+  { image: "exhibition-display-v3", aspectRatio: "500 / 460", title: "Exhibition displays", description: "Glassware collections presented in person.", alt: "Glassware booth display with Glarivo signage" },
+  { image: "exhibition-meeting-v3", aspectRatio: "500 / 240", title: "Trade-show meetings", description: "Product conversations around the table.", alt: "Two-panel collage of people discussing glassware beside exhibition display shelves" },
+  { image: "market-research-v3", aspectRatio: "500 / 208", title: "Market research", description: "Listening to customers and local markets.", alt: "Three-panel collage of conversations at glassware display booths" },
+  { image: "customer-visit-v3", aspectRatio: "500 / 460", title: "Customer visits", description: "Building understanding through direct contact.", alt: "Seven-panel collage of meetings and group scenes around glassware exhibits" },
 ] as const;
 export const homeBuyerScenarios = [
   { segment: "Retail", title: "Build a coordinated shelf range", summary: "Compare shapes, sizes and finishes across a focused collection.", focus: "Range planning", image: "category-drinkware", alt: "Editorial drinkware collection arranged for range planning" },
