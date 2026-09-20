@@ -34,9 +34,9 @@ export function CustomerCaseStudy({ study }: { study: CustomerProject }) {
             </section>
           ))}
           <section id="your-project" className={`${reading.approval} mt-12 text-white`}>
-            <h2>Plan your hotel glassware project with Glarivo</h2>
+            <h2>Plan your glassware project with Glarivo</h2>
             <p>{study.conclusion}</p>
-            <InquiryButton className={theme.button}>Discuss your hotel project<ArrowRight size={18} aria-hidden="true" /></InquiryButton>
+            <InquiryButton className={theme.button}>Discuss your project<ArrowRight size={18} aria-hidden="true" /></InquiryButton>
           </section>
         </div>
         <aside className={reading.sidebar}>

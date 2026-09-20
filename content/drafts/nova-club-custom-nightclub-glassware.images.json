@@ -1,0 +1,54 @@
+[
+  {
+    "name": "hero",
+    "url": "/images/case-studies/nova-club-custom-nightclub-glassware/hero.webp",
+    "path": "public/images/case-studies/nova-club-custom-nightclub-glassware/hero.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 190914,
+    "sha256": "6c635cfa832dabf7e8e75190a4143ddbb2f2327dedb56a879e2cad13ea2bb2cc",
+    "original": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-42471883-d969-4215-a540-262638f6e8b7.png",
+    "key": "case-studies/nova-club-custom-nightclub-glassware/hero-6c635cfa832d.webp",
+    "uploadedUrl": "https://media.glarivoglass.com/case-studies/nova-club-custom-nightclub-glassware/hero-6c635cfa832d.webp",
+    "verified": true
+  },
+  {
+    "name": "uv-decoration",
+    "url": "/images/case-studies/nova-club-custom-nightclub-glassware/uv-decoration.webp",
+    "path": "public/images/case-studies/nova-club-custom-nightclub-glassware/uv-decoration.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 128498,
+    "sha256": "cd3d05f6dbd03d97a205d91156db7c1c9eb840920fe8cdc1dcb4e968ca6edbb2",
+    "original": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-037424be-753b-475b-8676-96a2601ce4d7.png",
+    "key": "case-studies/nova-club-custom-nightclub-glassware/uv-decoration-cd3d05f6dbd0.webp",
+    "uploadedUrl": "https://media.glarivoglass.com/case-studies/nova-club-custom-nightclub-glassware/uv-decoration-cd3d05f6dbd0.webp",
+    "verified": true
+  },
+  {
+    "name": "sample-review",
+    "url": "/images/case-studies/nova-club-custom-nightclub-glassware/sample-review.webp",
+    "path": "public/images/case-studies/nova-club-custom-nightclub-glassware/sample-review.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 124436,
+    "sha256": "5c4e291682248ffdbd7fd69ba5d735592d025ffc677ac9272f17df2fc6f3bb24",
+    "original": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-bbf7abcd-f8aa-4dfe-a2fb-fbb962f54929.png",
+    "key": "case-studies/nova-club-custom-nightclub-glassware/sample-review-5c4e29168224.webp",
+    "uploadedUrl": "https://media.glarivoglass.com/case-studies/nova-club-custom-nightclub-glassware/sample-review-5c4e29168224.webp",
+    "verified": true
+  },
+  {
+    "name": "packaging",
+    "url": "/images/case-studies/nova-club-custom-nightclub-glassware/packaging.webp",
+    "path": "public/images/case-studies/nova-club-custom-nightclub-glassware/packaging.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 207716,
+    "sha256": "3084565300221de5a17c2d6b398ef7a929c9d0eaffa457c8cdc828b91e54b8b5",
+    "original": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-117b40e3-7c6a-49c0-8906-53a1e2c0b278.png",
+    "key": "case-studies/nova-club-custom-nightclub-glassware/packaging-308456530022.webp",
+    "uploadedUrl": "https://media.glarivoglass.com/case-studies/nova-club-custom-nightclub-glassware/packaging-308456530022.webp",
+    "verified": true
+  }
+]

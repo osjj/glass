@@ -1,0 +1,31 @@
+# Glarivo Glassware
+
+> Glarivo Glassware provides glassware collections, wholesale sourcing, OEM/ODM customization, and practical buying guides for retailers, distributors, hospitality buyers, and gift businesses.
+
+Official website: https://www.glarivoglass.com. Glarivo is also used as the short brand name.
+
+The product range includes drinking glasses, shot glasses, stemware, mugs, pitchers, teapots, decanters, glass jars, food containers, and bakeware. Customization discussions cover product design, samples, logo application, decoration, and packaging.
+
+This is an inquiry-based catalog. Use individual product pages for model-specific specifications. Confirm pricing, minimum order quantities, availability, lead times, customization, and shipping requirements through a quotation. Care instructions and food-contact or performance claims require documentation for the exact product; general buying guides do not certify individual items.
+
+For sourcing inquiries, use the website's Request a quote form or contact sales@glarivoglass.com. Include product references, quantities, customization and packaging requirements, and destination market.
+
+## Website and product catalog
+
+- [Glarivo Glassware homepage](https://www.glarivoglass.com/): Collections, sourcing services, customization, and the sample-to-delivery workflow.
+- [Product catalog](https://www.glarivoglass.com/products): Browse product categories and individual glassware specifications to prepare a buying shortlist.
+- [About Glarivo](https://www.glarivoglass.com/about): Company profile, sourcing approach, manufacturing context, and quality documentation.
+
+## Buying guides
+
+- [Shot Glass Sourcing](https://www.glarivoglass.com/guides/shot-glass-sourcing): Capacity, shape, decoration, and packaging for bars, promotions, and souvenirs.
+- [Restaurant & Bar Glassware](https://www.glarivoglass.com/guides/restaurant-bar-glassware): Menu-based selection, serving sizes, handling, storage, and reorder planning.
+- [Coffee & Tea Glassware](https://www.glarivoglass.com/guides/coffee-tea-glassware): Mugs, double-wall cups, teapots, lids, filters, and equipment fit.
+- [Wine, Spirits & Gift Sets](https://www.glarivoglass.com/guides/wine-spirits-gifting): Decanters, stemware, set contents, closures, and gift packaging.
+- [Kitchen Storage & Bakeware](https://www.glarivoglass.com/guides/kitchen-storage-bakeware): Capacity, dimensions, lid fit, care requirements, and transit protection.
+- [Glassware blog](https://www.glarivoglass.com/blog): Published articles on glassware selection, customization, sourcing, and practical buying considerations.
+
+## Optional
+
+- [XML sitemap](https://www.glarivoglass.com/sitemap.xml): Current public product, category, article, guide, and company URLs.
+- [Robots policy](https://www.glarivoglass.com/robots.txt): Crawler access rules and sitemap location.
