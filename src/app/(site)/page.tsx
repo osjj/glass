@@ -63,7 +63,7 @@ export default async function HomePage() {
   // The permanent guide hub provides a useful fallback without exposing drafts.
   const guideHref = featuredArticle ? "/blog/" + featuredArticle.slug : "/guides/shot-glass-sourcing";
   const useShotGlassImage = !featuredArticle || featuredArticle.slug === shotGlassGuideSlug;
-  const study = caseStudies[0];
+  const study = caseStudies.find(({ slug }) => slug === "glarivo-hotel-glassware-customization") ?? caseStudies[0];
 
   return (
     <div className={styles.home}>

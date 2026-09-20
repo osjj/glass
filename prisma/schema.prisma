@@ -497,6 +497,23 @@ model PriceTier {
   @@index([productId, sortOrder])
 }
 
+model CaseStudy {
+  id            String        @id @default(cuid())
+  title         String
+  slug          String        @unique
+  excerpt       String
+  category      String
+  content       Json
+  coverImage    String?
+  coverImageAlt String?
+  status        PublishStatus @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+}
+
 model BlogPost {
   id              String        @id @default(cuid())
   title           String

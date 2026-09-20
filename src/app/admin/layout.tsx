@@ -18,6 +18,7 @@ const adminNavigation = [
   { href: "/admin/imports", label: "Product Import", icon: ClipboardCheck },
   { href: "/admin/imports/garbo-categories", label: "Garbo Categories", icon: LibraryBig },
   { href: "/admin/blog", label: "Blog", icon: BookOpenText },
+  { href: "/admin/case-studies", label: "Case Studies", icon: ClipboardCheck },
 ] as const;
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -1,4 +1,7 @@
-export type CaseStudy = {
+import type { CustomerCaseStudy } from "./shangri-la-case-study";
+
+export type DesignCaseStudy = {
+  kind: "design-study";
   slug: string;
   title: string;
   excerpt: string;
@@ -13,9 +16,12 @@ export type CaseStudy = {
   relatedLinks: Array<{ href: string; label: string }>;
 };
 
-// Original Glarivo design studies. Completed customer projects require supporting records.
+export type CaseStudy = DesignCaseStudy | CustomerCaseStudy;
+
+// Customer projects and design studies retain their own editorial labels.
 export const caseStudies: CaseStudy[] = [
   {
+    kind: "design-study",
     slug: "glarivo-hotel-glassware-customization",
     title: "Glarivo hotel glassware: a coordinated concept for rooms and lounges",
     excerpt: "Our hotel glassware design study brings together a versatile tumbler, a considered color palette and packaging planned around daily service.",

@@ -3,16 +3,17 @@ import { getPublishedBlogSitemapEntries } from "@/lib/public-blog";
 import { getPublicCategorySitemapEntries, getPublishedProductSitemapEntries } from "@/lib/public-products";
 import { getSiteUrl } from "@/lib/site-url";
 import { guideClusters } from "@/data/guide-clusters";
-import { caseStudies } from "@/data/case-studies";
+import { getPublishedCaseStudies } from "@/lib/public-case-studies";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getSiteUrl();
-  const [products, categories, articles] = await Promise.all([
+  const [products, categories, articles, caseStudies] = await Promise.all([
     getPublishedProductSitemapEntries(),
     getPublicCategorySitemapEntries(),
     getPublishedBlogSitemapEntries(),
+    getPublishedCaseStudies(),
   ]);
 
   return [

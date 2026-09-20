@@ -1,41 +1,45 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CaseStudyArtwork } from "@/components/site/case-study-artwork";
-import { caseStudies } from "@/data/case-studies";
+import { getPublishedCaseStudies } from "@/lib/public-case-studies";
 import { EditorialHero } from "@/components/site/editorial-hero";
 import styles from "@/components/site/editorial-pages.module.css";
 import { SITE_NAME } from "@/lib/site-identity";
 
 export const metadata: Metadata = {
   title: "Glassware Case Studies",
-  description: "Explore Glarivo glassware design studies, from hospitality concepts to product selection, brand details and packaging plans.",
+  description: "Explore Glarivo customer projects and design studies, covering hotel glassware, sample approval, customization, packaging and delivery.",
   alternates: { canonical: "/case-studies" },
   openGraph: {
     title: `Glassware Case Studies | ${SITE_NAME}`,
     siteName: SITE_NAME,
-    description: "Glarivo glassware concepts for hospitality, customization and packaging.",
+    description: "Glarivo customer projects and design studies for hospitality glassware, customization and packaging.",
     url: "/case-studies",
     type: "website",
   },
 };
 
-export default function CaseStudiesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CaseStudiesPage() {
+  const caseStudies = await getPublishedCaseStudies();
   return (
     <div className={styles.page}>
       <EditorialHero
         eyebrow="Case studies"
-        title={<>Glarivo glassware,<br />from brief to concept.</>}
-        description="Explore our approach to glassware through design studies that bring product selection, brand details and packaging into one considered proposal."
+        title={<>Glarivo glassware,<br />from brief to delivery.</>}
+        description="Explore customer projects and design studies covering product selection, sample revisions, brand details and delivery planning."
         image="/images/home/editorial/hotel-glassware-case.webp"
         imageAlt="Illustrative hospitality glassware setting for a design concept"
       />
       <section className={`${styles.container} ${styles.section}`} aria-label="Published case studies">
         {caseStudies.map((study) => (
           <article key={study.slug} className={styles.study}>
-            <CaseStudyArtwork />
+            {study.kind === "customer-project" ? study.coverImage ? <Image src={study.coverImage} alt={study.coverImageAlt ?? ""} width={1536} height={1024} sizes="(min-width: 900px) 50vw, 100vw" className="h-auto w-full" /> : <div className="grid min-h-64 place-items-center bg-[#eee8de] text-[var(--navy)]">Customer case study</div> : <CaseStudyArtwork />}
             <div className={styles.studyCopy}>
-              <p className={styles.kicker}>Glarivo design study</p>
+              <p className={styles.kicker}>{study.kind === "customer-project" ? "Customer case study" : "Glarivo design study"}</p>
               <h2><Link href={`/case-studies/${study.slug}`}>{study.title}</Link></h2>
               <p>{study.excerpt}</p>
               <p>{study.category}</p>
