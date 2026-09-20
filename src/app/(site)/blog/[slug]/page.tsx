@@ -32,10 +32,17 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     openGraph: {
       type: "article",
       siteName: SITE_NAME,
+      url: `/blog/${article.slug}`,
       title: article.title,
       description: article.excerpt,
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt.toISOString(),
+      images: [{ url: article.coverImage, alt: article.coverImageAlt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.excerpt,
       images: [{ url: article.coverImage, alt: article.coverImageAlt }],
     },
   };
@@ -67,10 +74,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     },
     articleSection: article.category,
   };
+  const breadcrumbItems = [
+    { name: "Home", item: siteUrl },
+    { name: "Blog", item: `${siteUrl}/blog` },
+    ...(cluster ? [{ name: cluster.title, item: `${siteUrl}/guides/${cluster.slug}` }] : []),
+    { name: article.title, item: `${siteUrl}/blog/${article.slug}` },
+  ];
+  const breadcrumbs = {
+    "@context": "https://schema.org", "@type": "BreadcrumbList",
+    itemListElement: breadcrumbItems.map((item, index) => ({ "@type": "ListItem", position: index + 1, ...item })),
+  };
 
   return (
     <article className={theme.page}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs).replace(/</g, "\\u003c") }} />
       <ReadingHeader title={article.title} eyebrow={article.category} description={article.excerpt}
         navigation={<><Link href="/blog"><ArrowLeft size={17} aria-hidden="true" />Back to blog</Link>{cluster && <nav aria-label="Guide topic"><span aria-hidden="true">/ </span><Link href={`/guides/${cluster.slug}`}>{cluster.title}</Link></nav>}</>}>
         <div className={styles.meta}><time dateTime={article.publishedAt}>{article.publishedLabel}</time><span>{article.readTime}</span></div>

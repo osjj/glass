@@ -10,12 +10,12 @@ import { SITE_NAME } from "@/lib/site-identity";
 
 export const metadata: Metadata = {
   title: "Glassware Case Studies",
-  description: "Explore Glarivo customer projects and design studies, covering hotel glassware, sample approval, customization, packaging and delivery.",
+  description: "Explore Glarivo customer glassware projects, from hotel requirements and sample approval to customization, packaging and delivery.",
   alternates: { canonical: "/case-studies" },
   openGraph: {
     title: `Glassware Case Studies | ${SITE_NAME}`,
     siteName: SITE_NAME,
-    description: "Glarivo customer projects and design studies for hospitality glassware, customization and packaging.",
+    description: "Glarivo customer projects for hospitality glassware, customization and packaging.",
     url: "/case-studies",
     type: "website",
   },
@@ -30,11 +30,16 @@ export default async function CaseStudiesPage() {
       <EditorialHero
         eyebrow="Case studies"
         title={<>Glarivo glassware,<br />from brief to delivery.</>}
-        description="Explore customer projects and design studies covering product selection, sample revisions, brand details and delivery planning."
+        description="Explore customer projects covering product selection, sample revisions, brand details and delivery planning."
         image="/images/home/editorial/hotel-glassware-case.webp"
-        imageAlt="Illustrative hospitality glassware setting for a design concept"
+        imageAlt="Illustrative hospitality glassware and packaging setting"
       />
       <section className={`${styles.container} ${styles.section}`} aria-label="Published case studies">
+        {caseStudies.length === 0 && <div>
+          <h2>Customer project stories are being prepared.</h2>
+          <p>Explore our buying guides for practical help with product selection, customization and sample approval.</p>
+          <Link href="/guides/restaurant-bar-glassware" className={styles.textLink}>Explore hospitality buying guides<ArrowRight size={18} aria-hidden="true" /></Link>
+        </div>}
         {caseStudies.map((study) => (
           <article key={study.slug} className={styles.study}>
             {study.kind === "customer-project" ? study.coverImage ? <Image src={study.coverImage} alt={study.coverImageAlt ?? ""} width={1536} height={1024} sizes="(min-width: 900px) 50vw, 100vw" className="h-auto w-full" /> : <div className="grid min-h-64 place-items-center bg-[#eee8de] text-[var(--navy)]">Customer case study</div> : <CaseStudyArtwork />}

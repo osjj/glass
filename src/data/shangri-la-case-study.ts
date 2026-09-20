@@ -132,6 +132,6 @@ export const shangriLaCaseStudy: CustomerCaseStudy = {
   relatedLinks: [
     { href: "/products/category/glass-tumblers", label: "Explore drinking glasses" },
     { href: "/guides/restaurant-bar-glassware", label: "Restaurant & bar buying guide" },
-    { href: "/case-studies/glarivo-hotel-glassware-customization", label: "Hotel glassware design study" },
+    { href: "/blog/hotel-glassware-guestrooms-lounges", label: "Hotel glassware buying guide" },
   ],
 };

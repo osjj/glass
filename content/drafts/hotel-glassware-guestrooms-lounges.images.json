@@ -1,0 +1,116 @@
+{
+  "blogDirectory": "public/images/blog/hotel-glassware-guestrooms-lounges",
+  "assets": [
+    {
+      "key": "01-hotel-glassware-hero",
+      "label": "酒店场景封面",
+      "placement": "页面顶部封面；也可用于案例列表缩略图",
+      "alt": "Clear and amber tumblers on a walnut table in a warm hotel lounge.",
+      "original": "D:/glarivo/output/imagegen/hotel-glassware-20260919/originals/01-hotel-glassware-hero.png",
+      "webp": "D:/glarivo/public/images/case-studies/hotel-glassware-20260919/01-hotel-glassware-hero.webp",
+      "url": "/images/case-studies/hotel-glassware-20260919/01-hotel-glassware-hero.webp",
+      "width": 1672,
+      "height": 941,
+      "webpBytes": 141692,
+      "pngBytes": 1793174,
+      "sha256": "40b2c9f79ab5ac55ba9a465444f1cdb118e23086ea7905bae0875cadb246792e",
+      "generatorOriginal": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-1b8b4cc0-1e3b-4349-959f-2fb4a3228c72.png"
+    },
+    {
+      "key": "02-rooms-and-lounges",
+      "label": "同一杯型，两种场景",
+      "placement": "“One silhouette, two service settings”小节之后",
+      "alt": "Matching tumblers shown on a guest-room refreshment tray and a lounge table.",
+      "original": "D:/glarivo/output/imagegen/hotel-glassware-20260919/originals/02-rooms-and-lounges.png",
+      "webp": "D:/glarivo/public/images/case-studies/hotel-glassware-20260919/02-rooms-and-lounges.webp",
+      "url": "/images/case-studies/hotel-glassware-20260919/02-rooms-and-lounges.webp",
+      "width": 1536,
+      "height": 1024,
+      "webpBytes": 141654,
+      "pngBytes": 2029843,
+      "sha256": "c24b39b4a5e31fbc683473e20b3987716e23c07964372f96979c5c7d2205f251",
+      "generatorOriginal": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-c31e5621-344e-4dcf-8b74-53956a9020d4.png"
+    },
+    {
+      "key": "03-brand-detail-sample",
+      "label": "标识位置与样品细节",
+      "placement": "“Make the brand detail part of the glass”小节之后",
+      "alt": "Close view of a clear tumbler with a small geometric decoration beside an amber sample and color references.",
+      "original": "D:/glarivo/output/imagegen/hotel-glassware-20260919/originals/03-brand-detail-sample.png",
+      "webp": "D:/glarivo/public/images/case-studies/hotel-glassware-20260919/03-brand-detail-sample.webp",
+      "url": "/images/case-studies/hotel-glassware-20260919/03-brand-detail-sample.webp",
+      "width": 1536,
+      "height": 1024,
+      "webpBytes": 151532,
+      "pngBytes": 2043207,
+      "sha256": "78629892af8831e602830b79a7b59209c750337af7ff46beb37808c7407b09e0",
+      "generatorOriginal": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-2b9368ff-6f77-4c17-a6a2-10adb1e5927c.png"
+    },
+    {
+      "key": "04-packaging-review",
+      "label": "包装与收货方案",
+      "placement": "“Plan the pack around hotel receiving”小节之后",
+      "alt": "Clear and amber tumblers with a fitted paper insert, a presentation box and a divided shipping carton.",
+      "original": "D:/glarivo/output/imagegen/hotel-glassware-20260919/originals/04-packaging-review.png",
+      "webp": "D:/glarivo/public/images/case-studies/hotel-glassware-20260919/04-packaging-review.webp",
+      "url": "/images/case-studies/hotel-glassware-20260919/04-packaging-review.webp",
+      "width": 1536,
+      "height": 1024,
+      "webpBytes": 159282,
+      "pngBytes": 2255729,
+      "sha256": "619f78a3626a213e0f1e3f42d1a2c5902e30388b625a26a58e292c7cf7751814",
+      "generatorOriginal": "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-66b02fad-637c-4e82-b517-5fd67fed64be.png"
+    }
+  ],
+  "mapping": {
+    "03-brand-detail-sample": "logo-sample.webp",
+    "04-packaging-review": "packaging.webp",
+    "01-hotel-glassware-hero": "hero.webp",
+    "02-rooms-and-lounges": "rooms-and-lounges.webp"
+  },
+  "mode": "Built-in image_gen outputs reused",
+  "prompts": {
+    "tool": "Built-in image_gen",
+    "sourceArticle": "https://www.glarivoglass.com/case-studies/glarivo-hotel-glassware-customization",
+    "generatedAt": "2026-09-19",
+    "jobs": [
+      {
+        "key": "01-hotel-glassware-hero",
+        "label": "酒店场景封面",
+        "placement": "页面顶部封面；也可用于案例列表缩略图",
+        "alt": "Clear and amber tumblers on a walnut table in a warm hotel lounge.",
+        "prompt": "Use case: photorealistic-natural. Asset type: website editorial cover for a Glarivo hotel glassware design study about a coordinated concept for guest rooms and lounges. Create a premium natural photographic-style image, landscape 16:9. On a refined walnut hotel lounge table, two compact tumblers share exactly the same smooth softly tapered cylindrical silhouette, circular opening, straight unfluted walls, subtly rounded rim, flat thick circular clear glass base; each about as tall as it is wide, no stem and no handle. One tumbler is colorless clear glass, the other is transparent light amber glass; both empty. Give glassware central prominence and realistic optical refraction, substantial but delicate quality, no impossible duplicated rims. A warm ivory linen napkin and a dark navy serving tray softly connect to the hospitality setting. In the gently blurred background: an understated boutique hotel lounge with warm beige upholstery and a window, no recognizable property or people. Soft morning window light, controlled rich highlights, restrained navy, ivory, walnut and honey-amber palette. The glasses sit within the center-right and central horizontal band with generous clean darker area upper-left for optional page heading; preserve the complete glasses with comfortable cropping margin. No text of any kind, no logos, no signage, no marks, no watermarks, no alcohol bottle, no certificates. This is a product design concept, not documentation of a named hotel or completed customer project. Crisp highly realistic glassware in focus, editorial interior photography, not a 3D diagram."
+      },
+      {
+        "key": "02-rooms-and-lounges",
+        "label": "同一杯型，两种场景",
+        "placement": "“One silhouette, two service settings”小节之后",
+        "alt": "Matching tumblers shown on a guest-room refreshment tray and a lounge table.",
+        "prompt": "Use case: photorealistic-natural. Asset type: supporting editorial image for the hotel glassware design study, one coordinated silhouette in two service settings. Use the supplied cover image only as a reference for the EXACT tumbler design, transparent clear and pale amber glass colors, and premium warm navy/ivory/walnut visual language. Create a NEW landscape 3:2 photographic diptych with two equally sized distinct panels separated by a narrow warm ivory gutter, not a collage of many pictures. LEFT: a single EMPTY clear version of the referenced smooth compact softly tapered tumbler on a refined dark navy hotel guest-room refreshment tray, with a plain glass water carafe and folded ivory napkin, subtle guest-room wall and bedside light softly blurred behind. RIGHT: a single EMPTY transparent pale amber version of precisely the same tumbler shape, dimensions, rim and base, on a walnut lounge side table beside a plain ivory linen coaster; warm lounge seating blurred behind. Both panels have matched perspective and scale, the featured glasses identical in apparent size and placed centrally with comfortable margins, glassware crisp and naturally lit. Elegant restrained hospitality editorial photography. Avoid large props hiding the cups. No hotel names, text, letters, numerical scales, watermarks, badges, people, logos, brand signage or alcohol bottles. Concept styling only, no assertion of a completed hotel project.",
+        "referenced_image_paths": [
+          "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-1b8b4cc0-1e3b-4349-959f-2fb4a3228c72.png"
+        ]
+      },
+      {
+        "key": "03-brand-detail-sample",
+        "label": "标识位置与样品细节",
+        "placement": "“Make the brand detail part of the glass”小节之后",
+        "alt": "Close view of a clear tumbler with a small geometric decoration beside an amber sample and color references.",
+        "prompt": "Use case: product-mockup. Asset type: hotel glassware decoration and sample review supporting image. Use the supplied cover image as a reference for the SAME exact compact smooth softly tapered tumbler silhouette, circular rim, straight unfluted walls and thick clear base, and its clear/transparent amber colors. Create a NEW landscape 3:2 high-end macro editorial photograph on warm ivory stone. Foreground: one empty clear tumbler at three-quarter eye-level, fully visible, with a TINY minimal white etched-looking abstract geometric decoration, a simple unlettered open diamond, about 8 percent of the glass width, centered on the lower-middle of its front wall. This is a generic example decoration, not a real hotel logo. Beside and just behind it: the same tumbler in transparent pale amber, slightly out of focus, also with the identical small white diamond at the matching location. Place small blank warm-white, navy, and honey-amber material swatches and a blank cream paper sample card near the bases. Focus on believable glass transparency, fine subtle decoration and surface finish; no giant mark or opaque label. Natural side light, restrained material-rich composition, softly blurred background, ample breathing room. No text, letters, dimensions, measuring scales, fabricated sample results, rubber stamps, signatures, people, watermarks or other branding. Preserve identical glass proportions from the reference. A design-direction illustration for discussing logo size and position, not a certification photograph.",
+        "referenced_image_paths": [
+          "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-1b8b4cc0-1e3b-4349-959f-2fb4a3228c72.png"
+        ]
+      },
+      {
+        "key": "04-packaging-review",
+        "label": "包装与收货方案",
+        "placement": "“Plan the pack around hotel receiving”小节之后",
+        "alt": "Clear and amber tumblers with a fitted paper insert, a presentation box and a divided shipping carton.",
+        "prompt": "Use case: product-mockup. Asset type: hotel glassware packaging planning supporting image. Use the provided cover as a visual reference for the exact same smooth compact softly tapered clear and transparent pale amber tumbler shapes and the warm ivory, navy and walnut palette. Create a NEW landscape 3:2 highly realistic editorial still life shot from a gently elevated three-quarter angle, on a clean warm ivory packing-review table. Foreground left: an open small rigid warm-white presentation box containing ONE clear tumbler held upright in a precisely fitted folded paper insert with believable clearance, rim visible and protected below the box wall. Beside it in the foreground center, one matching pale amber tumbler stands freely, complete base visible, subtly carrying a tiny unlettered white open-diamond example decoration on its lower-middle front. Background right: a modest open kraft corrugated shipping carton with clearly separated square paper-divider cells, three cells containing protected glasses and one cell empty to reveal divider construction; all objects obey consistent scale. A folded navy paper sleeve and two BLANK cream rectangular sorting cards add practical packing-review context, no plastic foam. Clearly distinguish presentation pack from shipping carton. Favor simple plausible construction, natural soft side light, realistic cardboard edges and glass refraction, polished B2B editorial photography. No labels, words, logos, barcodes, numbers, certifications, test stamps, shipping addresses, people or watermarks. Do not imply tested transit performance or an actual shipped order.",
+        "referenced_image_paths": [
+          "C:/Users/osjj/.codex/generated_images/01a0ad41-69fc-7770-b6af-57bea15440e8/exec-1b8b4cc0-1e3b-4349-959f-2fb4a3228c72.png"
+        ]
+      }
+    ]
+  }
+}

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
-import { caseStudies } from "@/data/case-studies";
+import { caseStudies, retiredCaseStudySlugs } from "@/data/case-studies";
 import { caseStudyContentSchema, caseImageUrl, type AdminCaseStudy, type CaseFormState } from "@/lib/case-study-content";
 
 const schema = z.object({
@@ -17,7 +17,7 @@ const schema = z.object({
   publishedDate: z.string().refine(value => !value || (/^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value), "Invalid publication date."),
   content: caseStudyContentSchema,
 }).refine(value => !value.coverImage || !!value.coverImageAlt, "Add cover image alt text.")
-  .refine(value => !caseStudies.some(study => study.slug === value.slug), "That URL belongs to an existing design study.");
+  .refine(value => !caseStudies.some(study => study.slug === value.slug) && !retiredCaseStudySlugs.includes(value.slug), "That URL is reserved for an existing or migrated article.");
 
 function invalidate(slugs: string[] = []) {
   for (const path of ["/admin/case-studies", "/case-studies", "/sitemap.xml", ...slugs.map(slug => `/case-studies/${slug}`)]) revalidatePath(path);

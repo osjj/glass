@@ -1,5 +1,6 @@
 import type { PublicBlogPost } from "@/lib/public-blog";
 import { markdownToArticleEditorData } from "@/lib/article-content";
+import { hotelGlasswareGuide } from "@/data/hotel-glassware-guide";
 
 // Versioned editorial content. A database record with the same slug takes
 // precedence, including drafts and archived records, so the CMS remains authoritative.
@@ -125,7 +126,7 @@ Reference the earlier approved sample and specifications, then ask whether the g
 const publishedAt = "2026-09-05T00:00:00.000Z";
 const readTimeMinutes = Math.ceil(shotGlassGuideMarkdown.split(/\s+/).length / 220);
 
-export const editorialPosts: PublicBlogPost[] = [{
+export const editorialPosts: PublicBlogPost[] = [hotelGlasswareGuide, {
   id: `editorial:${shotGlassGuideSlug}`,
   slug: shotGlassGuideSlug,
   title: "Shot Glass Buying Guide for Wholesale Buyers",

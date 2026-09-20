@@ -5,8 +5,8 @@ import {
   ArrowRight, ChatCircleDots, ClipboardText, Coffee, Factory,
   Jar, MagnifyingGlass, Package, PenNib, ShieldCheck, Wine,
 } from "@phosphor-icons/react/dist/ssr";
-import { caseStudies } from "@/data/case-studies";
 import { shotGlassGuideSlug } from "@/data/editorial-posts";
+import { hotelGlasswareGuideSlug } from "@/data/hotel-glassware-guide";
 import { guideClusters } from "@/data/guide-clusters";
 import {
   homeBuyerScenarios, homeCollections, homeExhibitions, homeServices,
@@ -63,7 +63,7 @@ export default async function HomePage() {
   // The permanent guide hub provides a useful fallback without exposing drafts.
   const guideHref = featuredArticle ? "/blog/" + featuredArticle.slug : "/guides/shot-glass-sourcing";
   const useShotGlassImage = !featuredArticle || featuredArticle.slug === shotGlassGuideSlug;
-  const study = caseStudies.find(({ slug }) => slug === "glarivo-hotel-glassware-customization") ?? caseStudies[0];
+  const hotelGuide = articles.find(({ slug }) => slug === hotelGlasswareGuideSlug);
 
   return (
     <div className={styles.home}>
@@ -245,13 +245,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {study && <section aria-labelledby="case-heading" className={styles.caseStudy + " " + styles.dark}>
+      {hotelGuide && <section aria-labelledby="hotel-guide-heading" className={styles.caseStudy + " " + styles.dark}>
         <div className={styles.container + " " + styles.caseGrid}>
-          <figure><Photo src="/images/home/editorial/hotel-glassware-case.webp" alt="Editorial illustration of blue and amber glassware with unbranded gift packaging" className={styles.casePhoto} /><figcaption>Editorial illustration</figcaption></figure>
-          <div className={styles.caseCopy}><p className={styles.kicker}>Glarivo design study</p><h2 id="case-heading" className={styles.heading}>Hotel glassware,<br />considered in detail.</h2><Rule />
-            <p>Our coordinated glassware concept for hotel rooms and lounges, from the first brief to sample approval.</p><p className={styles.caseTopics}>Color · Identity · Packaging</p>
-            <p className={styles.caseDisclosure}>Explore our approach to product selection,<br />brand details and packaging.</p>
-            <Link href={"/case-studies/" + study.slug} className={styles.outlineButton}>Explore the case study<ArrowRight size={25} weight="light" aria-hidden="true" /></Link>
+          <figure><Photo src={hotelGuide.coverImage} alt={hotelGuide.coverImageAlt} className={styles.casePhoto} /><figcaption>Glassware concept illustration</figcaption></figure>
+          <div className={styles.caseCopy}><p className={styles.kicker}>Hotel glassware buying guide</p><h2 id="hotel-guide-heading" className={styles.heading}>Hotel glassware,<br />considered in detail.</h2><Rule />
+            <p>Plan a coordinated collection for guestrooms and lounges, from the service brief to sample approval.</p><p className={styles.caseTopics}>Capacity · Customization · Replenishment</p>
+            <p className={styles.caseDisclosure}>Compare tray fit, logo samples,<br />packing and replacement requirements.</p>
+            <Link href={"/blog/" + hotelGuide.slug} className={styles.outlineButton}>Read the buying guide<ArrowRight size={25} weight="light" aria-hidden="true" /></Link>
           </div>
         </div>
       </section>}

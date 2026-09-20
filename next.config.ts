@@ -13,7 +13,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/case-studies/garbo-hotel-glassware-color-customization",
-        destination: "/case-studies/glarivo-hotel-glassware-customization",
+        destination: "/blog/hotel-glassware-guestrooms-lounges",
+        permanent: true,
+      },
+      {
+        source: "/case-studies/glarivo-hotel-glassware-customization",
+        destination: "/blog/hotel-glassware-guestrooms-lounges",
         permanent: true,
       },
     ];
