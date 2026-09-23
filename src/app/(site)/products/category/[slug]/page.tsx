@@ -67,8 +67,8 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
         <CategoryMenu categories={categoryTree} activeSlug={category.slug} />
         <div className={styles.catalogResults}>
           {buyingGuides.length > 0 && <nav aria-label="Related buying guides" className={productStyles.guideLinks}><p>Need help choosing?</p><div>{buyingGuides.map((guide) => <Link key={guide.slug} href={`/guides/${guide.slug}`}>{guide.title} guide →</Link>)}</div></nav>}
-          {buyingContent ? <div className={productStyles.buyingNotes}><CategoryBuyingNotes categoryLabel={category.label} content={buyingContent} /></div> : null}
-          <div className={styles.toolbar}>
+          {buyingContent ? <CategoryBuyingNotes content={buyingContent} /> : null}
+          <div id="category-products" className={`${styles.toolbar} ${productStyles.categoryProducts}`}>
             <div>
               <h2>{category.label}</h2>
               <p>{pagination.total} {pagination.total === 1 ? "product" : "products"}</p>

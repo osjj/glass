@@ -7,11 +7,23 @@
 .guideLinks { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 28px; margin-bottom: 30px; padding-block: 18px; border-block: 1px solid var(--line); font-size: 14px; }
 .guideLinks > div { display: flex; flex-wrap: wrap; gap: 12px 24px; }
 .guideLinks a { color: #90672c; text-decoration: underline; text-underline-offset: 5px; }
-.buyingNotes > section { padding: 28px 0; border: 0; border-radius: 0; background: transparent; }
-.buyingNotes h2 { margin-top: 14px; font-size: 36px; }
-.buyingNotes h2 + p { margin-top: 18px; }
-.buyingNotes article { border-radius: 0; background: #efebe4; }
-.buyingNotes h3 { font-family: var(--font-home-display), Georgia, serif; font-size: 25px; font-weight: 400; line-height: 1.2; }
+.notePanel { margin-bottom: 30px; padding: 22px 26px; border: 1px solid var(--line); background: #f7f3ec; }
+.noteEyebrow { color: #90672c; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.notePanel h2 { margin-top: 7px; color: var(--navy); font-family: var(--font-home-display), Georgia, serif; font-size: 30px; font-weight: 400; line-height: 1.2; }
+.noteGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-top: 19px; }
+.noteGrid h3 { color: var(--navy); font-size: 14px; font-weight: 700; }
+.noteList { display: grid; gap: 8px; margin-top: 9px; padding-left: 18px; color: var(--ink-muted); font-size: 13px; line-height: 1.55; list-style: disc; }
+.noteList li::marker { color: #90672c; }
+.noteActions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; margin-top: 19px; padding-top: 16px; border-top: 1px solid var(--line); }
+.noteActions p { max-width: 350px; color: var(--ink-muted); font-size: 12px; line-height: 1.5; }
+.noteActions > div { display: flex; flex-wrap: wrap; gap: 10px; }
+.noteBrowse, .noteAsk { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; padding: 10px 14px; font-size: 13px; font-weight: 700; text-align: center; }
+.noteBrowse { border: 1px solid #9b8058; color: var(--navy); background: transparent; }
+.noteBrowse:hover { background: #eee5d7; }
+.noteAsk { border: 1px solid var(--navy); color: white; background: var(--navy); cursor: pointer; }
+.noteAsk:hover { background: #123650; }
+.noteBrowse:focus-visible, .noteAsk:focus-visible { outline: 2px solid #90672c; outline-offset: 3px; }
+.categoryProducts { scroll-margin-top: 125px; }
 .detailHero { min-height: 330px; }
 .detailHeroContent { position: relative; padding-block: 148px 42px; }
 .detailHero .collectionTitle { margin-top: 12px; font-family: var(--font-home-display), Georgia, serif; font-size: clamp(36px, 3.7vw, 54px); line-height: 1.1; }
@@ -77,7 +89,9 @@
   .detailHero { min-height: 310px; }
   .detailHeroContent { padding-top: 128px; }
   .overview > div { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px; }
-  .buyingNotes h2 { font-size: 32px; }
+  .notePanel { padding: 20px; }
+  .notePanel h2 { font-size: 27px; }
+  .noteGrid { grid-template-columns: 1fr; gap: 18px; }
   .detailsLayout { padding-bottom: 48px; }
   .specifications :is(th, td) { padding: 12px; font-size: 13px; }
   .specifications th { width: 40%; }

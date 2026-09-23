@@ -447,11 +447,13 @@ export async function updateProduct(
           JSON.stringify(a.map(({ label, value }) => ({ label, value }))) === JSON.stringify(b);
         const imagesEqual = (a: typeof locked.images, b: z.infer<typeof imageSchema>[]) => a.length === b.length && b.every((image, i) =>
           Object.entries(image).every(([key, value]) => (a[i][key as keyof typeof image] ?? null) === (value ?? null)));
-        const sectionsUnchanged = locked.contentSections.length === data.contentSections.length && data.contentSections.every((section, i) =>
-          section.sourceKey === locked.contentSections[i].sourceKey && imagesEqual(locked.contentSections[i].images, section.images));
+        const sectionsCompatible = data.contentSections.length >= locked.contentSections.length &&
+          locked.contentSections.every((section, i) => section.sourceKey === data.contentSections[i].sourceKey &&
+            imagesEqual(section.images, data.contentSections[i].images)) &&
+          data.contentSections.slice(locked.contentSections.length).every((section) => section.images.length === 0);
         if (scalarUnchanged && locked.categories.some((c) => c.categoryId === category.id) &&
           pairsEqual(locked.overviewFields, data.overviewFields) && pairsEqual(locked.attributes, data.attributes) &&
-          pairsEqual(locked.specifications, data.specifications) && imagesEqual(locked.images, data.images) && sectionsUnchanged) {
+          pairsEqual(locked.specifications, data.specifications) && imagesEqual(locked.images, data.images) && sectionsCompatible) {
           await transaction.product.update({ where: { id: productId }, data: {
             name: data.name, summary: data.summary, description: data.description,
             seoTitle: data.seoTitle || null, seoDescription: data.seoDescription || null,
@@ -460,9 +462,15 @@ export async function updateProduct(
             await transaction.productFeature.deleteMany({ where: { productId } });
             if (data.features.length) await transaction.productFeature.createMany({ data: data.features.map((value, sortOrder) => ({ productId, value, sortOrder })) });
           }
-          for (const section of data.contentSections) await transaction.productContentSection.update({
+          for (const section of data.contentSections.slice(0, locked.contentSections.length)) await transaction.productContentSection.update({
             where: { productId_sourceKey: { productId, sourceKey: section.sourceKey } }, data: { title: section.title, body: section.body },
           });
+          for (const [index, section] of data.contentSections.slice(locked.contentSections.length).entries()) {
+            await transaction.productContentSection.create({ data: {
+              productId, sourceKey: section.sourceKey, title: section.title, body: section.body,
+              sortOrder: locked.contentSections.length + index,
+            } });
+          }
           return;
         }
         await transaction.productSpecification.deleteMany({

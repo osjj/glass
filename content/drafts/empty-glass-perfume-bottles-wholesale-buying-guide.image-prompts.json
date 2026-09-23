@@ -1,0 +1,22 @@
+{
+  "mode": "built-in imagegen",
+  "useCase": "product-mockup",
+  "disclosure": "Concept illustrations, not exact Glarivo catalog models or approved packaging assemblies.",
+  "images": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/empty-glass-perfume-bottles-wholesale-buying-guide/hero.webp",
+      "prompt": "Create a photorealistic wide editorial hero photograph (landscape 3:2) for a B2B buying guide about sourcing new empty glass perfume bottles wholesale. Show three unbranded, EMPTY clear glass perfume bottle concepts with visibly different silhouettes: a simple rectangular bottle, a faceted bottle, and a flat square bottle. Set them on a warm stone tabletop with softly lit neutral studio background, refined realistic reflections, tasteful premium packaging editorial style, generous negative space, all bottles fully in frame. A detached generic cap may sit beside one bottle, but no labels, logos, brand names, liquid, people, text, price tags, or shipping claims. This is a conceptual illustration, not an exact catalog SKU."
+    },
+    {
+      "name": "components",
+      "file": "public/images/blog/empty-glass-perfume-bottles-wholesale-buying-guide/components.webp",
+      "prompt": "Photorealistic wide landscape 3:2 editorial concept photograph for a wholesale perfume bottle buying guide. On a clean warm stone worktable, neatly arrange one EMPTY unbranded clear glass perfume bottle, one separate atomizer spray pump with visible dip tube, one separate simple metal-look collar, and one separate plain cap, all physically distinct and spaced so a buyer can see the component categories. Soft warm studio light, neutral background, realistic glass reflections, premium restrained B2B product education style. No text, labels, arrows, brand logos, people, liquid, measuring rulers, extra pieces, or implication that parts are compatible with a specific catalog model. No assembly claims."
+    },
+    {
+      "name": "packing",
+      "file": "public/images/blog/empty-glass-perfume-bottles-wholesale-buying-guide/packing.webp",
+      "prompt": "Photorealistic wide landscape 3:2 editorial concept photograph for a B2B perfume glass bottle wholesale guide. Show a small open kraft master carton with individual protective divider cells holding several EMPTY clear unbranded glass perfume bottles upright, with separate simple caps protected in their own compartment. Clean warehouse sample-review table, warm natural light, neutral background, realistic corrugated paper texture and glass reflections. Convey a packing concept only, not a tested shipping design. No labels, text, logos, people, liquid, shipping marks, measurements, certificates, or exaggerated protection claims."
+    }
+  ]
+}

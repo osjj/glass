@@ -1,13 +1,14 @@
 export type CategoryBuyingContent = {
+  label: string;
   seoTitle: string;
   seoDescription: string;
-  introduction: string;
   useCases: string[];
   comparisonPoints: string[];
   inquiryChecklist: string[];
 };
 
 type FamilyKey =
+  | "cosmetic"
   | "drinkware"
   | "mugs"
   | "serveware"
@@ -35,6 +36,22 @@ const familyContent: Record<FamilyKey, {
   comparisonPoints: [string, string, string];
   inquiryChecklist: [string, string, string];
 }> = {
+  cosmetic: {
+    useCases: [
+      "Beauty and personal-care packaging programs",
+      "Coordinated bottle ranges for different formulas and dispensing formats",
+    ],
+    comparisonPoints: [
+      "Compare fill capacity, bottle dimensions and neck finish for the intended formula.",
+      "Check the selected bottle with its pump, dropper or cap on an assembled sample.",
+      "Confirm decoration and packing for the chosen bottle and closure.",
+    ],
+    inquiryChecklist: [
+      "Selected bottle references and quantity per design",
+      "Closure, dispensing and decoration requirements",
+      "Packed sample, destination and target timing",
+    ],
+  },
   drinkware: {
     useCases: [
       "Hospitality and food-service ranges planned around defined drink portions",
@@ -43,7 +60,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Compare capacity together with height, rim diameter and base size; a number in a title is not a calibrated pour mark.",
       "Review the rim, base and overall proportions against trays, shelving and the intended presentation.",
-      "Confirm decoration, color and packing on the selected model rather than assuming them from category images.",
+      "Confirm decoration, color and packing for the selected model.",
     ],
     inquiryChecklist: [
       "Required quantity for each selected product",
@@ -59,7 +76,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Check capacity, rim diameter, height and handle clearance together with the intended beverage and service equipment.",
       "Compare the mug weight and base with handling, storage and repeated service needs.",
-      "Treat lids, saucers, double-wall construction and decoration as model-specific details that require confirmation.",
+      "Confirm lid, saucer, wall construction and decoration for the selected model.",
     ],
     inquiryChecklist: [
       "Target beverage, capacity and quantity per design",
@@ -75,7 +92,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Compare usable capacity and external dimensions with table space, storage and the planned serving quantity.",
       "Review the rim, base, handle, spout or lid details that affect pouring and handling for the selected model.",
-      "Confirm included components and packing configuration instead of inferring a set from the product image.",
+      "Check which components and packing are included with the selected model.",
     ],
     inquiryChecklist: [
       "Selected model and required quantity per shape or size",
@@ -91,7 +108,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Compare stated capacity with the body profile, neck opening, stopper fit and overall height.",
       "Review handling, pouring and shelf clearance using the exact selected model and sample.",
-      "Confirm whether glasses, stoppers or gift packing are included rather than relying on staged photography.",
+      "Check whether glasses, stoppers and gift packing are included.",
     ],
     inquiryChecklist: [
       "Decanter model, capacity and quantity",
@@ -107,7 +124,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Check the diameter, height, depth and usable volume against the intended serving portion.",
       "Compare rim, foot and stacking profile with storage, handling and table presentation needs.",
-      "Confirm piece count, decoration and packing for the exact item or set selected.",
+      "Confirm piece count, decoration and packing for the selected item or set.",
     ],
     inquiryChecklist: [
       "Selected sizes, shapes and quantity per model",
@@ -123,7 +140,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Compare usable capacity, opening diameter and external height with the intended contents and shelf space.",
       "Review lid material, closure method and included accessories on the selected model.",
-      "Do not assume an airtight or leakproof performance claim unless it is supported for that exact item.",
+      "Request evidence for any airtight or leakproof claim on the exact item.",
     ],
     inquiryChecklist: [
       "Capacity mix and quantity for each jar or bottle",
@@ -139,7 +156,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Compare internal and external dimensions, depth and stated capacity with the recipe, portion and appliance space.",
       "Confirm the glass composition and the intended temperature or appliance use for the exact model before ordering.",
-      "Review handles, lids, nesting and packing as separate model-specific requirements.",
+      "Confirm handles, lids, nesting and packing for the selected model.",
     ],
     inquiryChecklist: [
       "Selected shape, dimensions, capacity and quantity",
@@ -155,7 +172,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Confirm the stated material, capacity, wall construction and dimensions on the selected item.",
       "Review lids, handles, filters, spouts and seals as individual components rather than category-wide features.",
-      "Temperature resistance, appliance use and food-contact claims require model-specific evidence.",
+      "Request model-specific evidence for temperature, appliance and food-contact claims.",
     ],
     inquiryChecklist: [
       "Selected model, capacity and quantity",
@@ -171,7 +188,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Compare bowl capacity, rim diameter, stem height, foot size and overall balance.",
       "Match the profile to the intended beverage and available rack, tray and shelf clearance.",
-      "Confirm decoration, color, set composition and packing for the exact selected design.",
+      "Confirm decoration, set composition and packing for the selected design.",
     ],
     inquiryChecklist: [
       "Glass profile, capacity and quantity per design",
@@ -187,7 +204,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Compare external dimensions, weight and contact surfaces with the intended placement and handling.",
       "Review openings, rests, bases, lids or inserts that affect the selected item's function.",
-      "Confirm decoration and protective packing on the exact model before quotation.",
+      "Confirm decoration and protective packing for the selected model.",
     ],
     inquiryChecklist: [
       "Selected model, dimensions and required quantity",
@@ -203,7 +220,7 @@ const familyContent: Record<FamilyKey, {
     comparisonPoints: [
       "Compare height, opening, base and overall proportions with the intended display location.",
       "Review color, texture, decoration and handmade variation using the selected sample.",
-      "Confirm inserts, candles, flowers or other display items separately when they are not stated as included.",
+      "Confirm whether display accessories are included with the selected item.",
     ],
     inquiryChecklist: [
       "Selected shape, size and quantity per design",
@@ -214,9 +231,13 @@ const familyContent: Record<FamilyKey, {
 };
 
 const categoryDefinitions: Record<string, CategoryDefinition> = {
+  "cosmetic-glass-packaging": { label: "cosmetic glass packaging", family: "cosmetic", focus: "bottle format, capacity, neck finish and compatible dispensing components", useCase: "Beauty packaging ranges covering fragrance, oils and liquid cosmetics", comparison: "Separate perfume, essential-oil and foundation formats before comparing bottle and closure options.", inquiry: "Product formula, bottle formats and required quantities" },
+  "essential-oil-bottles": { label: "essential oil bottles", family: "cosmetic", focus: "fill capacity, neck finish, dropper or reducer fit and light exposure", useCase: "Essential-oil packaging ranges with defined dispensing needs", comparison: "Check the selected reducer, dropper or cap with the bottle neck and intended dispensing method.", inquiry: "Oil format, fill volume and dropper or reducer requirements" },
+  "perfume-bottles": { label: "perfume bottles", family: "cosmetic", focus: "fill capacity, neck finish, sprayer fit and decoration", useCase: "Fragrance packaging ranges with matching spray and cap components", comparison: "Approve the bottle, sprayer and cap as an assembled set; confirm the neck finish and spray fit.", inquiry: "Fill volume, sprayer type, cap and decoration requirements" },
+  "foundation-bottles": { label: "foundation bottles", family: "cosmetic", focus: "fill capacity, neck, pump or cap and formula compatibility", useCase: "Liquid-makeup packaging ranges with defined dispensing requirements", comparison: "Review the assembled bottle and pump or cap against the intended fill and dispensing method.", inquiry: "Formula, fill volume, pump or cap and decoration requirements" },
   "glass-tumblers": { label: "glass cups and tumblers", family: "drinkware", focus: "capacity, rim shape, base proportions and packing", useCase: "Everyday beverage service across hospitality, retail and distribution programs", comparison: "Match the tumbler profile to the finished drink, including space for ice, garnish, milk or foam.", inquiry: "Target drink types and capacity range" },
   "engraved-glass-cups": { label: "engraved glass cups", family: "drinkware", focus: "engraved pattern, capacity, dimensions and surface finish", useCase: "Decorated drinkware collections where the molded or engraved pattern is part of the range", comparison: "Review pattern depth, repeat, clarity and undecorated areas on an approved sample.", inquiry: "Selected engraving or pattern reference" },
-  "shot-glass": { label: "shot glasses", family: "drinkware", focus: "serving volume, profile, base construction and decoration", useCase: "Bar, restaurant, event and promotional programs for small drink servings", comparison: "Compare the intended fill level with the stated capacity and the glass's top, base and height measurements.", inquiry: "Intended serving volume and destination market", seoTitle: "Wholesale Shot Glasses | Sizes, Shapes & Custom Options" },
+  "shot-glass": { label: "shot glasses", family: "drinkware", focus: "serving volume, profile, base construction and decoration", useCase: "Bar, restaurant, event and promotional programs for small drink servings", comparison: "Check the intended pour against stated capacity, rim, base and height.", inquiry: "Intended serving volume and destination market", seoTitle: "Wholesale Shot Glasses | Sizes, Shapes & Custom Options" },
   "glass-mugs": { label: "glass mugs", family: "mugs", focus: "capacity, handle clearance, shape and coordinated accessories", useCase: "Beverage programs that need handled glassware across several drink formats", comparison: "Decide whether the range needs matching saucers, lids or double-wall options before comparing individual models.", inquiry: "Required mug types and capacity range" },
   "glass-coffee-mugs": { label: "glass coffee mugs", family: "mugs", focus: "drink capacity, handle comfort, rim and heat-use requirements", useCase: "Café and hospitality coffee service planned around defined beverage sizes", comparison: "Allow for milk or foam when matching the listed capacity to the finished coffee serving.", inquiry: "Coffee style, finished serving size and quantity" },
   "glass-beer-mugs": { label: "glass beer mugs", family: "mugs", focus: "usable volume, handle, wall profile and base stability", useCase: "Pub, restaurant and event beer service", comparison: "Compare the stated capacity with the intended pour, head space and overall filled weight.", inquiry: "Beer serving size and required quantity per design" },
@@ -287,12 +308,12 @@ function truncateAtWord(value: string, maximum: number) {
 function buildCategoryBuyingContent(definition: CategoryDefinition): CategoryBuyingContent {
   const family = familyContent[definition.family];
   return {
+    label: definition.label,
     seoTitle: definition.seoTitle ?? `Wholesale ${titleCase(definition.label)} | Sourcing Guide`,
     seoDescription: truncateAtWord(`Compare ${definition.label} by ${definition.focus}. Review current models and prepare a product-specific wholesale inquiry with Glarivo.`, 158),
-    introduction: `Build a ${definition.label} shortlist around ${definition.focus}, not appearance alone. Use the published product data for initial comparison, then reconfirm the exact model, sample and carton details before quotation.`,
     useCases: [definition.useCase, ...family.useCases],
-    comparisonPoints: [definition.comparison, ...family.comparisonPoints],
-    inquiryChecklist: [definition.inquiry, ...family.inquiryChecklist],
+    comparisonPoints: [definition.comparison, family.comparisonPoints[2]],
+    inquiryChecklist: [definition.inquiry, family.inquiryChecklist[2]],
   };
 }
 

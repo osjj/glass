@@ -5,6 +5,7 @@ import { COPY_FIELDS, COPY_LABELS, changedCopyFields, copySchema, mergeSelectedC
   type CopyField, type ProductCopy, type RewriteRequest, type RewriteResult } from "@/lib/product-copy";
 
 type Revision = { id: string; snapshot: ProductCopy; reason: string; createdAt: string };
+type CopyMode = "rewrite" | "optimize";
 const display = (value: ProductCopy[CopyField]) => typeof value === "string" ? value || "（空）" :
   value.map((v) => typeof v === "string" ? `• ${v}` : `${v.title}\n${v.body}`).join("\n\n") || "（空）";
 
@@ -13,7 +14,10 @@ export function ProductCopyEditor({ productId, copy, getFacts, onApply, disabled
   onApply: (value: ProductCopy, fields: CopyField[], reason: "AI assisted" | "Restore") => void;
   disabled: boolean; onBusyChange: (busy: boolean) => void; protectedFields: string[];
 }) {
+  const [mode, setMode] = useState<CopyMode>("rewrite");
   const [fields, setFields] = useState<CopyField[]>([...COPY_FIELDS]);
+  const [buyerFocus, setBuyerFocus] = useState("");
+  const [verifiedNotes, setVerifiedNotes] = useState("");
   const [selected, setSelected] = useState<CopyField[]>([]);
   const [preview, setPreview] = useState<{ before: ProductCopy; result: RewriteResult; context: string; reason: "AI assisted" | "Restore" } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -24,15 +28,15 @@ export function ProductCopyEditor({ productId, copy, getFacts, onApply, disabled
   const controller = useRef<AbortController | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   useEffect(() => () => controller.current?.abort(), []);
-  const context = () => JSON.stringify({ copy, facts: getFacts() });
+  const context = () => JSON.stringify({ copy, facts: getFacts(), mode, buyerFocus, verifiedNotes });
   const toggle = (list: CopyField[], field: CopyField) => list.includes(field) ? list.filter((f) => f !== field) : [...list, field];
 
   async function generate() {
     setError(""); setNotice("");
     if (!fields.length) { setError("请至少选择一个字段。"); return; }
     if (!copySchema.safeParse(copy).success) { setError("请先填写商品名称、摘要，并检查详情区块标题和文案长度。"); return; }
-    const input: RewriteRequest = { copy: structuredClone(copy), fields, facts: getFacts() };
-    const originalContext = JSON.stringify({ copy: input.copy, facts: input.facts });
+    const input: RewriteRequest = { mode, copy: structuredClone(copy), fields, facts: getFacts(), buyerFocus, verifiedNotes };
+    const originalContext = JSON.stringify({ copy: input.copy, facts: input.facts, mode, buyerFocus, verifiedNotes });
     controller.current = new AbortController();
     setBusy(true); onBusyChange(true);
     try {
@@ -73,14 +77,27 @@ export function ProductCopyEditor({ productId, copy, getFacts, onApply, disabled
   }
   const changed = preview ? changedCopyFields(preview.before, preview.result.copy) : [];
   return <section aria-labelledby="copy-editor-title" className="rounded-2xl border border-[#bacdde] bg-[#f5f9fc] p-5 sm:p-7">
-    <h2 id="copy-editor-title" className="text-lg font-black">AI 一键改写</h2>
-    <p className="mt-2 text-sm text-[var(--ink-muted)]">生成英文商品文案，逐项对照后采用。保留产品事实，移除来源品牌和未经确认的承诺。生成不会自动保存。</p>
+    <h2 id="copy-editor-title" className="text-lg font-black">AI 商品文案</h2>
+    <p className="mt-2 text-sm text-[var(--ink-muted)]">生成英文商品文案，逐项对照后采用。生成不会自动保存。</p>
+    <fieldset className="mt-4 grid gap-3 sm:grid-cols-2" disabled={busy || disabled}>
+      <legend className="mb-2 text-sm font-bold">处理方式</legend>
+      {([ ["rewrite", "一键改写", "润色现有字段，保留详情区块数量。"], ["optimize", "产品页优化", "补充具体卖点、购买信息和文字区块。"] ] as const).map(([value, label, hint]) =>
+        <label key={value} className={`cursor-pointer rounded-xl border p-4 text-sm ${mode === value ? "border-[#3976a5] bg-white" : "border-[#d5dfe7] bg-[#f8fbfd]"}`}>
+          <span className="flex items-center gap-2 font-bold"><input type="radio" name="copyMode" checked={mode === value} onChange={() => { setMode(value); setPreview(null); setNotice(""); setError(""); }} />{label}</span>
+          <span className="mt-1 block pl-6 text-xs text-[var(--ink-muted)]">{hint}</span>
+        </label>)}
+    </fieldset>
+    {mode === "optimize" ? <div className="mt-4 space-y-3 rounded-xl border border-[#d5dfe7] bg-white p-4">
+      <label className="block text-sm font-bold">目标买家或应用场景（可选）<input className="mt-2 w-full rounded-lg border border-[#ccd3ce] p-3 text-sm font-normal" value={buyerFocus} onChange={(event) => setBuyerFocus(event.target.value)} maxLength={500} placeholder="例如：餐饮采购、酒吧补货、礼品定制询盘" /></label>
+      <label className="block text-sm font-bold">已核实的补充事实（可选）<textarea className="mt-2 min-h-24 w-full rounded-lg border border-[#ccd3ce] p-3 text-sm font-normal" value={verifiedNotes} onChange={(event) => setVerifiedNotes(event.target.value)} maxLength={2000} placeholder="仅填写已确认的材质、容量、包装或可提供的定制方式等" /></label>
+      <p className="text-xs text-[var(--ink-muted)]">AI 使用表单中的文案、规格和这里的补充事实；不会识别商品图片。请核对图片与生成文案是否相符。</p>
+    </div> : null}
     <fieldset className="mt-4 flex flex-wrap gap-4" disabled={busy || disabled}>
       <legend className="mb-2 text-sm font-bold">选择改写内容</legend>
       {COPY_FIELDS.map((field) => <label key={field} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={fields.includes(field)} onChange={() => setFields(toggle(fields, field))} />{COPY_LABELS[field]}</label>)}
     </fieldset>
     <div className="mt-4 flex flex-wrap gap-3">
-      <button type="button" className="button-primary" disabled={busy || disabled || !fields.length} onClick={generate}>{busy ? "正在生成…" : "生成改写建议"}</button>
+      <button type="button" className="button-primary" disabled={busy || disabled || !fields.length} onClick={generate}>{busy ? "正在生成…" : mode === "optimize" ? "生成产品页优化建议" : "生成改写建议"}</button>
       {busy ? <button type="button" className="button-secondary" onClick={() => controller.current?.abort()}>取消生成</button> : null}
       {productId ? <button type="button" className="button-secondary" disabled={busy || disabled || loadingHistory} onClick={loadHistory}>{loadingHistory ? "正在读取…" : "查看 / 刷新文案历史"}</button> : null}
     </div>
@@ -94,7 +111,7 @@ export function ProductCopyEditor({ productId, copy, getFacts, onApply, disabled
       </li>)}</ul>}
     </details> : null}
     {preview ? <div ref={previewRef} className="mt-6 scroll-mt-8 space-y-4">
-      <h3 className="font-black">{preview.reason === "Restore" ? "恢复版本对照" : "改写前后对照"}</h3>
+      <h3 className="font-black">{preview.reason === "Restore" ? "恢复版本对照" : "当前与建议文案对照"}</h3>
       <p className="text-sm">请核对型号、参数和承诺；AI 校验不能替代人工确认。</p>
       {preview.result.warnings.length ? <div className="rounded-lg bg-amber-50 p-4 text-sm text-amber-900"><p className="font-bold">需要检查</p><ul className="mt-2 list-disc space-y-1 pl-5">{preview.result.warnings.map((w, i) => <li key={i}>{w}</li>)}</ul></div> : null}
       {!changed.length ? <p className="text-sm">没有可采用的变化，可调整选择后重新生成。</p> : changed.map((field) => <div key={field} className="rounded-xl border bg-white p-4">

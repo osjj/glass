@@ -291,10 +291,16 @@ export function ProductForm({
   function applyCopy(copy: ProductCopy, fields: CopyField[], reason: "AI assisted" | "Restore") {
     setName(copy.name); setSummary(copy.summary); setDescription(copy.description);
     setSeoTitle(copy.seoTitle); setSeoDescription(copy.seoDescription); setFeatures(copy.features);
-    if (fields.includes("contentSections")) setContentSections((sections) => sections.map((section, index) => {
-      const saved = copy.contentSections.find((s) => s.sourceKey === buildSectionKey(section.sourceKey || section.title, index));
-      return saved ? { ...section, title: saved.title, body: saved.body } : section;
-    }));
+    if (fields.includes("contentSections")) setContentSections((sections) => {
+      const existingKeys = new Set(sections.map((section, index) => buildSectionKey(section.sourceKey || section.title, index)));
+      const updated = sections.map((section, index) => {
+        const saved = copy.contentSections.find((s) => s.sourceKey === buildSectionKey(section.sourceKey || section.title, index));
+        return saved ? { ...section, title: saved.title, body: saved.body } : section;
+      });
+      const additions = copy.contentSections.filter((section) => !existingKeys.has(section.sourceKey))
+        .map((section) => ({ ...section, images: [] }));
+      return [...updated, ...additions];
+    });
     setCopyAdoptedFields((previous) => [...new Set([...previous, ...fields])]);
     setCopyChangeReason(reason);
   }

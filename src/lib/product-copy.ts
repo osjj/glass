@@ -20,9 +20,12 @@ export const copySchema = z.object({
 export type ProductCopy = z.infer<typeof copySchema>;
 const pair = z.object({ label: z.string().max(100), value: z.string().max(500) }).strict();
 export const rewriteRequestSchema = z.object({
+  mode: z.enum(["rewrite", "optimize"]).default("rewrite"),
   copy: copySchema,
   fields: z.array(z.enum(COPY_FIELDS)).min(1).max(COPY_FIELDS.length),
   facts: z.object({ sku: z.string().max(80), category: z.string().max(300), overview: z.array(pair).max(30), specifications: z.array(pair).max(60) }).strict(),
+  buyerFocus: z.string().trim().max(500).default(""),
+  verifiedNotes: z.string().trim().max(2000).default(""),
 }).strict();
 export type RewriteRequest = z.infer<typeof rewriteRequestSchema>;
 export const rewriteResultSchema = z.object({
@@ -51,10 +54,24 @@ export function mergeSelectedCopy(current: ProductCopy, proposal: ProductCopy, f
 export function sameSectionKeys(a: ProductCopy, b: ProductCopy) {
   return JSON.stringify(a.contentSections.map((s) => s.sourceKey)) === JSON.stringify(b.contentSections.map((s) => s.sourceKey));
 }
+export function suggestedSectionKeys(copy: ProductCopy): string[] {
+  const used = new Set(copy.contentSections.map((section) => section.sourceKey));
+  return ["ai_product_use", "ai_buying_considerations"].filter((base) =>
+    ![...used].some((key) => key === base || key.startsWith(`${base}_`)));
+}
 export function validateRewrite(request: RewriteRequest, result: RewriteResult): RewriteResult {
-  if (!sameSectionKeys(request.copy, result.copy)) throw new Error("AI 改变了详情区块结构，请重新生成。");
+  const original = request.copy.contentSections;
+  const proposed = result.copy.contentSections;
+  const existingKeysMatch = original.every((section, index) => proposed[index]?.sourceKey === section.sourceKey);
+  const added = proposed.slice(original.length);
+  const allowedKeys = suggestedSectionKeys(request.copy);
+  const canAppend = request.mode === "optimize" && request.fields.includes("contentSections") &&
+    added.length <= Math.min(allowedKeys.length, 20 - original.length) &&
+    added.every((section, index) => section.sourceKey === allowedKeys[index] && section.body.trim());
+  if (!existingKeysMatch || (request.mode === "rewrite" ? added.length > 0 : added.length > 0 && !canAppend) ||
+    proposed.length < original.length) throw new Error("AI 改变了详情区块结构，请重新生成。");
   const copy = mergeSelectedCopy(request.copy, result.copy, request.fields);
-  const source = JSON.stringify({ copy: request.copy, facts: request.facts });
+  const source = JSON.stringify({ copy: request.copy, facts: request.facts, verifiedNotes: request.verifiedNotes });
   const output = JSON.stringify(copy);
   const numbers = (text: string): string[] => text.match(/\d+(?:[.,]\d+)*/g) ?? [];
   const knownNumbers = new Set(numbers(source));
