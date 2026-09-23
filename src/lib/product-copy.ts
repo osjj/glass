@@ -18,6 +18,12 @@ export const copySchema = z.object({
   seoDescription: z.string().trim().max(500),
 }).strict();
 export type ProductCopy = z.infer<typeof copySchema>;
+export const MAX_COPY_REFERENCE_IMAGES = 5;
+const copyReferenceImageSchema = z.object({
+  url: z.string().trim().min(1).max(2048),
+  role: z.enum(["gallery", "detail"]),
+}).strict();
+export type CopyReferenceImage = z.infer<typeof copyReferenceImageSchema>;
 const pair = z.object({ label: z.string().max(100), value: z.string().max(500) }).strict();
 export const rewriteRequestSchema = z.object({
   mode: z.enum(["rewrite", "optimize"]).default("rewrite"),
@@ -26,7 +32,12 @@ export const rewriteRequestSchema = z.object({
   facts: z.object({ sku: z.string().max(80), category: z.string().max(300), overview: z.array(pair).max(30), specifications: z.array(pair).max(60) }).strict(),
   buyerFocus: z.string().trim().max(500).default(""),
   verifiedNotes: z.string().trim().max(2000).default(""),
-}).strict();
+  images: z.array(copyReferenceImageSchema).max(MAX_COPY_REFERENCE_IMAGES).default([]),
+}).strict().superRefine((input, context) => {
+  if (input.mode === "rewrite" && input.images.length) context.addIssue({
+    code: "custom", path: ["images"], message: "Only product-page optimization accepts reference images.",
+  });
+});
 export type RewriteRequest = z.infer<typeof rewriteRequestSchema>;
 export const rewriteResultSchema = z.object({
   copy: copySchema,

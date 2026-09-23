@@ -130,7 +130,7 @@ async function main() {
       const { generateProductCopy } = await import("../src/lib/product-copy-ai");
       const { COPY_FIELDS } = await import("../src/lib/product-copy");
       const product = await prisma.product.findUniqueOrThrow({ where: { id: state.productId }, include: { features: { orderBy: { sortOrder: "asc" } }, contentSections: { orderBy: { sortOrder: "asc" } }, overviewFields: true, specifications: true } });
-      const result = await generateProductCopy({ mode: "rewrite", buyerFocus: "", verifiedNotes: "", copy: copySnapshot(product), fields: [...COPY_FIELDS], facts: { sku: product.sku ?? "", category: "Glass Bottles", overview: product.overviewFields.map(({ label, value }) => ({ label, value })), specifications: product.specifications.map(({ label, value }) => ({ label, value })) } });
+      const result = await generateProductCopy({ mode: "rewrite", buyerFocus: "", verifiedNotes: "", images: [], copy: copySnapshot(product), fields: [...COPY_FIELDS], facts: { sku: product.sku ?? "", category: "Glass Bottles", overview: product.overviewFields.map(({ label, value }) => ({ label, value })), specifications: product.specifications.map(({ label, value }) => ({ label, value })) } });
       await writeFile("output/playwright/product-copy/live-result.json", JSON.stringify(result, null, 2));
       console.log(`PASS: real AI generation and validation, ${result.warnings.length} review notes; product unchanged.`);
     } else if (mode === "http") {

@@ -21,7 +21,7 @@ import {
 import { createProduct, updateProduct } from "@/actions/products";
 import { AiImageEditorModal } from "@/components/admin/ai-image-editor-modal";
 import { ProductCopyEditor } from "@/components/admin/product-copy-editor";
-import { copySnapshot, type CopyField, type ProductCopy, type RewriteRequest } from "@/lib/product-copy";
+import { copySnapshot, type CopyField, type CopyReferenceImage, type ProductCopy, type RewriteRequest } from "@/lib/product-copy";
 import {
   PRODUCT_DETAIL_STATEMENT_MAX_ITEMS,
   PRODUCT_DETAIL_STATEMENT_MAX_LENGTH,
@@ -283,6 +283,10 @@ export function ProductForm({
   const validationMessages = Object.entries(state.errors ?? {}).flatMap(([field, messages]) => messages.map((message) => `${field}: ${message}`));
 
   const currentCopy = copySnapshot({ name, summary, description, seoTitle, seoDescription, features: submittedFeatures, contentSections: submittedSections });
+  const copyImageOptions = [...images.map((image) => ({ ...image, role: "gallery" as const })),
+    ...contentSections.flatMap((section) => section.images.map((image) => ({ ...image, role: "detail" as const })))]
+    .filter((image) => image.url.trim())
+    .filter((image, index, all) => all.findIndex((item) => item.url === image.url) === index) satisfies (CopyReferenceImage & { alt: string })[];
   function copyFacts(): RewriteRequest["facts"] {
     const data = formRef.current ? new FormData(formRef.current) : null;
     return { sku: String(data?.get("sku") ?? ""), category: categories.find((c) => c.id === data?.get("categoryId"))?.label ?? "",
@@ -395,7 +399,7 @@ export function ProductForm({
         </div>
       ) : null}
 
-      <ProductCopyEditor productId={product?.id} copy={currentCopy} getFacts={copyFacts} onApply={applyCopy} disabled={pending} onBusyChange={setCopyBusy} protectedFields={[...new Set([...(product?.copyProtectedFields ?? []), ...copyAdoptedFields])]} />
+      <ProductCopyEditor productId={product?.id} copy={currentCopy} getFacts={copyFacts} imageOptions={copyImageOptions} onApply={applyCopy} disabled={pending} onBusyChange={setCopyBusy} protectedFields={[...new Set([...(product?.copyProtectedFields ?? []), ...copyAdoptedFields])]} />
       {product?.copyNeedsReview ? <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
         <p>来源资料已变化，已编辑文案受保护。请核对最新同步资料和参数，再确认文案是否需要更新。</p>
         <Link className="mt-2 inline-block underline" href={`/admin/imports?provider=${product.sourceProvider ?? "GARBO"}`}>查看同步资料</Link>

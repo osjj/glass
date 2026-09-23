@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { changedCopyFields, mergeSelectedCopy, suggestedSectionKeys, validateRewrite, rewriteRequestSchema, type RewriteRequest } from "../src/lib/product-copy";
-import { generateProductCopy } from "../src/lib/product-copy-ai";
+import { authorizedCopyImageUrl, generateProductCopy } from "../src/lib/product-copy-ai";
 
 const request: RewriteRequest = {
-  mode: "rewrite", buyerFocus: "", verifiedNotes: "",
+  mode: "rewrite", buyerFocus: "", verifiedNotes: "", images: [],
   copy: { name: "300 ml Glass Bottle", summary: "Clear glass bottle, 300 ml.", description: "Glass bottle.", features: ["Capacity: 300 ml"],
     contentSections: [{ sourceKey: "details", title: "Product Details", body: "Clear glass." }], seoTitle: "", seoDescription: "" },
   fields: ["summary"], facts: { sku: "B300", category: "Bottles", overview: [{ label: "Capacity", value: "300 ml" }], specifications: [] },
@@ -42,6 +42,21 @@ test("ignores unselected AI edits and rejects supplier branding", () => {
 test("rejects unauthorized fields and absent required input", () => {
   assert.equal(rewriteRequestSchema.safeParse({ ...request, price: 10 }).success, false);
   assert.equal(rewriteRequestSchema.safeParse({ ...request, copy: { ...request.copy, summary: "" } }).success, false);
+  assert.equal(rewriteRequestSchema.safeParse({ ...request, images: [{ url: "https://www.glarivoglass.com/images/a.webp", role: "gallery" }] }).success, false);
+  assert.equal(rewriteRequestSchema.safeParse({ ...request, mode: "optimize", images: Array.from({ length: 6 }, () => ({ url: "https://www.glarivoglass.com/images/a.webp", role: "gallery" })) }).success, false);
+});
+test("reference images must come from public site or configured media", () => {
+  const previous = process.env.R2_PUBLIC_URL;
+  process.env.R2_PUBLIC_URL = "https://media.glarivoglass.com";
+  try {
+    assert.equal(authorizedCopyImageUrl("/images/products/bottle.webp"), "https://www.glarivoglass.com/images/products/bottle.webp");
+    assert.equal(authorizedCopyImageUrl("https://media.glarivoglass.com/products/bottle.webp"), "https://media.glarivoglass.com/products/bottle.webp");
+    for (const value of ["https://example.com/a.webp", "http://media.glarivoglass.com/a.webp", "https://www.glarivoglass.com/api/admin/secret.png", "https://media.glarivoglass.com/a.webp?token=secret"]) {
+      assert.throws(() => authorizedCopyImageUrl(value));
+    }
+  } finally {
+    if (previous === undefined) delete process.env.R2_PUBLIC_URL; else process.env.R2_PUBLIC_URL = previous;
+  }
 });
 test("upstream request disables storage, uses structured output and does not expose upstream errors", async () => {
   const previous = { key: process.env.OPENAI_API_KEY, endpoint: process.env.OPENAI_API_ENDPOINT, fetch: globalThis.fetch };
@@ -63,16 +78,20 @@ test("upstream request disables storage, uses structured output and does not exp
     if (previous.endpoint === undefined) delete process.env.OPENAI_API_ENDPOINT; else process.env.OPENAI_API_ENDPOINT = previous.endpoint;
   }
 });
-test("optimization sends its own instructions and accepts a text-only section", async () => {
+test("optimization sends selected photos with text and accepts a text-only section", async () => {
   const previous = { key: process.env.OPENAI_API_KEY, endpoint: process.env.OPENAI_API_ENDPOINT, fetch: globalThis.fetch };
   process.env.OPENAI_API_KEY = "test-only"; process.env.OPENAI_API_ENDPOINT = "https://api.openai.com";
-  const input: RewriteRequest = { ...request, mode: "optimize", fields: ["features", "contentSections"], buyerFocus: "Restaurant buyers" };
+  const input: RewriteRequest = { ...request, mode: "optimize", fields: ["features", "contentSections"], buyerFocus: "Restaurant buyers",
+    images: [{ url: "https://www.glarivoglass.com/images/products/bottle.webp", role: "gallery" }] };
   try {
     globalThis.fetch = async (_url, init) => {
       const body = JSON.parse(String(init?.body));
       assert.match(body.instructions, /Mode: optimize/);
       assert.match(body.instructions, /ai_product_use/);
       assert.equal(body.store, false);
+      assert.equal(body.input[0].content[1].type, "input_text");
+      assert.deepEqual(body.input[0].content[2], { type: "input_image", image_url: input.images[0].url, detail: "high" });
+      assert.ok(!body.input[0].content[0].text.includes(input.images[0].url));
       const copy = { ...request.copy, features: ["Clear bottle for restaurant service."],
         contentSections: [...request.copy.contentSections, { sourceKey: "ai_product_use", title: "Service use", body: "For restaurant service." }] };
       return Response.json({ status: "completed", output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({ copy, warnings: [] }) }] }] });

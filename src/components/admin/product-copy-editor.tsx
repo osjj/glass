@@ -1,16 +1,19 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { COPY_FIELDS, COPY_LABELS, changedCopyFields, copySchema, mergeSelectedCopy, sameSectionKeys,
-  type CopyField, type ProductCopy, type RewriteRequest, type RewriteResult } from "@/lib/product-copy";
+import { COPY_FIELDS, COPY_LABELS, MAX_COPY_REFERENCE_IMAGES, changedCopyFields, copySchema, mergeSelectedCopy, sameSectionKeys,
+  type CopyField, type CopyReferenceImage, type ProductCopy, type RewriteRequest, type RewriteResult } from "@/lib/product-copy";
 
 type Revision = { id: string; snapshot: ProductCopy; reason: string; createdAt: string };
 type CopyMode = "rewrite" | "optimize";
+type ImageOption = CopyReferenceImage & { alt: string };
 const display = (value: ProductCopy[CopyField]) => typeof value === "string" ? value || "（空）" :
   value.map((v) => typeof v === "string" ? `• ${v}` : `${v.title}\n${v.body}`).join("\n\n") || "（空）";
 
-export function ProductCopyEditor({ productId, copy, getFacts, onApply, disabled, onBusyChange, protectedFields }: {
+export function ProductCopyEditor({ productId, copy, getFacts, imageOptions, onApply, disabled, onBusyChange, protectedFields }: {
   productId?: string; copy: ProductCopy; getFacts: () => RewriteRequest["facts"];
+  imageOptions: ImageOption[];
   onApply: (value: ProductCopy, fields: CopyField[], reason: "AI assisted" | "Restore") => void;
   disabled: boolean; onBusyChange: (busy: boolean) => void; protectedFields: string[];
 }) {
@@ -18,6 +21,11 @@ export function ProductCopyEditor({ productId, copy, getFacts, onApply, disabled
   const [fields, setFields] = useState<CopyField[]>([...COPY_FIELDS]);
   const [buyerFocus, setBuyerFocus] = useState("");
   const [verifiedNotes, setVerifiedNotes] = useState("");
+  const [selectedImageUrls, setSelectedImageUrls] = useState<string[]>(() => {
+    const gallery = imageOptions.filter((image) => image.role === "gallery");
+    const detail = imageOptions.filter((image) => image.role === "detail");
+    return [...gallery.slice(0, 2), ...detail.slice(0, 1)].map((image) => image.url);
+  });
   const [selected, setSelected] = useState<CopyField[]>([]);
   const [preview, setPreview] = useState<{ before: ProductCopy; result: RewriteResult; context: string; reason: "AI assisted" | "Restore" } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -28,15 +36,17 @@ export function ProductCopyEditor({ productId, copy, getFacts, onApply, disabled
   const controller = useRef<AbortController | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   useEffect(() => () => controller.current?.abort(), []);
-  const context = () => JSON.stringify({ copy, facts: getFacts(), mode, buyerFocus, verifiedNotes });
+  const selectedImages = () => mode === "optimize" ? imageOptions.filter((image) => selectedImageUrls.includes(image.url))
+    .slice(0, MAX_COPY_REFERENCE_IMAGES).map(({ url, role }) => ({ url, role })) : [];
+  const context = () => JSON.stringify({ copy, facts: getFacts(), mode, buyerFocus, verifiedNotes, images: selectedImages() });
   const toggle = (list: CopyField[], field: CopyField) => list.includes(field) ? list.filter((f) => f !== field) : [...list, field];
 
   async function generate() {
     setError(""); setNotice("");
     if (!fields.length) { setError("请至少选择一个字段。"); return; }
     if (!copySchema.safeParse(copy).success) { setError("请先填写商品名称、摘要，并检查详情区块标题和文案长度。"); return; }
-    const input: RewriteRequest = { mode, copy: structuredClone(copy), fields, facts: getFacts(), buyerFocus, verifiedNotes };
-    const originalContext = JSON.stringify({ copy: input.copy, facts: input.facts, mode, buyerFocus, verifiedNotes });
+    const input: RewriteRequest = { mode, copy: structuredClone(copy), fields, facts: getFacts(), buyerFocus, verifiedNotes, images: selectedImages() };
+    const originalContext = JSON.stringify({ copy: input.copy, facts: input.facts, mode, buyerFocus, verifiedNotes, images: input.images });
     controller.current = new AbortController();
     setBusy(true); onBusyChange(true);
     try {
@@ -90,7 +100,20 @@ export function ProductCopyEditor({ productId, copy, getFacts, onApply, disabled
     {mode === "optimize" ? <div className="mt-4 space-y-3 rounded-xl border border-[#d5dfe7] bg-white p-4">
       <label className="block text-sm font-bold">目标买家或应用场景（可选）<input className="mt-2 w-full rounded-lg border border-[#ccd3ce] p-3 text-sm font-normal" value={buyerFocus} onChange={(event) => setBuyerFocus(event.target.value)} maxLength={500} placeholder="例如：餐饮采购、酒吧补货、礼品定制询盘" /></label>
       <label className="block text-sm font-bold">已核实的补充事实（可选）<textarea className="mt-2 min-h-24 w-full rounded-lg border border-[#ccd3ce] p-3 text-sm font-normal" value={verifiedNotes} onChange={(event) => setVerifiedNotes(event.target.value)} maxLength={2000} placeholder="仅填写已确认的材质、容量、包装或可提供的定制方式等" /></label>
-      <p className="text-xs text-[var(--ink-muted)]">AI 使用表单中的文案、规格和这里的补充事实；不会识别商品图片。请核对图片与生成文案是否相符。</p>
+      <div>
+        <p className="text-sm font-bold">参考商品图片（最多 {MAX_COPY_REFERENCE_IMAGES} 张，可选）</p>
+        {!imageOptions.length ? <p className="mt-2 text-xs text-[var(--ink-muted)]">当前表单没有商品图片，可以先上传，再选择作为 AI 参考。</p> :
+          <div className="mt-3 grid max-h-72 grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3 lg:grid-cols-5">
+            {imageOptions.map((image) => {
+              const checked = selectedImageUrls.includes(image.url);
+              return <label key={image.url} className={`cursor-pointer rounded-lg border p-2 text-xs ${checked ? "border-[#3976a5] bg-[#f5f9fc]" : "border-[#d5dfe7]"}`}>
+                <Image src={image.url} alt={image.alt || "Product reference"} width={160} height={120} unoptimized className="aspect-[4/3] w-full rounded object-contain" />
+                <span className="mt-2 flex items-center gap-1"><input type="checkbox" checked={checked} disabled={busy || disabled || (!checked && selectedImages().length >= MAX_COPY_REFERENCE_IMAGES)} onChange={() => setSelectedImageUrls((current) => checked ? current.filter((url) => url !== image.url) : [...current, image.url])} />{image.role === "gallery" ? "主图" : "详情图"}</span>
+              </label>;
+            })}
+          </div>}
+        <p className="mt-2 text-xs text-[var(--ink-muted)]">已选 {selectedImages().length} 张。仅本站或已配置媒体域名的公开图片可发送给 AI，可能增加生成费用；图片仅供参考可见外观，参数和认证仍以核实资料为准。</p>
+      </div>
     </div> : null}
     <fieldset className="mt-4 flex flex-wrap gap-4" disabled={busy || disabled}>
       <legend className="mb-2 text-sm font-bold">选择改写内容</legend>
