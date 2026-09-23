@@ -1,0 +1,44 @@
+[
+  {
+    "name": "hero",
+    "file": "public/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/hero.webp",
+    "localUrl": "/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/hero.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 203666,
+    "sha256": "4627126206a32df3960118e4c532499fd66dbce6f7cb611f856cb830b590f730",
+    "key": "site/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/hero-4627126206a3.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/hero-4627126206a3.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "profiles",
+    "file": "public/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/profiles.webp",
+    "localUrl": "/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/profiles.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 112272,
+    "sha256": "24aa3a4e4110f4d7b859a0f7d02524e13b93ebb760246885c83641825bb4f25e",
+    "key": "site/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/profiles-24aa3a4e4110.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/profiles-24aa3a4e4110.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "packing",
+    "file": "public/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/packing.webp",
+    "localUrl": "/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/packing.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 213536,
+    "sha256": "c0ed46720cd31b6fdbb38300dbd7c317ab3d6b051fcf2c983b30fc970351c0ca",
+    "key": "site/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/packing-c0ed46720cd3.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/packing-c0ed46720cd3.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  }
+]

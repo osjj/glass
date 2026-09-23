@@ -56,9 +56,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const productSection = getArticleProductSection(slug);
   const comparisonProducts = productSection ? await getArticleProducts(slug) : [];
   const cluster = guideClusters.find((item) => item.title === article.category);
-  const outline = readStoredArticleContent(article.content).blocks.flatMap((block, index) =>
-    block.type === "header" && Number(block.data.level) === 2
-      ? [{ id: headingId(String(block.data.text), index), title: plainTextFromEditorHtml(block.data.text) }] : []);
+  const usedHeadingIds = new Set<string>();
+  const outline: { id: string; title: string }[] = [];
+  readStoredArticleContent(article.content).blocks.forEach((block, index) => {
+    if (block.type !== "header") return;
+    const baseId = headingId(String(block.data.text ?? ""), index);
+    let id = baseId;
+    let suffix = 2;
+    while (usedHeadingIds.has(id)) id = `${baseId}-${suffix++}`;
+    usedHeadingIds.add(id);
+    if (Number(block.data.level) === 2) {
+      outline.push({ id, title: plainTextFromEditorHtml(block.data.text) });
+    }
+  });
   const siteUrl = getSiteUrl();
   const schema = {
     "@context": "https://schema.org", "@type": "Article",
@@ -98,10 +108,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <Image src={article.coverImage} alt={article.coverImageAlt} fill preload unoptimized sizes="(min-width: 1280px) 1100px, 90vw" className={article.coverImageFit === "contain" ? "object-contain" : "object-cover"} />
         </div>
       </div>
-      {cluster && outline.length > 0 && <div className={theme.container}><nav aria-label="On this page" className={styles.outline}>
-        <h2>In this buying guide</h2><ul>{outline.map((item) => <li key={item.id}><a href={`#${item.id}`}>{item.title}</a></li>)}</ul>
-      </nav></div>}
-      <div className={`${theme.container} ${styles.section}`}>
+      <div className={`${theme.container} ${styles.section} ${outline.length > 0 ? styles.articleLayout : ""}`}>
+        {outline.length > 0 && <aside className={styles.articleOutline}>
+          <nav aria-label="On this page">
+            <h2>In this article</h2>
+            <ul>{outline.map((item) => <li key={item.id}><a href={`#${item.id}`}>{item.title}</a></li>)}</ul>
+          </nav>
+        </aside>}
         <div className={`prose-glarivo ${styles.prose}`}>
           <ArticleContentRenderer content={article.content} insertBeforeHeading={productSection && comparisonProducts.length ? {
             id: productSection.beforeHeadingId,

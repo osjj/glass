@@ -12,6 +12,18 @@ export type GuideCluster = {
 // Editorial groupings follow buying decisions; they do not change catalog taxonomy.
 export const guideClusters: GuideCluster[] = [
   {
+    slug: "cosmetic-glass-packaging", title: "Cosmetic Glass Packaging", eyebrow: "Beauty · fragrance · skincare",
+    description: "Compare glass bottles for perfume, essential oils and foundation. Review the container and its dispensing components together before choosing a range.",
+    audience: "For beauty brands, packaging buyers and distributors building a cosmetic glass range.",
+    categories: [{ slug: "perfume-bottles", label: "Perfume bottles" }, { slug: "essential-oil-bottles", label: "Essential oil bottles" }, { slug: "foundation-bottles", label: "Foundation bottles" }],
+    decisions: [
+      { title: "Choose the product format", text: "Start with the formula and intended use. Compare bottle capacity, shape, neck finish and fill opening for each perfume, oil or foundation format." },
+      { title: "Check component fit", text: "Review the selected bottle with its pump, dropper or cap. Confirm neck compatibility, dispensing performance and the complete assembled sample before approval." },
+      { title: "Approve the finished pack", text: "Compare decoration, closure, unit packing and transport protection on a finished sample. Record the exact component references for repeat orders." },
+    ],
+    checklist: ["Formula and intended dispensing format", "Bottle capacity, dimensions and neck finish", "Pump, dropper or cap specification and fit", "Decoration, quantities and packed-sample requirements"],
+  },
+  {
     slug: "shot-glass-sourcing", title: "Shot Glass Sourcing", eyebrow: "Bars · promotions · souvenirs",
     description: "Choose shot glasses around the pour, the presentation and the packing. Compare capacity, shape and decoration before preparing a wholesale order.",
     audience: "For bar buyers, promotional distributors and gift shops building a repeatable shot glass assortment.",

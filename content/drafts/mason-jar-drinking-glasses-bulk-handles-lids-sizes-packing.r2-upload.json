@@ -1,0 +1,44 @@
+[
+  {
+    "name": "hero",
+    "file": "public/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/hero.webp",
+    "localUrl": "/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/hero.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 190192,
+    "sha256": "7af0538add04da304cc5dd652cdb3b71df1345495990b697f51a68b382e411c4",
+    "key": "site/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/hero-7af0538add04.webp",
+    "url": "https://media.glarivoglass.com/site/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/hero-7af0538add04.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "components",
+    "file": "public/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/components.webp",
+    "localUrl": "/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/components.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 76274,
+    "sha256": "611d597a2b9d7002425ff277ce0e6ab525de259cd090c46be75f9c60d4dc000b",
+    "key": "site/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/components-611d597a2b9d.webp",
+    "url": "https://media.glarivoglass.com/site/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/components-611d597a2b9d.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "packing",
+    "file": "public/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/packing.webp",
+    "localUrl": "/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/packing.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 187674,
+    "sha256": "7ecad49f940142b6117be25224db9741a35c86426d114b87886f4fe67d0d9414",
+    "key": "site/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/packing-7ecad49f9401.webp",
+    "url": "https://media.glarivoglass.com/site/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/packing-7ecad49f9401.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  }
+]

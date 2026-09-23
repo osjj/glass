@@ -1,0 +1,81 @@
+{
+  "wordCount": 2344,
+  "readTimeMinutes": 11,
+  "blocks": 69,
+  "bodyImages": 2,
+  "totalImages": 3,
+  "validation": true,
+  "linkChecks": [
+    {
+      "path": "/blog/shot-glass-buying-guide-for-wholesale-buyers",
+      "status": 200
+    },
+    {
+      "path": "/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels",
+      "status": 200
+    },
+    {
+      "path": "/products/wholesale-1-7oz-transparent-shot-glass",
+      "status": 200
+    },
+    {
+      "path": "/products/personalized-shot-glasses-greece-beaches-decal-promotional-tall-shot-glasses",
+      "status": 200
+    },
+    {
+      "path": "/products/mini-1-9oz-beer-shot-glasses-mug-with-heavy-base-for-bar",
+      "status": 200
+    },
+    {
+      "path": "/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist",
+      "status": 200
+    },
+    {
+      "path": "/blog/private-label-glassware-packaging-barcodes",
+      "status": 200
+    },
+    {
+      "path": "/blog/glassware-defects-aql-inspection-guide",
+      "status": 200
+    },
+    {
+      "path": "/products/category/shot-glass",
+      "status": 200
+    },
+    {
+      "path": "/guides/shot-glass-sourcing",
+      "status": 200
+    }
+  ],
+  "sourceSha256": "e42ae18a98aae5e17961187344ce17468339568da22b0924e6d823efdd902f71",
+  "images": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/hero.webp",
+      "localUrl": "/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/hero.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 203666,
+      "sha256": "4627126206a32df3960118e4c532499fd66dbce6f7cb611f856cb830b590f730"
+    },
+    {
+      "name": "profiles",
+      "file": "public/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/profiles.webp",
+      "localUrl": "/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/profiles.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 112272,
+      "sha256": "24aa3a4e4110f4d7b859a0f7d02524e13b93ebb760246885c83641825bb4f25e"
+    },
+    {
+      "name": "packing",
+      "file": "public/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/packing.webp",
+      "localUrl": "/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/packing.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 213536,
+      "sha256": "c0ed46720cd31b6fdbb38300dbd7c317ab3d6b051fcf2c983b30fc970351c0ca"
+    }
+  ],
+  "verifiedAt": "2026-09-22T11:21:14.015Z"
+}

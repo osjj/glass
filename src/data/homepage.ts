@@ -1,7 +1,7 @@
 // Homepage presentation content. Keep statements focused on the catalog and
 // sourcing workflow rather than unsupported company or customer claims.
 export const homeCollections = [
-  { label: "Drinkware", image: "drinkware", category: "glass-tumblers", query: "glass cup" },
+  { label: "Cosmetic Glass", image: "cosmetic-glass", category: "cosmetic-glass-packaging", query: "cosmetic glass" },
   { label: "Tableware", image: "tableware", category: "glass-bowls", query: "glass bowl" },
   { label: "Serveware", image: "serveware", category: "glass-pitchers-teapot", query: "glass pitcher" },
   { label: "Storage", image: "storage", category: "glass-jars", query: "glass storage" },
@@ -15,6 +15,7 @@ export const homeSourcingSteps = [
   { title: "Confirm delivery", description: "Align packing and destination requirements." },
 ] as const;
 export const homeTopicDescriptions = [
+  "Perfume, essential oil and foundation bottles",
   "Bars, promotions and souvenirs", "Service, size and handling",
   "Cups, teapots and serving sets", "Decanters, stemware and gift packing",
   "Capacity, shapes and lid fit",

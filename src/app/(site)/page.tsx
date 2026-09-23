@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowRight, ChatCircleDots, ClipboardText, Coffee, Factory,
+  ArrowRight, ChatCircleDots, ClipboardText, Coffee, Drop, Factory,
   Jar, MagnifyingGlass, Package, PenNib, ShieldCheck, Wine,
 } from "@phosphor-icons/react/dist/ssr";
 import { shotGlassGuideSlug } from "@/data/editorial-posts";
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 const sourcingIcons = [ChatCircleDots, PenNib, Factory, Package];
-const topicIcons = [Wine, Wine, Coffee, Wine, Jar];
+const topicIcons = [Drop, Wine, Wine, Coffee, Wine, Jar];
 const workflow = [
   { label: "Select", icon: MagnifyingGlass }, { label: "Sample", icon: Package },
   { label: "Confirm", icon: ClipboardText }, { label: "Produce", icon: Factory },
@@ -93,7 +93,7 @@ export default async function HomePage() {
               const category = categories.find((item) => item.slug === collection.category);
               const href = category ? "/products/category/" + category.slug : "/products";
               return <Link key={collection.label} href={href} className={styles.collectionCard}>
-                <Photo src={"/images/home/editorial/category-" + collection.image + ".webp"} alt={collection.label + " glassware collection"} className={styles.collectionPhoto} sizes="(min-width: 900px) 15vw, (min-width: 540px) 30vw, 45vw" />
+                <Photo src={"/images/home/editorial/category-" + collection.image + ".webp"} alt={collection.label + " collection"} className={styles.collectionPhoto} sizes="(min-width: 900px) 15vw, (min-width: 540px) 30vw, 45vw" />
                 <h3>{collection.label}</h3><ArrowRight size={25} weight="light" aria-hidden="true" />
               </Link>;
             })}

@@ -1,0 +1,17 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "name": "hero",
+      "prompt": "Use case: product-mockup. Create a wide 3:2 photorealistic premium editorial hero for an English wholesale buying article, Shot Glass Packaging for Bulk Orders: Dividers, Gift Boxes & Carton Checks. On a warm ivory stone sample-review table show an open small plain kraft gift box holding exactly four empty clear short shot glasses in a clean two-by-two die-cut cardboard insert. Each glass in its own separate compartment, realistic tiny shot-glass proportions, gently tapered sides, polished rims and heavy transparent bases. Two matching short shot glasses stand outside the box in foreground for comparison. The plain box lid rests beside the box. Calm soft daylight, restrained elegant commercial still life, realistic glass refraction, tactile paper, three-quarter overhead viewpoint, all glasses and packaging visible with breathing room. No printing, brand names, emblems, numerical labels, text, hands, alcohol, bottles, ribbons, decorative filler or watermarks. Generic concept only, not exact product photography or validated packaging."
+    },
+    {
+      "name": "profiles",
+      "prompt": "Use case: product-mockup. Wide 3:2 editorial studio photo of exactly three different EMPTY small clear glass shot-glass profiles spaced apart on pale warm stone against a neutral ivory backdrop: left a short gently tapered shot glass with thick base; middle a slender taller straight-sided shooter glass with transparent heavy base; right a miniature beer-mug-style shot glass with one small integral clear glass handle. Correct small drinkware proportions, unbranded smooth glass, each whole object clearly visible. Three-quarter eye-level camera, soft window side light, crisp rims and natural refraction, understated premium procurement-guide aesthetic. No liquid, rulers, dimensions, labels, text, logos, decorations, giant mugs, certification marks or watermarks. Illustration for comparing outside shape and packing footprint, not measurements or depictions of specific catalog models."
+    },
+    {
+      "name": "packing",
+      "prompt": "Use case: product-mockup. Wide 3:2 photorealistic B2B packaging editorial image. Three-quarter overhead view of an open plain kraft corrugated carton with a single-layer two-by-three divider grid, six individual cells. Each cell contains exactly one small empty clear short tapered shot glass upright, heavy transparent base, intact rim, no handles. Divider walls surround and separate every glass, no glass-to-glass contact, no cardboard crossing through glass, sufficient clearance and credible near-rim-height dividers. Include a visible flat bottom pad inside and a separate matching flat top pad lying beside the carton. Plain kraft surfaces, light warm stone table, soft natural studio daylight, whole carton in frame, realistic paper fibers and glass reflections. No branding, writing, labels, numbers, arrows, hands, stamps, test badges, liquids, stacks, gift ribbon or watermarks. Generic packaging concept only, not a six-piece carton specification or a tested pack."
+    }
+  ]
+}

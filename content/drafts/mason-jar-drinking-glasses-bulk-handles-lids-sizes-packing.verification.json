@@ -1,0 +1,73 @@
+{
+  "wordCount": 2331,
+  "readTimeMinutes": 11,
+  "blocks": 68,
+  "bodyImages": 2,
+  "totalImages": 3,
+  "validation": true,
+  "linkChecks": [
+    {
+      "path": "/products/category/mason-jar-glasses",
+      "status": 200
+    },
+    {
+      "path": "/blog/mason-jar-glass-storage-buying-guide",
+      "status": 200
+    },
+    {
+      "path": "/products/16oz-county-fair-mason-jar-drinking-glasses-with-handle",
+      "status": 200
+    },
+    {
+      "path": "/products/18oz-old-fashioned-soccer-ball-mason-jar-drinking-glasses-mugs-with-handles",
+      "status": 200
+    },
+    {
+      "path": "/products/32-oz-wide-mouth-smooth-sided-glass-canning-manson-jar-with-screw-plastic-lid",
+      "status": 200
+    },
+    {
+      "path": "/blog/private-label-glassware-packaging-barcodes",
+      "status": 200
+    },
+    {
+      "path": "/blog/glassware-food-contact-safety-fda-lfgb-prop-65",
+      "status": 200
+    },
+    {
+      "path": "/guides/restaurant-bar-glassware",
+      "status": 200
+    }
+  ],
+  "sourceSha256": "f26a875139cbc356b1c12f00040837a60e37486bf48340b934b70c135e2c33af",
+  "images": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/hero.webp",
+      "localUrl": "/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/hero.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 190192,
+      "sha256": "7af0538add04da304cc5dd652cdb3b71df1345495990b697f51a68b382e411c4"
+    },
+    {
+      "name": "components",
+      "file": "public/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/components.webp",
+      "localUrl": "/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/components.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 76274,
+      "sha256": "611d597a2b9d7002425ff277ce0e6ab525de259cd090c46be75f9c60d4dc000b"
+    },
+    {
+      "name": "packing",
+      "file": "public/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/packing.webp",
+      "localUrl": "/images/blog/mason-jar-drinking-glasses-bulk-handles-lids-sizes-packing/packing.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 187674,
+      "sha256": "7ecad49f940142b6117be25224db9741a35c86426d114b87886f4fe67d0d9414"
+    }
+  ],
+  "verifiedAt": "2026-09-22T10:04:13.391Z"
+}

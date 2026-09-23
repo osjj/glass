@@ -91,8 +91,7 @@
 .topic svg { flex-shrink: 0; width: 62px; height: 62px; color: var(--gold-light); }
 .topic h3 { font-size: 17px; font-weight: 600; line-height: 1.45; }
 .topic p { font-size: 16px; margin-top: 5px; line-height: 1.5; }
-.topic:nth-child(4) { grid-column: 2 / span 2; border-bottom: 0; }
-.topic:nth-child(5) { grid-column: 4 / span 2; border-bottom: 0; }
+.topic:nth-child(n+4) { border-bottom: 0; }
 .topic:hover { color: var(--gold-light); }
 .capabilities { padding: 58px 0 57px; }
 .capabilityGrid, .companyStats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); text-align: center; margin-top: 48px !important; }
@@ -231,8 +230,9 @@
   .guideCopy > p:not(.kicker) { font-size: 15px; }
   .guideCopy time { margin-top: 20px; font-size: 14px; }
   .topicGrid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .topic, .topic:nth-child(4), .topic:nth-child(5) { grid-column: auto; border-bottom: 1px solid #827f76; }
-  .topic:last-child { grid-column: 1 / -1; border-bottom: 0; }
+  .topic { grid-column: auto; }
+  .topic:nth-child(n+4) { border-bottom: 1px solid #827f76; }
+  .topic:nth-child(n+5) { border-bottom: 0; }
   .capabilityGrid dd { font-size: 13px; padding: 0 7px; }
   .workflowGrid { grid-template-columns: repeat(3,minmax(0,1fr)); row-gap: 30px; }
   .workflowGrid li:nth-child(4)::before { display: none; }
@@ -294,6 +294,8 @@
   .guideCopy > p:not(.kicker) { font-size: 16px; margin-top: 17px; }
   .guideCopy .goldLink { margin-top: 15px; }
   .topicGrid { grid-template-columns: 1fr; margin-top: 30px; }
+  .topic:nth-child(n+5) { border-bottom: 1px solid #827f76; }
+  .topic:last-child { border-bottom: 0; }
   .topic { padding: 24px 0; gap: 23px; }
   .topic h3 { font-size: 15px; }
   .topic p { font-size: 13px; }
