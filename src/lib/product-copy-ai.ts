@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { rewriteResultSchema, supplementResultSchema, suggestedSectionKeys, validateRewrite, type RewriteRequest } from "@/lib/product-copy";
+import { featureAdditionLimit, rewriteResultSchema, supplementResultSchema, suggestedSectionKeys, validateRewrite, type RewriteRequest } from "@/lib/product-copy";
 import { getSiteUrl } from "@/lib/site-url";
 
 export class CopyServiceError extends Error {
@@ -32,7 +32,7 @@ Do not modify photos. Do not duplicate the same boilerplate across sections.
 SEO title should normally be about 60 characters, description about 155, while preserving accuracy; hard limits are defined in schema. Output plain text, no HTML or Markdown. Return warnings in Chinese. If useful source details cannot be supported, explain instead of inventing them.`;
 const rewriteInstructions = `Mode: rewrite existing copy only. Do not create new sections. Keep the section count unchanged. When there are no detail bullets, leave features empty and rewrite description.`;
 const optimizationInstructions = `Mode: supplement a product detail page for B2B buyers, using only the supplied copy, structured facts, editor-verified notes, and selected visual references. Buyer focus guides emphasis, not factual claims.
-Return only new featureAdditions and sectionAdditions, never reproduce or rewrite existing feature statements or sections. The server preserves all existing features and sections. Add non-repetitive facts up to five total features and at most two text-only sections when their fields are selected. Each sectionAdditions item contains only a title and body; the server assigns its stable key. Return empty arrays if evidence does not support additions.
+Return only new featureAdditions and sectionAdditions, never reproduce or rewrite existing feature statements or sections. The server preserves all existing features and sections. Add up to five NEW non-repetitive features per request and at most two text-only sections when their fields are selected. Existing features do not consume this per-request allowance. For features, look for useful product-specific details in the description, specifications, verified notes and directly visible appearance in selected images. Do not merely repeat existing bullets. Each sectionAdditions item contains only a title and body; the server assigns its stable key. Return empty arrays if evidence does not support additions, and explain in Chinese warnings why each selected field has no additions. Keep missing-data and source-quality warnings in Chinese warnings, not in customer-facing copy. Do not create a section solely to report incomplete source data.
 Only rewrite name, summary, description, seoTitle, or seoDescription if that field is explicitly selected; otherwise return its existing value unchanged. For selected fields, write accurate model-specific copy without broad category education, unsupported promises, or keyword padding. If facts are thin, write less and warn in Chinese about missing evidence. Product pages should help a buyer decide what to confirm in an inquiry.`;
 
 export function authorizedCopyImageUrl(value: string): string {
@@ -82,7 +82,7 @@ export async function generateProductCopy(input: RewriteRequest, signal?: AbortS
     signal: AbortSignal.any([AbortSignal.timeout(90_000), ...(signal ? [signal] : [])]),
     body: JSON.stringify({ model: process.env.OPENAI_COPY_MODEL?.trim() || "gpt-5.6-luna", store: false,
       instructions: input.mode === "optimize"
-        ? `${instructions}\n${optimizationInstructions}\n${images.length ? "Use the attached images to describe only visible product appearance. Do not repeat image text as verified claims." : "No reference images were supplied; do not claim to have seen them."}\nAt most ${Math.min(suggestedSectionKeys(input.copy).length, 20 - input.copy.contentSections.length)} new sections and ${Math.max(0, 5 - input.copy.features.length)} new features.`
+        ? `${instructions}\n${optimizationInstructions}\n${images.length ? "Use the attached images to describe only visible product appearance. Do not repeat image text as verified claims." : "No reference images were supplied; do not claim to have seen them."}\nAt most ${Math.min(suggestedSectionKeys(input.copy).length, 20 - input.copy.contentSections.length)} new sections and ${featureAdditionLimit(input.copy)} new features.`
         : `${instructions}\n${rewriteInstructions}`,
       input: modelInput, max_output_tokens: 16000,
       text: { format: { type: "json_schema", name: input.mode === "optimize" ? "product_copy_supplement" : "product_copy", strict: true, schema } },
@@ -103,10 +103,20 @@ export async function generateProductCopy(input: RewriteRequest, signal?: AbortS
   if (input.mode === "optimize") {
     const addition = supplementResultSchema.parse(raw);
     const sectionKeys = suggestedSectionKeys(input.copy);
-    const maxFeatures = Math.max(0, 5 - input.copy.features.length);
+    const maxFeatures = featureAdditionLimit(input.copy);
     const maxSections = Math.min(sectionKeys.length, 20 - input.copy.contentSections.length);
-    const freshFeatures = addition.featureAdditions.filter((feature) =>
-      !input.copy.features.some((existing) => existing.toLowerCase() === feature.toLowerCase()));
+    const seenFeatures = new Set(input.copy.features.map((feature) => feature.trim().toLowerCase()));
+    const freshFeatures = addition.featureAdditions.filter((feature) => {
+      const key = feature.trim().toLowerCase();
+      if (seenFeatures.has(key)) return false;
+      seenFeatures.add(key);
+      return true;
+    });
+    if (input.fields.includes("features") && (!maxFeatures || !freshFeatures.length)) {
+      addition.warnings.push(!maxFeatures
+        ? "详情卖点未新增：已达到 100 条存储上限，请先整理现有卖点。"
+        : "详情卖点未新增：AI 未返回可采用的新卖点，或建议与已有卖点重复。请查看资料核查提示，补充已核实事实后重试；润色已有卖点可使用一键改写。");
+    }
     proposal = {
       copy: {
         ...input.copy,

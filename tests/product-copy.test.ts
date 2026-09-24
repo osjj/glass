@@ -35,6 +35,16 @@ test("optimization may append only approved text sections and retains existing k
   assert.throws(() => validateRewrite(optimized, { copy: { ...proposal, contentSections: [{ ...optimized.copy.contentSections[0], body: "Rewritten existing section" }, section] }, warnings: [] }));
   assert.deepEqual(suggestedSectionKeys(proposal), ["ai_buying_considerations"]);
 });
+test("optimization can append beyond five existing features and respects storage limit", () => {
+  const input: RewriteRequest = { ...request, mode: "optimize", fields: ["features"],
+    copy: { ...request.copy, features: Array.from({ length: 5 }, () => "Glass bottle") } };
+  const proposal = { ...input.copy, features: [...input.copy.features, "Clear glass body."] };
+  assert.equal(validateRewrite(input, { copy: proposal, warnings: [] }).copy.features.length, 6);
+  assert.throws(() => validateRewrite(input, { copy: { ...proposal, features: [...proposal.features, ...Array.from({ length: 5 }, () => "Clear body")] }, warnings: [] }));
+  input.copy.features = Array.from({ length: 100 }, () => "Glass bottle");
+  assert.throws(() => validateRewrite(input, { copy: { ...input.copy, features: [...input.copy.features, "Clear body"] }, warnings: [] }));
+});
+
 test("ignores unselected AI edits and rejects supplier branding", () => {
   const result = validateRewrite(request, { copy: { ...request.copy, name: "999 kg", summary: "300 ml glass bottle." }, warnings: [] });
   assert.equal(result.copy.name, request.copy.name);
@@ -84,11 +94,13 @@ test("optimization sends selected photos with text and accepts a text-only secti
   const previous = { key: process.env.OPENAI_API_KEY, endpoint: process.env.OPENAI_API_ENDPOINT, fetch: globalThis.fetch };
   process.env.OPENAI_API_KEY = "test-only"; process.env.OPENAI_API_ENDPOINT = "https://api.openai.com";
   const input: RewriteRequest = { ...request, mode: "optimize", fields: ["features", "contentSections"], buyerFocus: "Restaurant buyers",
+    copy: { ...request.copy, features: Array.from({ length: 5 }, () => "Glass bottle") },
     images: [{ url: "https://www.glarivoglass.com/images/products/bottle.webp", role: "gallery" }] };
   try {
     globalThis.fetch = async (_url, init) => {
       const body = JSON.parse(String(init?.body));
       assert.match(body.instructions, /Mode: supplement/);
+      assert.match(body.instructions, /and 5 new features/);
       assert.equal(body.text.format.name, "product_copy_supplement");
       assert.equal(body.store, false);
       assert.equal(body.input[0].content[1].type, "input_text");
@@ -104,8 +116,12 @@ test("optimization sends selected photos with text and accepts a text-only secti
     assert.equal(result.copy.contentSections.length, 2);
     assert.equal(result.copy.contentSections[0].body, request.copy.contentSections[0].body);
     assert.equal(result.copy.contentSections[1].sourceKey, "ai_product_use");
-    assert.deepEqual(result.copy.features.slice(0, request.copy.features.length), request.copy.features);
+    assert.deepEqual(result.copy.features, [...input.copy.features, "Clear bottle for restaurant service."]);
     assert.equal(result.copy.name, request.copy.name);
+    input.copy.features.push("Clear bottle for restaurant service.");
+    const unchanged = await generateProductCopy(input);
+    assert.deepEqual(unchanged.copy.features, input.copy.features);
+    assert.ok(unchanged.warnings.some((warning) => warning.includes("详情卖点未新增")));
   } finally {
     globalThis.fetch = previous.fetch;
     if (previous.key === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = previous.key;

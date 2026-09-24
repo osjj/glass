@@ -19,6 +19,9 @@ export const copySchema = z.object({
 }).strict();
 export type ProductCopy = z.infer<typeof copySchema>;
 export const MAX_COPY_REFERENCE_IMAGES = 5;
+export function featureAdditionLimit(copy: ProductCopy): number {
+  return Math.max(0, Math.min(5, 100 - copy.features.length));
+}
 const copyReferenceImageSchema = z.object({
   url: z.string().trim().min(1).max(2048),
   role: z.enum(["gallery", "detail"]),
@@ -94,7 +97,7 @@ export function validateRewrite(request: RewriteRequest, result: RewriteResult):
   const copy = mergeSelectedCopy(request.copy, result.copy, request.fields);
   if (request.mode === "optimize") {
     if (request.copy.features.some((feature, index) => copy.features[index] !== feature) ||
-      copy.features.length > Math.max(5, request.copy.features.length) ||
+      copy.features.length > request.copy.features.length + featureAdditionLimit(request.copy) ||
       original.some((section, index) => copy.contentSections[index]?.title !== section.title ||
         copy.contentSections[index]?.body !== section.body)) {
       throw new Error("产品页优化改动了已有卖点或区块原文，请重新生成或使用一键改写。");

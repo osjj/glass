@@ -119,7 +119,7 @@ export function ProductCopyEditor({ productId, copy, getFacts, imageOptions, onA
       <legend className="mb-2 text-sm font-bold">{mode === "optimize" ? "选择要补充或更新的内容" : "选择改写内容"}</legend>
       {COPY_FIELDS.map((field) => <label key={field} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={fields.includes(field)} onChange={() => setFields(toggle(fields, field))} />{COPY_LABELS[field]}</label>)}
     </fieldset>
-    {mode === "optimize" ? <p className="mt-2 text-xs text-[var(--ink-muted)]">默认只补充卖点和新的文字区块，保留现有卖点与区块原文。名称、摘要、备用描述和 SEO 字段只有勾选后才会更新。</p> : null}
+    {mode === "optimize" ? <p className="mt-2 text-xs text-[var(--ink-muted)]">每次最多补充 5 条有依据的新卖点和新的文字区块，保留现有卖点与区块原文。名称、摘要、备用描述和 SEO 字段只有勾选后才会更新。没有可补充内容时会显示原因。</p> : null}
     <div className="mt-4 flex flex-wrap gap-3">
       <button type="button" className="button-primary" disabled={busy || disabled || !fields.length} onClick={generate}>{busy ? "正在生成…" : mode === "optimize" ? "生成产品页优化建议" : "生成改写建议"}</button>
       {busy ? <button type="button" className="button-secondary" onClick={() => controller.current?.abort()}>取消生成</button> : null}
