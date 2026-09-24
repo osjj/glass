@@ -51,6 +51,23 @@ test("ignores unselected AI edits and rejects supplier branding", () => {
   assert.throws(() => validateRewrite(request, { copy: { ...request.copy, summary: "Sunwin 300 ml bottle." }, warnings: [] }));
   assert.throws(() => validateRewrite(request, { copy: { ...request.copy, summary: "Dishwasher-safe 300 ml bottle with free samples." }, warnings: [] }));
 });
+test("source uncertainty belongs in warnings, never new customer copy", () => {
+  for (const summary of [
+    "Confirm whether the stated capacity of 300 refers to millilitres, ounces or another unit before ordering.",
+    "Please verify the capacity unit before ordering.",
+    "Capacity is unknown.",
+    "Capacity: to be confirmed.",
+  ]) {
+    assert.throws(() => validateRewrite(request, { copy: { ...request.copy, summary }, warnings: [] }), /待核实/);
+  }
+  assert.throws(() => validateRewrite(request, { copy: { ...request.copy, summary: "Clear&nbsp;glass bottle." }, warnings: [] }), /转义字符/);
+  const summary = "Clear glass bottle. Contact us with your quantity and packaging requirements.";
+  const warnings = ["容量缺少单位，请管理员核实后补充。"];
+  assert.equal(validateRewrite(request, { copy: { ...request.copy, summary }, warnings }).warnings[0], warnings[0]);
+  const legacy = { ...request, copy: { ...request.copy, features: ["Confirm whether capacity is correct."] } };
+  assert.equal(validateRewrite(legacy, { copy: { ...legacy.copy, summary }, warnings }).copy.features[0], legacy.copy.features[0]);
+});
+
 test("rejects unauthorized fields and absent required input", () => {
   assert.equal(rewriteRequestSchema.safeParse({ ...request, price: 10 }).success, false);
   assert.equal(rewriteRequestSchema.safeParse({ ...request, copy: { ...request.copy, summary: "" } }).success, false);

@@ -119,6 +119,12 @@ export function validateRewrite(request: RewriteRequest, result: RewriteResult):
     });
     return JSON.stringify(copy[field]) !== JSON.stringify(request.copy[field]) ? [JSON.stringify(copy[field])] : [];
   }).join("\n");
+  if (/\b(?:confirm|verify|check|clarify)\s+(?:whether|if)\b|\b(?:to be confirmed|unit (?:is )?(?:not (?:provided|specified)|missing|unclear)|(?:capacity|dimensions?|material|specifications?)\s+(?:is|are)\s+(?:unconfirmed|unclear|unknown|not specified))\b|\b(?:confirm|verify|clarify)\b[^.!?\n]{0,100}\b(?:capacity|units?|dimensions?|material|specifications?)\b/i.test(rewrittenText)) {
+    throw new Error("建议文案含有待核实的产品信息，已阻止采用。请重新生成；缺少依据的内容应省略，核查事项仅放在后台提示中。");
+  }
+  if (/&(?:#(?:x[0-9a-f]+|\d+)|nbsp|amp|lt|gt|quot|apos);/i.test(rewrittenText)) {
+    throw new Error("建议文案含有 HTML 转义字符，请重新生成纯文本。");
+  }
   if (/\b(?:garbo(?:glass)?|sunwin|oasis creations)\b/i.test(rewrittenText)) throw new Error("AI 仍保留来源品牌，请重新生成。");
   if (/\b(?:FDA[- ]approved|food[- ]safe|dishwasher[- ]safe|BPA[- ]free|heat[- ]resistant|free samples?|fast delivery|certified)\b/i.test(rewrittenText)) {
     throw new Error("建议文案包含需要证据支持的性能或服务承诺，请缩小改写范围后重试。");
