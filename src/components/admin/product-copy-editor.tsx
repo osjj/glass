@@ -93,7 +93,7 @@ export function ProductCopyEditor({ productId, copy, getFacts, imageOptions, onA
       <legend className="mb-2 text-sm font-bold">处理方式</legend>
       {([ ["rewrite", "一键改写", "润色现有字段，保留详情区块数量。"], ["optimize", "产品页优化", "补充具体卖点、购买信息和文字区块。"] ] as const).map(([value, label, hint]) =>
         <label key={value} className={`cursor-pointer rounded-xl border p-4 text-sm ${mode === value ? "border-[#3976a5] bg-white" : "border-[#d5dfe7] bg-[#f8fbfd]"}`}>
-          <span className="flex items-center gap-2 font-bold"><input type="radio" name="copyMode" checked={mode === value} onChange={() => { setMode(value); setPreview(null); setNotice(""); setError(""); }} />{label}</span>
+          <span className="flex items-center gap-2 font-bold"><input type="radio" name="copyMode" checked={mode === value} onChange={() => { setMode(value); setFields(value === "optimize" ? ["features", "contentSections"] : [...COPY_FIELDS]); setPreview(null); setSelected([]); setNotice(""); setError(""); }} />{label}</span>
           <span className="mt-1 block pl-6 text-xs text-[var(--ink-muted)]">{hint}</span>
         </label>)}
     </fieldset>
@@ -116,9 +116,10 @@ export function ProductCopyEditor({ productId, copy, getFacts, imageOptions, onA
       </div>
     </div> : null}
     <fieldset className="mt-4 flex flex-wrap gap-4" disabled={busy || disabled}>
-      <legend className="mb-2 text-sm font-bold">选择改写内容</legend>
+      <legend className="mb-2 text-sm font-bold">{mode === "optimize" ? "选择要补充或更新的内容" : "选择改写内容"}</legend>
       {COPY_FIELDS.map((field) => <label key={field} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={fields.includes(field)} onChange={() => setFields(toggle(fields, field))} />{COPY_LABELS[field]}</label>)}
     </fieldset>
+    {mode === "optimize" ? <p className="mt-2 text-xs text-[var(--ink-muted)]">默认只补充卖点和新的文字区块，保留现有卖点与区块原文。名称、摘要、备用描述和 SEO 字段只有勾选后才会更新。</p> : null}
     <div className="mt-4 flex flex-wrap gap-3">
       <button type="button" className="button-primary" disabled={busy || disabled || !fields.length} onClick={generate}>{busy ? "正在生成…" : mode === "optimize" ? "生成产品页优化建议" : "生成改写建议"}</button>
       {busy ? <button type="button" className="button-secondary" onClick={() => controller.current?.abort()}>取消生成</button> : null}

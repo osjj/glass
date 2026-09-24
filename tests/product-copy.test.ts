@@ -25,12 +25,14 @@ test("rejects invented numbers, changed units and changed section structure", ()
 test("optimization may append only approved text sections and retains existing keys", () => {
   const optimized: RewriteRequest = { ...request, mode: "optimize", fields: ["features", "contentSections"] };
   const section = { sourceKey: "ai_product_use", title: "Where this bottle fits", body: "For bar and restaurant service." };
-  const proposal = { ...optimized.copy, features: ["Clear glass bottle for bar service."],
+  const proposal = { ...optimized.copy, features: [...optimized.copy.features, "Clear glass bottle for bar service."],
     contentSections: [...optimized.copy.contentSections, section] };
   assert.deepEqual(validateRewrite(optimized, { copy: proposal, warnings: [] }).copy.contentSections.at(-1), section);
   assert.throws(() => validateRewrite(request, { copy: proposal, warnings: [] }));
   assert.throws(() => validateRewrite(optimized, { copy: { ...proposal, contentSections: [section, ...optimized.copy.contentSections] }, warnings: [] }));
   assert.throws(() => validateRewrite(optimized, { copy: { ...proposal, contentSections: [...optimized.copy.contentSections, { ...section, sourceKey: "unexpected" }] }, warnings: [] }));
+  assert.throws(() => validateRewrite(optimized, { copy: { ...proposal, features: ["Rewritten existing feature", ...proposal.features.slice(1)] }, warnings: [] }));
+  assert.throws(() => validateRewrite(optimized, { copy: { ...proposal, contentSections: [{ ...optimized.copy.contentSections[0], body: "Rewritten existing section" }, section] }, warnings: [] }));
   assert.deepEqual(suggestedSectionKeys(proposal), ["ai_buying_considerations"]);
 });
 test("ignores unselected AI edits and rejects supplier branding", () => {
@@ -86,18 +88,24 @@ test("optimization sends selected photos with text and accepts a text-only secti
   try {
     globalThis.fetch = async (_url, init) => {
       const body = JSON.parse(String(init?.body));
-      assert.match(body.instructions, /Mode: optimize/);
-      assert.match(body.instructions, /ai_product_use/);
+      assert.match(body.instructions, /Mode: supplement/);
+      assert.equal(body.text.format.name, "product_copy_supplement");
       assert.equal(body.store, false);
       assert.equal(body.input[0].content[1].type, "input_text");
       assert.deepEqual(body.input[0].content[2], { type: "input_image", image_url: input.images[0].url, detail: "high" });
       assert.ok(!body.input[0].content[0].text.includes(input.images[0].url));
-      const copy = { ...request.copy, features: ["Clear bottle for restaurant service."],
-        contentSections: [...request.copy.contentSections, { sourceKey: "ai_product_use", title: "Service use", body: "For restaurant service." }] };
-      return Response.json({ status: "completed", output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({ copy, warnings: [] }) }] }] });
+      const supplement = { name: "Suggested replacement name", summary: request.copy.summary,
+        description: request.copy.description, seoTitle: request.copy.seoTitle, seoDescription: request.copy.seoDescription,
+        featureAdditions: ["Clear bottle for restaurant service."],
+        sectionAdditions: [{ title: "Service use", body: "For restaurant service." }], warnings: [] };
+      return Response.json({ status: "completed", output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify(supplement) }] }] });
     };
     const result = await generateProductCopy(input);
     assert.equal(result.copy.contentSections.length, 2);
+    assert.equal(result.copy.contentSections[0].body, request.copy.contentSections[0].body);
+    assert.equal(result.copy.contentSections[1].sourceKey, "ai_product_use");
+    assert.deepEqual(result.copy.features.slice(0, request.copy.features.length), request.copy.features);
+    assert.equal(result.copy.name, request.copy.name);
   } finally {
     globalThis.fetch = previous.fetch;
     if (previous.key === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = previous.key;

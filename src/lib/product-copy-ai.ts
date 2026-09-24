@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { rewriteResultSchema, suggestedSectionKeys, validateRewrite, type RewriteRequest } from "@/lib/product-copy";
+import { rewriteResultSchema, supplementResultSchema, suggestedSectionKeys, validateRewrite, type RewriteRequest } from "@/lib/product-copy";
 import { getSiteUrl } from "@/lib/site-url";
 
 export class CopyServiceError extends Error {
@@ -31,9 +31,9 @@ Add useful purchasing questions only when relevant, phrased as things to confirm
 Do not modify photos. Do not duplicate the same boilerplate across sections.
 SEO title should normally be about 60 characters, description about 155, while preserving accuracy; hard limits are defined in schema. Output plain text, no HTML or Markdown. Return warnings in Chinese. If useful source details cannot be supported, explain instead of inventing them.`;
 const rewriteInstructions = `Mode: rewrite existing copy only. Do not create new sections. Keep the section count unchanged. When there are no detail bullets, leave features empty and rewrite description.`;
-const optimizationInstructions = `Mode: optimize a complete product detail page for B2B buyers, using only the supplied copy, structured facts, and editor-verified notes. Buyer focus guides emphasis, not factual claims.
-Write a distinct model-specific name, concise catalog summary, useful SEO title/description, 3-5 factual feature statements when evidence permits, and a consistent fallback description. Explain concrete applications and purchasing considerations without repeating generic category education or making unsupported promises. Product pages should help a buyer decide what to confirm in an inquiry.
-You may append up to two text-only content sections after all existing sections when contentSections is selected and space remains. Keep every original section and sourceKey in the same order; preserve image-related context. Use only the section keys supplied below, in that order, for appended sections. Do not append empty or repetitive sections. If facts are thin, write less and warn in Chinese about missing evidence.`;
+const optimizationInstructions = `Mode: supplement a product detail page for B2B buyers, using only the supplied copy, structured facts, editor-verified notes, and selected visual references. Buyer focus guides emphasis, not factual claims.
+Return only new featureAdditions and sectionAdditions, never reproduce or rewrite existing feature statements or sections. The server preserves all existing features and sections. Add non-repetitive facts up to five total features and at most two text-only sections when their fields are selected. Each sectionAdditions item contains only a title and body; the server assigns its stable key. Return empty arrays if evidence does not support additions.
+Only rewrite name, summary, description, seoTitle, or seoDescription if that field is explicitly selected; otherwise return its existing value unchanged. For selected fields, write accurate model-specific copy without broad category education, unsupported promises, or keyword padding. If facts are thin, write less and warn in Chinese about missing evidence. Product pages should help a buyer decide what to confirm in an inquiry.`;
 
 export function authorizedCopyImageUrl(value: string): string {
   let url: URL;
@@ -65,7 +65,7 @@ export async function generateProductCopy(input: RewriteRequest, signal?: AbortS
     (url.protocol !== "https:" && !(url.protocol === "http:" && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)))) {
     throw new CopyServiceError("AI 服务地址配置无效。", 503);
   }
-  const schema = z.toJSONSchema(rewriteResultSchema);
+  const schema = z.toJSONSchema(input.mode === "optimize" ? supplementResultSchema : rewriteResultSchema);
   // The OpenAI subset uses the JSON schema body without the meta-schema declaration.
   delete schema.$schema;
   const textInput = JSON.stringify({ ...input, images: undefined });
@@ -82,10 +82,10 @@ export async function generateProductCopy(input: RewriteRequest, signal?: AbortS
     signal: AbortSignal.any([AbortSignal.timeout(90_000), ...(signal ? [signal] : [])]),
     body: JSON.stringify({ model: process.env.OPENAI_COPY_MODEL?.trim() || "gpt-5.6-luna", store: false,
       instructions: input.mode === "optimize"
-        ? `${instructions}\n${optimizationInstructions}\n${images.length ? "Use the attached images to describe only visible product appearance. Do not repeat image text as verified claims." : "No reference images were supplied; do not claim to have seen them."}\nAllowed new section keys: ${suggestedSectionKeys(input.copy).join(", ") || "none"}. At most ${Math.min(suggestedSectionKeys(input.copy).length, 20 - input.copy.contentSections.length)} new sections.`
+        ? `${instructions}\n${optimizationInstructions}\n${images.length ? "Use the attached images to describe only visible product appearance. Do not repeat image text as verified claims." : "No reference images were supplied; do not claim to have seen them."}\nAt most ${Math.min(suggestedSectionKeys(input.copy).length, 20 - input.copy.contentSections.length)} new sections and ${Math.max(0, 5 - input.copy.features.length)} new features.`
         : `${instructions}\n${rewriteInstructions}`,
       input: modelInput, max_output_tokens: 16000,
-      text: { format: { type: "json_schema", name: "product_copy", strict: true, schema } },
+      text: { format: { type: "json_schema", name: input.mode === "optimize" ? "product_copy_supplement" : "product_copy", strict: true, schema } },
     }),
   });
   if (!response.ok) {
@@ -96,8 +96,31 @@ export async function generateProductCopy(input: RewriteRequest, signal?: AbortS
   if (payload.status !== "completed") throw new CopyServiceError("AI 未完整生成文案，请减少选择的字段后重试。");
   const text = (payload.output ?? []).flatMap((item: { type: string; content?: { type: string; text?: string }[] }) =>
     item.type === "message" ? (item.content ?? []).filter((c) => c.type === "output_text").map((c) => c.text ?? "") : []).join("");
-  const parsed = rewriteResultSchema.safeParse(JSON.parse(text));
+  const raw = JSON.parse(text);
+  const parsed = input.mode === "optimize" ? supplementResultSchema.safeParse(raw) : rewriteResultSchema.safeParse(raw);
   if (!parsed.success) throw new CopyServiceError("AI 返回的文案格式无效，请重新生成。");
-  try { return validateRewrite(input, parsed.data); }
+  let proposal;
+  if (input.mode === "optimize") {
+    const addition = supplementResultSchema.parse(raw);
+    const sectionKeys = suggestedSectionKeys(input.copy);
+    const maxFeatures = Math.max(0, 5 - input.copy.features.length);
+    const maxSections = Math.min(sectionKeys.length, 20 - input.copy.contentSections.length);
+    const freshFeatures = addition.featureAdditions.filter((feature) =>
+      !input.copy.features.some((existing) => existing.toLowerCase() === feature.toLowerCase()));
+    proposal = {
+      copy: {
+        ...input.copy,
+        name: addition.name, summary: addition.summary, description: addition.description,
+        seoTitle: addition.seoTitle, seoDescription: addition.seoDescription,
+        features: input.fields.includes("features") ? [...input.copy.features, ...freshFeatures.slice(0, maxFeatures)] : input.copy.features,
+        contentSections: input.fields.includes("contentSections") ? [...input.copy.contentSections,
+          ...addition.sectionAdditions.slice(0, maxSections).map((section, index) => ({ ...section, sourceKey: sectionKeys[index] }))] : input.copy.contentSections,
+      },
+      warnings: addition.warnings,
+    };
+  } else {
+    proposal = rewriteResultSchema.parse(raw);
+  }
+  try { return validateRewrite(input, proposal); }
   catch (error) { throw new CopyServiceError(error instanceof Error ? error.message : "文案校验失败。"); }
 }

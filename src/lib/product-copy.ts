@@ -44,6 +44,16 @@ export const rewriteResultSchema = z.object({
   warnings: z.array(z.string().max(1000)).max(30),
 }).strict();
 export type RewriteResult = z.infer<typeof rewriteResultSchema>;
+export const supplementResultSchema = z.object({
+  name: z.string().trim().min(1).max(180),
+  summary: z.string().trim().min(1).max(500),
+  description: z.string().trim().max(20000),
+  seoTitle: z.string().trim().max(180),
+  seoDescription: z.string().trim().max(500),
+  featureAdditions: z.array(z.string().trim().min(1).max(5000)).max(5),
+  sectionAdditions: z.array(z.object({ title: z.string().trim().min(1).max(180), body: z.string().trim().min(1).max(20000) }).strict()).max(2),
+  warnings: z.array(z.string().max(1000)).max(30),
+}).strict();
 
 export function copySnapshot(value: {
   name: string; summary: string; description: string; seoTitle?: string | null; seoDescription?: string | null;
@@ -82,6 +92,14 @@ export function validateRewrite(request: RewriteRequest, result: RewriteResult):
   if (!existingKeysMatch || (request.mode === "rewrite" ? added.length > 0 : added.length > 0 && !canAppend) ||
     proposed.length < original.length) throw new Error("AI 改变了详情区块结构，请重新生成。");
   const copy = mergeSelectedCopy(request.copy, result.copy, request.fields);
+  if (request.mode === "optimize") {
+    if (request.copy.features.some((feature, index) => copy.features[index] !== feature) ||
+      copy.features.length > Math.max(5, request.copy.features.length) ||
+      original.some((section, index) => copy.contentSections[index]?.title !== section.title ||
+        copy.contentSections[index]?.body !== section.body)) {
+      throw new Error("产品页优化改动了已有卖点或区块原文，请重新生成或使用一键改写。");
+    }
+  }
   const source = JSON.stringify({ copy: request.copy, facts: request.facts, verifiedNotes: request.verifiedNotes });
   const output = JSON.stringify(copy);
   const numbers = (text: string): string[] => text.match(/\d+(?:[.,]\d+)*/g) ?? [];
@@ -90,7 +108,14 @@ export function validateRewrite(request: RewriteRequest, result: RewriteResult):
   const measures = (text: string) => (text.match(/\d+(?:\.\d+)?\s*(?:ml|cl|litres?|liters?|mm|cm|kg|oz|°c|°f|g|l)\b/gi) ?? []).map((v) => v.replace(/\s/g, "").toLowerCase());
   const knownMeasures = new Set(measures(source));
   if (measures(output).some((v) => !knownMeasures.has(v))) throw new Error("AI 改变或补充了未经确认的单位，已阻止采用。");
-  const rewrittenText = request.fields.map((f) => JSON.stringify(copy[f])).join("\n");
+  const rewrittenText = request.fields.flatMap((field) => {
+    if (field === "features") return copy.features.filter((feature, index) => feature !== request.copy.features[index]);
+    if (field === "contentSections") return copy.contentSections.flatMap((section, index) => {
+      const before = request.copy.contentSections[index];
+      return !before || section.title !== before.title || section.body !== before.body ? [section.title, section.body] : [];
+    });
+    return JSON.stringify(copy[field]) !== JSON.stringify(request.copy[field]) ? [JSON.stringify(copy[field])] : [];
+  }).join("\n");
   if (/\b(?:garbo(?:glass)?|sunwin|oasis creations)\b/i.test(rewrittenText)) throw new Error("AI 仍保留来源品牌，请重新生成。");
   if (/\b(?:FDA[- ]approved|food[- ]safe|dishwasher[- ]safe|BPA[- ]free|heat[- ]resistant|free samples?|fast delivery|certified)\b/i.test(rewrittenText)) {
     throw new Error("建议文案包含需要证据支持的性能或服务承诺，请缩小改写范围后重试。");
