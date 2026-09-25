@@ -72,7 +72,7 @@ export default async function HomePage() {
         <Image src="/images/home/showroom-hero-v2.webp" alt="Warm glassware showroom with illuminated wood displays and glass collections" fill preload sizes="100vw" className={styles.heroImage} />
         <div className={styles.heroShade} aria-hidden="true" />
         <div className={styles.heroPrism} aria-hidden="true"><span /><span /><span /></div>
-        <div className={styles.heroLight} aria-hidden="true" />
+        <div data-home-light className={styles.heroLight} aria-hidden="true" />
         <div className={styles.container + " " + styles.heroContent}>
           <div>
             <p className={styles.heroKicker}>Glassware for modern living</p>
