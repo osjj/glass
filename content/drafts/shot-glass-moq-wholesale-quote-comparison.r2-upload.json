@@ -1,0 +1,30 @@
+[
+  {
+    "name": "hero",
+    "file": "public/images/blog/shot-glass-moq-wholesale-quote-comparison/hero.webp",
+    "localUrl": "/images/blog/shot-glass-moq-wholesale-quote-comparison/hero.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 87632,
+    "sha256": "41df9c3686dc8855b87a9c7f6ba215f0aefe6aeedd48c586dca340d97087d7a9",
+    "key": "site/blog/shot-glass-moq-wholesale-quote-comparison/hero-41df9c3686dc.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-moq-wholesale-quote-comparison/hero-41df9c3686dc.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "batches",
+    "file": "public/images/blog/shot-glass-moq-wholesale-quote-comparison/batches.webp",
+    "localUrl": "/images/blog/shot-glass-moq-wholesale-quote-comparison/batches.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 90928,
+    "sha256": "4ed871efa27d41d38cf36f5b7049ded567b00ca621543baf0bad5bd1aa78c869",
+    "key": "site/blog/shot-glass-moq-wholesale-quote-comparison/batches-4ed871efa27d.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-moq-wholesale-quote-comparison/batches-4ed871efa27d.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  }
+]

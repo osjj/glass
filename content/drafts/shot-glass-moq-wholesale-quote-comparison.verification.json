@@ -1,0 +1,66 @@
+{
+  "wordCount": 2023,
+  "readTimeMinutes": 10,
+  "blocks": 60,
+  "bodyImages": 1,
+  "totalImages": 2,
+  "validation": true,
+  "linkChecks": [
+    {
+      "path": "/blog/shot-glass-buying-guide-for-wholesale-buyers",
+      "status": 200
+    },
+    {
+      "path": "/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels",
+      "status": 200
+    },
+    {
+      "path": "/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist",
+      "status": 200
+    },
+    {
+      "path": "/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks",
+      "status": 200
+    },
+    {
+      "path": "/products/category/shot-glass",
+      "status": 200
+    },
+    {
+      "path": "/guides/shot-glass-sourcing",
+      "status": 200
+    }
+  ],
+  "sourceSha256": "af30517a45995b465c4261e893ff18025e1945b9383fe7cd1b78e8ab6871450e",
+  "images": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/shot-glass-moq-wholesale-quote-comparison/hero.webp",
+      "localUrl": "/images/blog/shot-glass-moq-wholesale-quote-comparison/hero.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 87632,
+      "sha256": "41df9c3686dc8855b87a9c7f6ba215f0aefe6aeedd48c586dca340d97087d7a9"
+    },
+    {
+      "name": "batches",
+      "file": "public/images/blog/shot-glass-moq-wholesale-quote-comparison/batches.webp",
+      "localUrl": "/images/blog/shot-glass-moq-wholesale-quote-comparison/batches.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 90928,
+      "sha256": "4ed871efa27d41d38cf36f5b7049ded567b00ca621543baf0bad5bd1aa78c869"
+    }
+  ],
+  "verifiedAt": "2026-09-25T07:51:03.081Z",
+  "quantityArithmeticVerified": true,
+  "preview": {
+    "desktopWidth": 1440,
+    "mobileWidth": 390,
+    "horizontalOverflow": false,
+    "loadedImages": 2,
+    "visualScope": "Standalone preview; desktop and mobile top screenshots inspected"
+  },
+  "databaseReadbackVerified": true,
+  "publicStatus": 404
+}

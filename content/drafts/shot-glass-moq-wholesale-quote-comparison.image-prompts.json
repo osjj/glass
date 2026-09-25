@@ -1,0 +1,15 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "name": "hero",
+      "prompt": "Use case: product-mockup. Create a premium editorial cover photograph-style illustration for a B2B article about comparing wholesale shot glass quotations. Landscape 1536x1024. Warm ivory studio desk, three small clear empty shot glasses (a short thick-base cylindrical profile, a tall slim profile, and a gently tapered profile) beside plain cream and navy quotation sheets with NO readable text, a simple pencil and one small unprinted kraft sample box. The glasses are physically plausible with intact rims, realistic transparent glass refraction. Restrained warm neutral colors, subtle navy accent, soft natural side light, crisp glass edges, elegant spacious composition, no people, no alcohol, no logos, no watermark, no pricing numbers, no charts, no captions. Generic conceptual glassware, not any specific catalog SKU.",
+      "file": "public/images/blog/shot-glass-moq-wholesale-quote-comparison/hero.webp"
+    },
+    {
+      "name": "batches",
+      "prompt": "Use case: product-mockup. Landscape editorial concept image 1536x1024 for a wholesale shot glass MOQ article: three clearly separated groups of identical clear small cylindrical shot glasses on an ivory tabletop, each group on its own pale cream rectangular tray. Each group contains four glasses with a small single-color abstract circular emblem centered on the side, navy circles for the left group, terracotta circles for the center group, muted green circles for the right group. These are simple unbranded example decorations. Accurate clear glass walls, intact rims and solid bases, orderly professional merchandising arrangement, elevated three-quarter camera angle, soft studio lighting, generous space between trays. Clean quiet neutral background. NO lettering, no digits, no logos, no watermarks, no alcohol, no people. Purpose: visually show that one overall assortment contains separate artwork batches, without implying a supplier's actual minimum quantity or matching a specific catalog model.",
+      "file": "public/images/blog/shot-glass-moq-wholesale-quote-comparison/batches.webp"
+    }
+  ]
+}
