@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { HomeMotion } from "@/components/site/home-motion";
 import {
   ArrowRight, ChatCircleDots, ClipboardText, Coffee, Drop, Factory,
   Jar, MagnifyingGlass, Package, PenNib, ShieldCheck, Wine,
@@ -45,11 +46,11 @@ async function withTimeout<T>(promise: Promise<T>, fallback: T, timeoutMs = 3500
 function flattenCategories(categories: PublicCategory[]): PublicCategory[] {
   return categories.flatMap((category) => [category, ...flattenCategories(category.children)]);
 }
-function Rule() { return <span className={styles.rule} aria-hidden="true" />; }
+function Rule() { return <span data-motion="line" className={styles.rule} aria-hidden="true" />; }
 function Photo({ src, alt, className = "", sizes = "(min-width: 900px) 45vw, 100vw", aspectRatio }: {
   src: string; alt: string; className?: string; sizes?: string; aspectRatio?: string;
 }) {
-  return <div className={styles.photo + " " + className} style={aspectRatio ? { aspectRatio } : undefined}><Image src={src} alt={alt} fill sizes={sizes} /></div>;
+  return <div data-motion="image" className={styles.photo + " " + className} style={aspectRatio ? { aspectRatio } : undefined}><Image src={src} alt={alt} fill sizes={sizes} /></div>;
 }
 
 export default async function HomePage() {
@@ -66,27 +67,33 @@ export default async function HomePage() {
   const hotelGuide = articles.find(({ slug }) => slug === hotelGlasswareGuideSlug);
 
   return (
-    <div className={styles.home}>
+    <HomeMotion className={styles.home}>
       <section data-home-hero className={styles.hero}>
         <Image src="/images/home/showroom-hero-v2.webp" alt="Warm glassware showroom with illuminated wood displays and glass collections" fill preload sizes="100vw" className={styles.heroImage} />
-        <div className={styles.heroShade} />
+        <div className={styles.heroShade} aria-hidden="true" />
+        <div className={styles.heroPrism} aria-hidden="true"><span /><span /><span /></div>
+        <div className={styles.heroLight} aria-hidden="true" />
         <div className={styles.container + " " + styles.heroContent}>
           <div>
             <p className={styles.heroKicker}>Glassware for modern living</p>
-            <h1 className={styles.heroTitle}>Crafted for<br />everyday elegance.</h1>
+            <h1 className={styles.heroTitle}><span className={styles.titleLine}>Crafted for</span>{" "}<span className={styles.titleLine}>everyday <em>elegance.</em></span></h1>
             <p className={styles.heroDescription}>Clear collections, thoughtful customization,<br className={styles.desktopBreak} /> and dependable sourcing for global<br className={styles.desktopBreak} /> glassware buyers.</p>
             <div className={styles.actions}>
-              <Link href="#collections" className={styles.button}>Explore collections</Link>
+              <Link href="#collections" className={styles.button}>Explore collections<ArrowRight size={22} weight="light" aria-hidden="true" /></Link>
               <Link href="#custom-glassware" className={styles.heroLink}>Start a custom project</Link>
             </div>
           </div>
+        </div>
+        <div className={styles.heroEdition}>
+          <span aria-hidden="true"><span className={styles.editionNumber}>01 /</span> Glass. Light. Possibility.</span>
+          <Link href="#collections" className={styles.scrollCue}>Discover the collection<ArrowRight size={18} aria-hidden="true" /></Link>
         </div>
       </section>
 
       <section id="collections" aria-labelledby="collections-heading" className={styles.collections}>
         <div className={styles.container}>
           <header className={styles.centered}>
-            <h2 id="collections-heading" className={styles.heading}>Explore our collections</h2><Rule />
+            <h2 id="collections-heading" data-motion="copy" className={styles.heading}>Explore our collections</h2><Rule />
           </header>
           <div className={styles.collectionGrid}>
             {homeCollections.map((collection) => {
@@ -104,7 +111,7 @@ export default async function HomePage() {
       <section id="custom-glassware" aria-labelledby="custom-heading" className={styles.custom}>
         <Photo src="/images/home/glass-forming-process-v2.webp" alt="Gloved hands inspecting a glass vessel beside forming equipment" className={styles.customPhoto} sizes="(min-width: 900px) 50vw, 100vw" />
         <div className={styles.customContent}>
-          <h2 id="custom-heading" className={styles.heading}>From concept to glass</h2><Rule />
+          <h2 id="custom-heading" data-motion="copy" className={styles.heading}>From concept to glass</h2><Rule />
           <p className={styles.intro}>We help global buyers turn ideas into collections with clarity, precision, and care.</p>
           <ol className={styles.sourcingSteps}>
             {homeSourcingSteps.map((step, index) => {
@@ -122,7 +129,7 @@ export default async function HomePage() {
       <section id="insights" aria-labelledby="insights-heading" className={styles.insights + " " + styles.dark}>
         <div className={styles.container}>
           <p className={styles.kicker + " " + styles.lightKicker}>Curated insights</p>
-          <h2 id="insights-heading" className={styles.heading}>Ideas and inspiration<br />for growing your business.</h2><Rule />
+          <h2 id="insights-heading" data-motion="copy" className={styles.heading}>Ideas and inspiration<br />for growing your business.</h2><Rule />
           <article className={styles.featuredGuide}>
             <Link href={guideHref} aria-label={featuredArticle?.title ?? "Explore shot glass sourcing"}>
               <Photo src={useShotGlassImage ? "/images/home/editorial/shot-glass-guide.webp" : featuredArticle.coverImage}
@@ -151,7 +158,7 @@ export default async function HomePage() {
       <section aria-labelledby="capabilities-heading" className={styles.capabilities}>
         <div className={styles.container}>
           <p className={styles.kicker}>Catalog capabilities</p>
-          <h2 id="capabilities-heading" className={styles.heading}>A clearer way to source glassware.</h2><Rule />
+          <h2 id="capabilities-heading" data-motion="copy" className={styles.heading}>A clearer way to source glassware.</h2><Rule />
           <dl className={styles.capabilityGrid}>
             <div><dt>{categories.length || "56"}</dt><dd>Glassware categories</dd></div>
             <div><dt>Clear</dt><dd>Source-led information</dd></div>
@@ -164,9 +171,9 @@ export default async function HomePage() {
 
       <section aria-labelledby="workflow-heading" className={styles.workflow + " " + styles.dark}>
         <div className={styles.container}>
-          <p className={styles.kicker}>Workflow</p><h2 id="workflow-heading" className={styles.heading}>From selection to packing</h2>
+          <p className={styles.kicker}>Workflow</p><h2 id="workflow-heading" data-motion="copy" className={styles.heading}>From selection to packing</h2>
           <ol className={styles.workflowGrid}>
-            {workflow.map(({ label, icon: Icon }, index) => <li key={label}>
+            {workflow.map(({ label, icon: Icon }, index) => <li data-motion="step" key={label}>
               <span className={styles.workflowIcon}><Icon size={39} weight="thin" aria-hidden="true" /></span>
               <span className={styles.stepNumber}>{String(index + 1).padStart(2, "0")}</span><h3>{label}</h3>
             </li>)}
@@ -178,7 +185,7 @@ export default async function HomePage() {
         <div className={styles.container}>
           <div className={styles.companyIntro}>
             <Photo src="/images/home/showroom-hero.webp" alt="Editorial glassware showroom scene with illuminated displays" className={styles.companyPhoto} sizes="(min-width: 900px) 55vw, 100vw" />
-            <div><p className={styles.kicker}>Sourcing approach</p><h2 id="company-heading" className={styles.heading}>Glarivo Glassware</h2><p className={styles.companyTagline}>Clear choices for every glassware project.</p><Rule /></div>
+            <div><p className={styles.kicker}>Sourcing approach</p><h2 id="company-heading" data-motion="copy" className={styles.heading}>Glarivo Glassware</h2><p className={styles.companyTagline}>Clear choices for every glassware project.</p><Rule /></div>
           </div>
           <dl className={styles.companyStats}>
             {homeSourcingPrinciples.map((principle) => <div key={principle.label}><dt>{principle.value}</dt><dd>{principle.label}</dd></div>)}
@@ -186,7 +193,7 @@ export default async function HomePage() {
           <p className={styles.sourceNote}>A practical framework for browsing, comparing and planning a glassware inquiry.</p>
           <div className={styles.strengths}>
             <div>
-              <p className={styles.kicker}>How we help</p><h2 className={styles.heading}>A clearer path from idea to shortlist.</h2><Rule />
+              <p className={styles.kicker}>How we help</p><h2 data-motion="copy" className={styles.heading}>A clearer path from idea to shortlist.</h2><Rule />
               <ol className={styles.strengthList}>
                 {homeSourcingStrengths.map((strength, index) => <li key={strength.title}>
                   <span>{String(index + 1).padStart(2, "0")}</span><div><h3>{strength.title}</h3><p>{strength.description}</p></div>
@@ -201,7 +208,7 @@ export default async function HomePage() {
       <section id="services" aria-labelledby="services-heading" className={styles.services}>
         <div className={styles.container}>
           <header className={styles.centered}>
-            <p className={styles.kicker}>Services</p><h2 id="services-heading" className={styles.heading}>Thoughtful services for<br />your glassware business.</h2><Rule />
+            <p className={styles.kicker}>Services</p><h2 id="services-heading" data-motion="copy" className={styles.heading}>Thoughtful services for<br />your glassware business.</h2><Rule />
             <p className={styles.sectionNote}>Support areas for shaping a clearer product and sourcing brief.</p>
           </header>
           <div className={styles.serviceGrid}>
@@ -217,7 +224,7 @@ export default async function HomePage() {
       <section id="exhibitions" aria-labelledby="exhibitions-heading" className={styles.exhibitions + " " + styles.dark}>
         <div className={styles.container}>
           <header className={styles.exhibitionHeader}>
-            <div><p className={styles.kicker}>Exhibitions & connections</p><h2 id="exhibitions-heading" className={styles.heading}>Exhibitions &amp;<br />market conversations.</h2></div>
+            <div><p className={styles.kicker}>Exhibitions & connections</p><h2 id="exhibitions-heading" data-motion="copy" className={styles.heading}>Exhibitions &amp;<br />market conversations.</h2></div>
             <p className={styles.exhibitionIntro}>Glassware, shared ideas and<br />face-to-face conversations.</p>
           </header>
           <div className={styles.exhibitionGrid}>
@@ -233,7 +240,7 @@ export default async function HomePage() {
 
       <section id="sourcing-scenarios" aria-labelledby="stories-heading" className={styles.stories}>
         <div className={styles.container}>
-          <p className={styles.kicker}>Buyer planning</p><h2 id="stories-heading" className={styles.heading}>Sourcing scenarios,<br />clearly framed.</h2>
+          <p className={styles.kicker}>Buyer planning</p><h2 id="stories-heading" data-motion="copy" className={styles.heading}>Sourcing scenarios,<br />clearly framed.</h2>
           <p className={styles.storyIntro}>Practical starting points for building a focused glassware inquiry.</p>
           <div className={styles.storyGrid}>
             {homeBuyerScenarios.map((scenario) => <article className={styles.storyCard} key={scenario.title}>
@@ -248,7 +255,7 @@ export default async function HomePage() {
       {hotelGuide && <section aria-labelledby="hotel-guide-heading" className={styles.caseStudy + " " + styles.dark}>
         <div className={styles.container + " " + styles.caseGrid}>
           <figure><Photo src={hotelGuide.coverImage} alt={hotelGuide.coverImageAlt} className={styles.casePhoto} /><figcaption>Glassware concept illustration</figcaption></figure>
-          <div className={styles.caseCopy}><p className={styles.kicker}>Hotel glassware buying guide</p><h2 id="hotel-guide-heading" className={styles.heading}>Hotel glassware,<br />considered in detail.</h2><Rule />
+          <div className={styles.caseCopy}><p className={styles.kicker}>Hotel glassware buying guide</p><h2 id="hotel-guide-heading" data-motion="copy" className={styles.heading}>Hotel glassware,<br />considered in detail.</h2><Rule />
             <p>Plan a coordinated collection for guestrooms and lounges, from the service brief to sample approval.</p><p className={styles.caseTopics}>Capacity · Customization · Replenishment</p>
             <p className={styles.caseDisclosure}>Compare tray fit, logo samples,<br />packing and replacement requirements.</p>
             <Link href={"/blog/" + hotelGuide.slug} className={styles.outlineButton}>Read the buying guide<ArrowRight size={25} weight="light" aria-hidden="true" /></Link>
@@ -258,10 +265,10 @@ export default async function HomePage() {
 
       <section className={styles.closing}>
         <div className={styles.container + " " + styles.closingInner}>
-          <div><h2 className={styles.heading}>Build your next glassware shortlist.</h2><Rule /><p>Explore products and practical guides<br className={styles.desktopBreak} /> to prepare a clearer sourcing brief.</p></div>
+          <div><h2 data-motion="copy" className={styles.heading}>Build your next glassware shortlist.</h2><Rule /><p>Explore products and practical guides<br className={styles.desktopBreak} /> to prepare a clearer sourcing brief.</p></div>
           <div className={styles.actions}><Link href="/products" className={styles.button}>Explore products</Link><Link href="/blog" className={styles.textLink}>Read buying guides<ArrowRight size={25} weight="light" aria-hidden="true" /></Link></div>
         </div>
       </section>
-    </div>
+    </HomeMotion>
   );
 }

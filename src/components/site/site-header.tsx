@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, BookOpen, List, X } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "./logo";
 import { InquiryButton } from "./inquiry-contact";
 import styles from "./home-shell.module.css";
@@ -21,6 +21,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const navigationRef = useRef<HTMLDivElement>(null);
   const editorial = ["/", "/about", "/products", "/case-studies", "/blog"].includes(pathname)
     || ["/products/", "/case-studies/", "/guides/", "/blog/"].some((prefix) => pathname.startsWith(prefix));
   const overlay = editorial && !scrolled;
@@ -28,8 +29,8 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
   useEffect(() => {
     const onScroll = () => {
       const homeHero = document.querySelector<HTMLElement>("[data-home-hero], [data-about-hero], [data-editorial-hero]");
-      const threshold = homeHero ? homeHero.offsetHeight - 88 : 48;
-      setScrolled(window.scrollY > threshold);
+      const threshold = homeHero ? homeHero.offsetHeight - (navigationRef.current?.offsetHeight ?? 88) : 48;
+      setScrolled(window.scrollY >= threshold);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -57,7 +58,7 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
           </div>
         </div>
       ) : null}
-      <div className={`site-container flex h-[88px] shrink-0 items-center justify-between gap-6 ${styles.headerNav}`}>
+      <div ref={navigationRef} className={`site-container flex h-[88px] shrink-0 items-center justify-between gap-6 ${styles.headerNav}`}>
         <Logo variant="blue" compact />
 
         <nav className="hidden items-center gap-7 xl:flex" aria-label="Primary navigation">
