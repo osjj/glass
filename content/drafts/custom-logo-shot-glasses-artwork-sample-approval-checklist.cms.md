@@ -54,7 +54,7 @@ A logo that fits inside a photograph may not fit the decorator's usable print ar
 
 Agree the measurement reference points. For example, specify whether the vertical position is measured from the glass base to the bottom of the artwork or to its center. For tapered glasses, clarify whether artwork width means a flat artwork dimension, a distance around the surface or a front-view projection. These are different measurements.
 
-![AI-generated illustration comparing a flat artwork proof with a decorated shot glass. Placement marks are schematic, not a dimensioned production template.](/images/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/artwork-placement.webp)
+![illustration comparing a flat artwork proof with a decorated shot glass. Placement marks are schematic, not a dimensioned production template.](/images/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/artwork-placement.webp)
 
 For a wraparound design, confirm where it starts and ends, whether a gap is expected and how any joint should appear. For a two-sided design, ask for front and back views with an orientation reference. Avoid using “centered” as the only placement instruction.
 
@@ -99,11 +99,13 @@ Visual checks also do not replace relevant product documentation. Keep document 
 
 Review the individual pack, any inner pack and the master-carton specification separately. Confirm that the intended decorated face is presented correctly and that the insert fits the actual glass, including handles or other projections.
 
-![AI-generated illustration of a decorated shot glass, a packed sample and an inspection notepad. Conceptual scene, not a record of an actual inspection or transport test.](/images/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/sample-review.webp)
+![illustration of a decorated shot glass, a packed sample and an inspection notepad. Conceptual scene, not a record of an actual inspection or transport test.](/images/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist/sample-review.webp)
 
 Identify where the packaging contacts the decoration and whether glasses can touch each other. Ask for the actual packing materials and configuration to be included in the sample review. A neat sample box does not demonstrate how the bulk shipment will perform; agree any required transport validation for the final packed configuration separately.
 
 For retail labels, barcodes and broader private-label planning, use the [Private Label Glassware: Packaging, Barcodes & Retail Readiness guide](https://www.glarivoglass.com/blog/private-label-glassware-packaging-barcodes).
+
+Use the [shot glass packaging checklist](/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks) to record divider fit, gift-box contents and carton counts for the decorated sample.
 
 ## 7. Sign off a specific version and define change control
 
@@ -143,6 +145,8 @@ Start with the [shot glass collection](https://www.glarivoglass.com/products/cat
 Email the brief to **sales@glarivoglass.com** or use the website's inquiry option. Ask for a quotation that separates glass, decoration, setup, samples and packing, and identifies any exclusions. Model availability, process feasibility, minimum quantities and lead times need confirmation for the specific order.
 
 Return to [Shot Glass Sourcing](https://www.glarivoglass.com/guides/shot-glass-sourcing) to compare the broader buying decisions.
+
+Before comparing prices, use the [shot glass MOQ and quotation guide](/blog/shot-glass-moq-wholesale-quote-comparison) to separate quantities per artwork, decoration charges and packing scope.
 
 ## Frequently asked questions
 

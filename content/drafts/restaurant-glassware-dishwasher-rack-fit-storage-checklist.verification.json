@@ -1,0 +1,37 @@
+{
+  "verifiedAt": "2026-09-28T07:01:00.200Z",
+  "sourceSha256": "a6f36b9072dd88d7be58c89384a29645bacd4f863dde6e7fd77947e1e2f441b3",
+  "contentSha256": "2d20cdcda67bf01023f29cb7e7cb63550a75df5ae0b674b812fa02c79ded34e7",
+  "bodyImages": 2,
+  "totalImages": 3,
+  "validation": true,
+  "images": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/hero.webp",
+      "localUrl": "/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/hero.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 146898,
+      "sha256": "85963c604849c21851a37c483e282fbb4e020c112e7b28ac0d73fc2236f80b6e"
+    },
+    {
+      "name": "dimensions",
+      "file": "public/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/dimensions.webp",
+      "localUrl": "/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/dimensions.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 65848,
+      "sha256": "ce972ab59ab92d6dbf05b57df7eacfc28be210ddf219f1a1efc44a7c5150f3bd"
+    },
+    {
+      "name": "storage",
+      "file": "public/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/storage.webp",
+      "localUrl": "/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/storage.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 84010,
+      "sha256": "62b38506cb01895a384e6c2d9f0ba7606d1773a50533522a8933ed8bb98e5672"
+    }
+  ]
+}

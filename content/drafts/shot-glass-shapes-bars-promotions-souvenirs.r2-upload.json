@@ -1,0 +1,30 @@
+[
+  {
+    "name": "hero",
+    "file": "public/images/blog/shot-glass-shapes-bars-promotions-souvenirs/hero.webp",
+    "localUrl": "/images/blog/shot-glass-shapes-bars-promotions-souvenirs/hero.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 139774,
+    "sha256": "fbb1e913bbe9ae5da94e8202da52aab9426c05de00510c26e2170fae3950dbdd",
+    "key": "site/blog/shot-glass-shapes-bars-promotions-souvenirs/hero-fbb1e913bbe9.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-shapes-bars-promotions-souvenirs/hero-fbb1e913bbe9.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "profile-pack-check",
+    "file": "public/images/blog/shot-glass-shapes-bars-promotions-souvenirs/profile-pack-check.webp",
+    "localUrl": "/images/blog/shot-glass-shapes-bars-promotions-souvenirs/profile-pack-check.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 164860,
+    "sha256": "982076e7d8d8dd0e861c53db5383158b4df2c57f2be937c8206a4f9f1fc6489f",
+    "key": "site/blog/shot-glass-shapes-bars-promotions-souvenirs/profile-pack-check-982076e7d8d8.webp",
+    "url": "https://media.glarivoglass.com/site/blog/shot-glass-shapes-bars-promotions-souvenirs/profile-pack-check-982076e7d8d8.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  }
+]

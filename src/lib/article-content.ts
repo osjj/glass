@@ -59,16 +59,29 @@ function escapeHtml(value: string) {
 }
 
 function markdownInlineToEditorHtml(value: string) {
+  // Protect code and link destinations before applying emphasis. Underscores in
+  // source URLs (for example glass_1_en.pdf) must never become HTML tags.
+  const protectedHtml: string[] = [];
+  const protect = (fragment: string) => {
+    const index = protectedHtml.push(fragment) - 1;
+    return `\u0000${index}\u0000`;
+  };
+  const emphasis = (text: string) => text
+    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+    .replace(/__([^_]+)__/g, "<b>$1</b>")
+    .replace(/\*([^*]+)\*/g, "<i>$1</i>")
+    .replace(/_([^_]+)_/g, "<i>$1</i>");
   let html = escapeHtml(value);
+  html = html.replace(/`([^`]+)`/g, (_match, code: string) => protect(`<code>${code}</code>`));
   html = html.replace(
     /\[([^\]]+)]\(((?:https?:\/\/|\/)[^)\s]+)\)/g,
-    '<a href="$2">$1</a>',
+    (_match, label: string, href: string) => protect(`<a href="${href}">${emphasis(label)}</a>`),
   );
-  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
-  html = html.replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
-  html = html.replace(/__([^_]+)__/g, "<b>$1</b>");
-  html = html.replace(/\*([^*]+)\*/g, "<i>$1</i>");
-  html = html.replace(/_([^_]+)_/g, "<i>$1</i>");
+  html = emphasis(html);
+  // Reverse order also restores code spans nested inside a link label.
+  for (let index = protectedHtml.length - 1; index >= 0; index -= 1) {
+    html = html.replaceAll(`\u0000${index}\u0000`, protectedHtml[index]);
+  }
   return html.replaceAll("\n", "<br>");
 }
 

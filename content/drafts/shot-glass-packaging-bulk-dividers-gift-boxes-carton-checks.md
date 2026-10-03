@@ -19,15 +19,14 @@ Capacity is useful for drink service, but outside dimensions determine how the g
 
 Use an actual sample or confirmed drawing. A product photograph is useful for identifying the shape, but it should not be scaled to create an insert. If you are still resolving the volume specification, use the separate [shot glass capacity-check guide](/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels).
 
-![AI-generated illustration of short, tall and handled shot-glass profiles. Generic shapes for comparing packing footprints; not measured drawings or photographs of the linked catalog models.](/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/profiles.webp)
+![illustration of short, tall and handled shot-glass profiles. Generic shapes for comparing packing footprints; not measured drawings or photographs of the linked catalog models.](/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/profiles.webp)
 
-Three Glarivo catalog references show the questions to ask. The following listing details were checked on September 22, 2026; they are not sample measurements or a confirmed packaging offer.
+These Glarivo catalog examples show how glass shape affects the packing brief. Record the inner layout, unit protection and carton dimensions for each selected model.
 
-- **Short profile — GB073502:** the [clear shot glass](/products/wholesale-1-7oz-transparent-shot-glass) currently lists 144 pieces per carton. Request the inner layout, outside measurements with units, carton dimensions and the pack for your chosen finish.
 - **Tall decorated profile — GB070203H-TH-QT-580A:** the [souvenir-style tall shot glass](/products/personalized-shot-glasses-greece-beaches-decal-promotional-tall-shot-glasses) lists 102 mm height, 40 mm top and bottom diameters, and 144 pieces per carton. Confirm how the insert locates the glass and protects your approved decoration.
 - **Handled mini mug — GB095002:** the [mini shot mug](/products/mini-1-9oz-beer-shot-glasses-mug-with-heavy-base-for-bar) lists 72 pieces per box. Ask whether “box” means an inner pack or master carton, and confirm full width across the handle before approving a cell layout.
 
-The two listings showing 144 pieces do not establish identical carton sizes, protection or freight requirements. Likewise, “72 pieces per box” should not automatically be entered as 72 pieces per shipping carton.
+A per-box count does not define the shipping carton. Record the number of glasses per inner pack, the number of inner packs per carton and the resulting carton quantity separately.
 
 ## 2. Define the packaging layers in plain language
 
@@ -59,7 +58,7 @@ Inspect the assembled pack for these conditions:
 
 Avoid choosing universal clearance dimensions from a generic illustration. Fit depends on the glass variation, insert material, assembly and intended handling. Ask the packaging supplier to propose the dimensions and tolerances, then assess the complete sample.
 
-![AI-generated illustration of a single layer of shot glasses in individual divider cells, with a separate top pad. Packing concept only; the cell count and materials are not an approved carton specification or transit-test result.](/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/packing.webp)
+![illustration of a single layer of shot glasses in individual divider cells, with a separate top pad. Packing concept only; the cell count and materials are not an approved carton specification or transit-test result.](/images/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks/packing.webp)
 
 If the design has several layers, ask how each layer is separated and supported. Do not assume an upper layer can rest directly on lower glass rims. Approve the complete carton, not only an attractive photograph of the top layer.
 
@@ -136,6 +135,8 @@ Shortlist your models from the [Shot Glass collection](/products/category/shot-g
 - A quotation separating glass, decoration, packaging, setup charges and freight assumptions.
 
 Request the pack description and external carton data with the quotation. This lets you compare the complete order, rather than comparing a bare-glass price against a retail-ready gift set. Return to [Shot Glass Sourcing](/guides/shot-glass-sourcing) for related purchasing decisions.
+
+For a like-for-like commercial comparison, use the [shot glass MOQ and quotation checklist](/blog/shot-glass-moq-wholesale-quote-comparison) to record quantities per model, included packing and separately charged setup work.
 
 ## Frequently asked questions
 

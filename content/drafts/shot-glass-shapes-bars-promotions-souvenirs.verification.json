@@ -1,0 +1,85 @@
+{
+  "wordCount": 2160,
+  "readTimeMinutes": 10,
+  "blocks": 71,
+  "bodyImages": 1,
+  "totalImages": 2,
+  "validation": true,
+  "linkChecks": [
+    {
+      "path": "/blog/shot-glass-buying-guide-for-wholesale-buyers",
+      "status": 200
+    },
+    {
+      "path": "/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels",
+      "status": 200
+    },
+    {
+      "path": "/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist",
+      "status": 200
+    },
+    {
+      "path": "/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks",
+      "status": 200
+    },
+    {
+      "path": "/products/shot-glass-thick-bottom-tequila-shot-glass-vodka-custom-small-cup",
+      "status": 200
+    },
+    {
+      "path": "/products/personalized-shot-glasses-greece-beaches-decal-promotional-tall-shot-glasses",
+      "status": 200
+    },
+    {
+      "path": "/products/mini-1-9oz-beer-shot-glasses-mug-with-heavy-base-for-bar",
+      "status": 200
+    },
+    {
+      "path": "/products/category/shot-glass",
+      "status": 200
+    },
+    {
+      "path": "/blog/shot-glass-moq-wholesale-quote-comparison",
+      "status": 200
+    },
+    {
+      "path": "/guides/shot-glass-sourcing",
+      "status": 200
+    }
+  ],
+  "sourceSha256": "e1004caa4daffcaa28be29e714ffdbe3a8ac4b5115fbaba45ecd94e61ee4e674",
+  "contentSha256": "cd3c90dfe45ea0ed5bed185109bcbb596c5054d78ef0ac20d7f74292ffde2420",
+  "images": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/shot-glass-shapes-bars-promotions-souvenirs/hero.webp",
+      "localUrl": "/images/blog/shot-glass-shapes-bars-promotions-souvenirs/hero.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 139774,
+      "sha256": "fbb1e913bbe9ae5da94e8202da52aab9426c05de00510c26e2170fae3950dbdd"
+    },
+    {
+      "name": "profile-pack-check",
+      "file": "public/images/blog/shot-glass-shapes-bars-promotions-souvenirs/profile-pack-check.webp",
+      "localUrl": "/images/blog/shot-glass-shapes-bars-promotions-souvenirs/profile-pack-check.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 164860,
+      "sha256": "982076e7d8d8dd0e861c53db5383158b4df2c57f2be937c8206a4f9f1fc6489f"
+    }
+  ],
+  "verifiedAt": "2026-09-29T04:06:02.309Z",
+  "databaseReadbackVerified": true,
+  "publiclyEligible": 0,
+  "publicStatus": 404,
+  "preview": {
+    "desktopWidth": 1440,
+    "mobileWidth": 390,
+    "horizontalOverflow": false,
+    "h1Count": 1,
+    "loadedImages": 2,
+    "visualScope": "Standalone preview; desktop and mobile first screens inspected",
+    "consoleNote": "Only the standalone preview favicon returned 404"
+  }
+}

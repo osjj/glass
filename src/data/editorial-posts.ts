@@ -32,15 +32,16 @@ Record outside height, rim diameter, base diameter and weight alongside capacity
 
 Where measured beverage service is required, ask for a product intended for that purpose and verify the destination requirements. A printed line or a capacity in a product title does not establish that a glass is an approved measure.
 
+For a repeatable sample record, use the [shot glass capacity-check guide](/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels) to distinguish nominal size, brimful capacity and the intended fill level.
+
 ## 3. Compare cup profiles using actual products
 
 The following examples show how to read a shortlist. Their values reflect the public catalog reviewed on September 5, 2026; they are not measurements taken from samples. Use them as starting points for confirmation.
 
-- **Short, thick-base profile:** [GB073502 clear shot glass](/products/wholesale-1-7oz-transparent-shot-glass) is described in the catalog as approximately 48 mL. Its title also uses 1.7 oz; do not treat that title as an exact US-fluid-ounce conversion. Ask for the measured capacity and dimensions before fixing your serving or packing specification.
 - **Tall, decorated profile:** [GB070203H-TH-QT-580A souvenir shot glass](/products/personalized-shot-glasses-greece-beaches-decal-promotional-tall-shot-glasses) lists 65 mL capacity, 102 mm height and 40 mm top and bottom diameters. Its taller body offers a different artwork layout from the short glass. Confirm the printable area on the selected blank rather than scaling artwork from a photograph.
 - **Handled mini-mug profile:** [GB095002 mini shot mug](/products/mini-1-9oz-beer-shot-glasses-mug-with-heavy-base-for-bar) provides a handle-based alternative. Ask for the overall width including the handle and a confirmed capacity with units. The body diameter alone is not enough to design a box insert.
 
-![AI-generated illustration of a handled mini shot glass, highlighting the rim, thick base and projecting handle. Generic profile only; not a photograph of GB095002 or a measured product specification.](https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/mini-mug-v2-09db81a8a45d.webp)
+![illustration of a handled mini shot glass, highlighting the rim, thick base and projecting handle. Generic profile only; not a photograph of GB095002 or a measured product specification.](https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/mini-mug-v2-09db81a8a45d.webp)
 
 A thick base, a heavy feel or a clear appearance should not be treated as proof of impact resistance, a particular glass composition or suitability for machine washing. Confirm those properties separately for the exact finished item.
 
@@ -53,6 +54,8 @@ For custom work, distinguish three scopes: an existing undecorated model, decora
 Send a usable artwork file with the dimensions of the design, its position on the glass, the number of colors and color references. Clarify whether decoration should align with a seam, handle or opposite-side graphic. Ask for a proof showing the artwork on the selected cup profile, followed by a decorated physical sample where the finish matters.
 
 Check fine lettering, image distortion on curved surfaces, color under ordinary lighting and the location of the decoration relative to the rim. Obtain permission for any third-party artwork you provide. Do not infer that a design shown in a catalog is available for unrestricted reuse.
+
+Use the [custom logo artwork and sample approval checklist](/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist) to record the proof revision, printable area and decorated-sample findings before approval.
 
 ## 5. Confirm care instructions and supporting documents
 
@@ -71,6 +74,8 @@ Ask for a packed sample or clear photographs of each packaging layer, together w
 Compare quotations with the same currency, delivery basis, quantities per design, decoration, packaging and quality requirements. Identify sample and setup costs, shipping assumptions and any other exclusions. Ask when the lead-time clock starts: artwork approval, payment, sample approval or another agreed event.
 
 As a planning example only, 1,440 pieces packed at an agreed 144 pieces per carton would require 10 cartons. That arithmetic does not confirm the packing for a different model, a gift-box version or a later order. Use the packing specification in your final quotation.
+
+Review divider fit, gift-box scope and carton counts with the [shot glass packaging checklist](/blog/shot-glass-packaging-bulk-dividers-gift-boxes-carton-checks). Then use the [MOQ and wholesale quote comparison guide](/blog/shot-glass-moq-wholesale-quote-comparison) to separate quantities per design, included packing and one-time charges.
 
 ## 7. Approve a sample that represents the order
 
@@ -137,7 +142,7 @@ export const editorialPosts: PublicBlogPost[] = [hotelGlasswareGuide, {
   content: JSON.stringify(markdownToArticleEditorData(shotGlassGuideMarkdown)),
   coverImage: "https://media.glarivoglass.com/site/blog/shot-glass-buying-guide-for-wholesale-buyers/buying-guide-v2-50e58b459190.webp",
   coverImageFit: "contain",
-  coverImageAlt: "AI-generated illustration of a short thick-base shot glass, tall shooter and handled mini mug on a stone surface; generic profiles, not to scale.",
+  coverImageAlt: "illustration of a short thick-base shot glass, tall shooter and handled mini mug on a stone surface; generic profiles, not to scale.",
   featured: true,
   publishedAt,
   publishedLabel: "Sep 5, 2026",

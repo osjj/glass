@@ -1,5 +1,7 @@
 export type CategoryBuyingContent = {
   label: string;
+  introduction?: string;
+  models?: Array<{ sku: string; slug: string; dimensions?: string; packing?: string }>;
   seoTitle: string;
   seoDescription: string;
   useCases: string[];
@@ -321,7 +323,68 @@ const categoryBuyingContent = Object.fromEntries(
   Object.entries(categoryDefinitions).map(([slug, definition]) => [slug, buildCategoryBuyingContent(definition)]),
 ) as Record<string, CategoryBuyingContent>;
 
+Object.assign(categoryBuyingContent, {
+  "mason-jar-glasses": {
+    label: "mason jar glasses",
+    seoTitle: "Wholesale Mason Jar Glasses | Handles, Lids & Sizes",
+    seoDescription: "Browse handled mason jar glasses, sports-pattern jars and storage jars. Compare dimensions and specify lids, straws and packing for your wholesale quote.",
+    introduction: "Browse handled drinking jars, sports-pattern jars and screw-lid storage jars. Compare jar dimensions, choose your lid and straw requirements, and send the product links and quantities for a wholesale quote.",
+    useCases: ["Wholesale drinking-glass and storage-jar assortments"],
+    comparisonPoints: [
+      "For drinks, allow space for ice and check the handle clearance on a sample.",
+      "Specify the lid material, straw opening and accessories as part of the complete set.",
+      "For storage, match the jar opening and height to the contents and shelf space.",
+    ],
+    inquiryChecklist: [
+      "Product links and quantity per model",
+      "Drink volume or storage use; lid and straw requirements",
+      "Logo or pattern, packing format, destination and delivery date",
+    ],
+  },
+  "glass-tumblers": {
+    label: "glass cups and tumblers",
+    seoTitle: "Wholesale Glass Cups & Tumblers | Sizes & Packing",
+    seoDescription: "Browse wholesale glass cups for water, juice and bar service. Compare selected tumblers by capacity, rim diameter and packing, then request a quote.",
+    introduction: "Browse water and juice tumblers, highball glasses, whisky cups and decorated tea glasses. Compare cup sizes and packing, then send the product links and quantities for your wholesale quote.",
+    useCases: ["Restaurant, bar and retail glass-cup assortments"],
+    comparisonPoints: [
+      "Choose capacity around the finished drink, including ice and garnish.",
+      "Check cup height and rim diameter against trays, racks and shelf clearance.",
+      "For decorated cups, approve the artwork, finish and care instructions on a sample.",
+    ],
+    inquiryChecklist: [
+      "Product links, drink types and quantity per model",
+      "Logo, pattern or color reference",
+      "Retail box or carton requirements, destination and delivery date",
+    ],
+  },
+} satisfies Record<string, CategoryBuyingContent>);
+
 export function getCategoryBuyingContent(slug: string) {
+  if (slug === "glass-napkin-holders") return {
+    label: "soda-lime glass napkin holders",
+    seoTitle: "Wholesale Soda-Lime Glass Napkin Holders",
+    seoDescription: "Compare soda-lime glass napkin holders for restaurant and hotel tables. Browse model dimensions and carton counts, then request a wholesale quote.",
+    introduction: "Choose a glass napkin holder by its tabletop size, folded-napkin fit and refill access. These soda-lime glass models provide an upright format for restaurant and hotel tables.",
+    useCases: ["Restaurant and hotel tabletop service"],
+    comparisonPoints: [
+      "Compare the listed top size, height and base size for each model below.",
+      "Check the internal opening and depth with your folded napkin. External dimensions do not specify the space available for napkins.",
+      "Check base contact and access for refilling with a sample on the intended table.",
+    ],
+    inquiryChecklist: [
+      "Item number and quantity per model",
+      "Folded napkin width, height and thickness; number of napkins per holder",
+      "Carton quantity, individual protection, destination and delivery date",
+    ],
+    models: [
+      { sku: "GB36006JC", slug: "china-glassware-manufacture-napkin-glass-holder-for-restaurant", packing: "12 pcs/carton" },
+      { sku: "GB36004MH", slug: "292", packing: "12 pcs/carton" },
+      { sku: "GB36003YD", slug: "199", dimensions: "128 / 42 / 92 mm", packing: "12 pcs/carton" },
+      { sku: "GB36008H", slug: "35", packing: "12 pcs/carton" },
+      { sku: "GB36003TE", slug: "134", dimensions: "128 / 42 / 92 mm" },
+    ],
+  } satisfies CategoryBuyingContent;
   return categoryBuyingContent[slug] ?? null;
 }
 

@@ -5,9 +5,11 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CategoryMenu } from "@/components/site/category-menu";
 import { CategoryBuyingNotes } from "@/components/site/category-buying-notes";
+import { CategoryProcurementComparison, CategoryProcurementSelection } from "@/components/site/category-procurement-guide";
 import { ProductCard } from "@/components/site/product-card";
 import { ProductPagination } from "@/components/product-pagination";
 import { getCategoryBuyingContent } from "@/data/category-buying-content";
+import { getCategoryProcurementContent, getCategoryProductDisplay } from "@/data/category-procurement-content";
 import { getPageNumber, productPageHref } from "@/lib/product-pagination";
 import { getPublicCategoryPage, getPublicCategoryTree } from "@/lib/public-products";
 import { getClustersForCategory } from "@/data/guide-clusters";
@@ -40,6 +42,8 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
   const { category, breadcrumbs, products, pagination } = data;
   const buyingGuides = getClustersForCategory(category.slug);
   const buyingContent = getCategoryBuyingContent(category.slug);
+  const procurement = pagination.page === 1 ? getCategoryProcurementContent(category.slug, products) : null;
+  const inquiryBrief = category.slug === "mason-jar-glasses" ? "mason-jar" : category.slug === "glass-tumblers" ? "glass-cups" : undefined;
 
   return (
     <div className={styles.page}>
@@ -60,14 +64,16 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
           <h1>{category.label}</h1>
           <span className={styles.rule} aria-hidden="true" />
           <p className={styles.heroDescription}>{category.productCount} {category.productCount === 1 ? "product" : "products"}{category.children.length ? ` across ${category.children.length} subcategories` : ""}.</p>
+          {buyingContent?.introduction && pagination.page === 1 && <p className={`${styles.heroDescription} ${productStyles.procurementIntroduction}`}>{buyingContent.introduction}</p>}
         </div>
       </section>
 
       <section className={`${styles.container} ${styles.catalog}`}>
         <CategoryMenu categories={categoryTree} activeSlug={category.slug} />
         <div className={styles.catalogResults}>
-          {buyingGuides.length > 0 && <nav aria-label="Related buying guides" className={productStyles.guideLinks}><p>Need help choosing?</p><div>{buyingGuides.map((guide) => <Link key={guide.slug} href={`/guides/${guide.slug}`}>{guide.title} guide →</Link>)}</div></nav>}
-          {buyingContent ? <CategoryBuyingNotes content={buyingContent} /> : null}
+          {!procurement && buyingGuides.length > 0 && <nav aria-label="Related buying guides" className={productStyles.guideLinks}><p>Need help choosing?</p><div>{buyingGuides.map((guide) => <Link key={guide.slug} href={`/guides/${guide.slug}`}>{guide.title} guide →</Link>)}</div></nav>}
+          {procurement && <CategoryProcurementSelection content={procurement} />}
+          {!procurement && buyingContent ? <CategoryBuyingNotes content={buyingContent} brief={inquiryBrief} /> : null}
           <div id="category-products" className={`${styles.toolbar} ${productStyles.categoryProducts}`}>
             <div>
               <h2>{category.label}</h2>
@@ -78,7 +84,7 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
 
           {products.length ? (
             <div className={styles.productGrid}>
-              {products.map((product, index) => <ProductCard key={product.id} product={product} index={index} />)}
+              {products.map((product, index) => <ProductCard key={product.id} product={product} index={index} display={getCategoryProductDisplay(category.slug, product)} />)}
             </div>
           ) : (
             <div className={styles.empty}>
@@ -88,6 +94,8 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
             </div>
           )}
           <ProductPagination pagination={pagination} path={`/products/category/${category.slug}`} />
+          {procurement && <CategoryProcurementComparison content={procurement} products={products} />}
+          {procurement && buyingContent && <CategoryBuyingNotes content={buyingContent} brief={procurement.brief} />}
         </div>
       </section>
     </div>

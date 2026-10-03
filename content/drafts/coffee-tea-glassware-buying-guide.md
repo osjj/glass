@@ -38,7 +38,7 @@ The gap between the walls provides an insulating layer, but actual heat retentio
 
 Check the outside dimensions as carefully as the inner capacity: the outer shell takes up space in a rack or gift box. Ask whether the base has a vent or another closure feature, and obtain care instructions specific to that construction. Do not assume every double-wall model can be soaked, machine washed or stacked. Compare the [double-wall glass mug collection](/products/category/double-wall-glass-mug) with your equipment and handling requirements.
 
-![Single-wall and double-wall mug profiles. AI-generated illustration; proportions are not a measured size comparison or a confirmed Glarivo product specification.](https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/cup-comparison-255d319f8d86.webp)
+![Single-wall and double-wall mug profiles. illustration; proportions are not a measured size comparison or a confirmed Glarivo product specification.](https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/cup-comparison-255d319f8d86.webp)
 
 For both constructions, review the completed item, including any print, coating or metallic decoration. The care instructions for the clear glass blank may not describe the decorated version.
 
@@ -66,7 +66,7 @@ For tea service, compare the assembled product and its removable parts. Begin wi
 
 **Replacement parts:** ask whether lids, infusers and any seals can be reordered by part reference. Similar-looking components may differ in diameter, depth or seating profile. Keep the approved component list with the sample record.
 
-![A glass teapot with a separate mesh infuser and lid. AI-generated illustration; component fit and included accessories must be confirmed on the selected model.](https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/teapot-components-3fb0b1c23394.webp)
+![A glass teapot with a separate mesh infuser and lid. illustration; component fit and included accessories must be confirmed on the selected model.](https://media.glarivoglass.com/site/blog/coffee-tea-glassware-buying-guide/teapot-components-3fb0b1c23394.webp)
 
 ## 6. Confirm hot-use and cleaning instructions
 

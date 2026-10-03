@@ -1,0 +1,17 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "name": "hero",
+      "prompt": "Use case: product-mockup. Editorial blog cover for a B2B wholesale glassware guide. Warm ivory limestone tabletop, quiet cream studio wall, restrained deep navy paper cards and one plain kraft presentation box. Exactly four empty clear generic shot-glass profiles arranged left to right with clear separation: short straight-sided thick-base, tall narrow straight-sided shooter, gently tapered glass, and tiny handled mini-mug. Physically plausible intact rims, transparent walls and realistic refraction. Refined landscape 3:2 editorial product photography with generous negative space and soft natural side light. Generic concepts, not catalog products and not to scale. No people, liquid, logos, branding, text, numbers, arrows, measurements, watermark, duplicated glasses, deformed rims or extra handles; do not imply durability, certification or calibrated volume.",
+      "generatedFile": "C:/Users/osjj/.codex/generated_images/01a0eb49-2c17-7113-a53a-b1904f7d0f52/exec-9f73ee8b-b6e7-4209-b0fe-aecd959f599b.png",
+      "file": "public/images/blog/shot-glass-shapes-bars-promotions-souvenirs/hero.webp"
+    },
+    {
+      "name": "profile-pack-check",
+      "prompt": "Use case: product-mockup. In-article editorial illustration for a B2B wholesale shot-glass shape selection guide. Warm ivory tabletop with one open plain kraft sample tray containing four separate divider cells from a high three-quarter angle. Exactly three empty clear generic shot glasses in separate cells: short straight-sided thick-base, tall narrow straight-sided shooter, and tiny handled mini mug. Fourth cell empty with a blank cream card. Three plain navy silhouette cards beside the tray match the profiles without labels. Premium cream, kraft and navy editorial photography, soft studio side light. No people, liquid, text, digits, arrows, ruler marks, logos, watermark, damage or deformed glass. Generic conceptual profiles; not catalog products, measured specifications, approved packaging or proof of transit performance.",
+      "generatedFile": "C:/Users/osjj/.codex/generated_images/01a0eb49-2c17-7113-a53a-b1904f7d0f52/exec-c990a038-73a5-4eda-a90d-286f0e63381f.png",
+      "file": "public/images/blog/shot-glass-shapes-bars-promotions-souvenirs/profile-pack-check.webp"
+    }
+  ]
+}

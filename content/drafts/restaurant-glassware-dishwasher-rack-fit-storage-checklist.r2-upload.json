@@ -1,0 +1,44 @@
+[
+  {
+    "name": "hero",
+    "file": "public/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/hero.webp",
+    "localUrl": "/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/hero.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 146898,
+    "sha256": "85963c604849c21851a37c483e282fbb4e020c112e7b28ac0d73fc2236f80b6e",
+    "key": "site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/hero-85963c604849.webp",
+    "url": "https://media.glarivoglass.com/site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/hero-85963c604849.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "dimensions",
+    "file": "public/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/dimensions.webp",
+    "localUrl": "/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/dimensions.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 65848,
+    "sha256": "ce972ab59ab92d6dbf05b57df7eacfc28be210ddf219f1a1efc44a7c5150f3bd",
+    "key": "site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/dimensions-ce972ab59ab9.webp",
+    "url": "https://media.glarivoglass.com/site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/dimensions-ce972ab59ab9.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "storage",
+    "file": "public/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/storage.webp",
+    "localUrl": "/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/storage.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 84010,
+    "sha256": "62b38506cb01895a384e6c2d9f0ba7606d1773a50533522a8933ed8bb98e5672",
+    "key": "site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/storage-62b38506cb01.webp",
+    "url": "https://media.glarivoglass.com/site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/storage-62b38506cb01.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  }
+]

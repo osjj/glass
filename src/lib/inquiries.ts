@@ -19,7 +19,7 @@ export const inquirySchema = z.object({
   website: z.string().max(0, "Unable to submit this request."),
 }).refine((value) => !value.phone || !!value.countryCode, { path: ["countryCode"], message: "Choose a country code for your mobile number." });
 
-export type InquiryContext = { name: string; sku?: string | null; slug?: string; brief?: "shot-glass" };
+export type InquiryContext = { name: string; sku?: string | null; slug?: string; brief?: "shot-glass" | "mason-jar" | "glass-cups" };
 export type InquiryFormState = { error?: string; success?: boolean };
 
 export function inquiryMessage(product?: InquiryContext) {
@@ -27,6 +27,18 @@ export function inquiryMessage(product?: InquiryContext) {
   if (product.brief === "shot-glass") return [
     product.slug ? `Product: ${product.sku || product.name}` : "Shot glass sourcing inquiry",
     "Quantity:", "Destination country:", "Target capacity:", "Logo / decoration:", "Packaging:",
+  ].join("\n");
+  if (product.brief === "mason-jar") return [
+    "Mason jar wholesale inquiry",
+    "Product links / item numbers:", "Quantity per model:",
+    "Drink volume (ml) / storage use:", "Lid material / straw requirements:",
+    "Logo / pattern:", "Packing:", "Destination country:", "Required delivery date:",
+  ].join("\n");
+  if (product.brief === "glass-cups") return [
+    "Glass cup wholesale inquiry",
+    "Product links / item numbers:", "Quantity per model:",
+    "Drink types / target capacity (ml):", "Logo / pattern / color:",
+    "Packing:", "Destination country:", "Required delivery date:",
   ].join("\n");
   return `I am interested in ${product.name}${product.sku ? ` (Item No. ${product.sku})` : ""}. Quantity: `;
 }

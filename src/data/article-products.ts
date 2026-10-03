@@ -37,22 +37,12 @@ export const articleProductSelections: Record<string, Array<{
 }>> = {
   [shotGlassArticleSlug]: [
     {
-      slug: "wholesale-1-7oz-transparent-shot-glass",
-      label: "Short, clear profile",
-      buyingNote: "Compare the rim, base and usable fill on a sample. Confirm the capacity convention and dimensions before choosing the pack.",
-    },
-    {
       slug: "personalized-shot-glasses-greece-beaches-decal-promotional-tall-shot-glasses",
       label: "Tall, decorated profile",
       buyingNote: "Compare artwork space and shelf height. Confirm your design, print area and protective packaging on a decorated sample.",
     },
   ],
   [shotGlassCapacityArticleSlug]: [
-    {
-      slug: "wholesale-1-7oz-transparent-shot-glass",
-      label: "Short, clear profile",
-      buyingNote: "Ask for capacity in mL and the brimful measurement method. Check your intended fill and measure the remaining space below the rim on the sample.",
-    },
     {
       slug: "personalized-shot-glasses-greece-beaches-decal-promotional-tall-shot-glasses",
       label: "Tall, decorated profile",

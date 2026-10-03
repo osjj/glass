@@ -1,6 +1,20 @@
-# Shot Glass Capacity: How to Check mL, fl oz & Fill Levels
+# Shot Glass Capacity: Brimful vs Fill Volume in mL & fl oz
 
-A shot glass described as “2 oz” does not, by itself, tell you how much liquid a sample holds or where your intended pour will sit. Before approving a wholesale order, confirm the unit, the capacity convention and the measurement method for the selected glass.
+Shot glass capacity describes a volume, but the fill endpoint determines the result. Brimful capacity is measured at the rim; intended fill volume is the amount poured for use. Keep both values separate from the nominal size in a product name.
+
+- **Nominal size:** The size stated in the product name or catalog; it is not a sample measurement.
+- **Brimful capacity:** The volume held when liquid reaches the agreed rim-level endpoint.
+- **Intended fill volume:** The amount poured for the planned use, measured separately from brimful capacity.
+
+**mL and fl oz:** 1 US fl oz is approximately 29.57 mL; 1 Imperial fl oz is approximately 28.41 mL. State the unit system before comparing capacities.
+
+## How to measure shot glass capacity
+
+1. Set the glass on a level surface and define the brimful endpoint. Use the same endpoint for every sample.
+2. Dry the glass and record its empty mass on a balance suitable for the agreed measurement limits.
+3. Fill with water to the endpoint, record the water temperature and weigh the filled glass.
+4. Subtract the empty mass. Divide the net water mass in grams by water density in g/mL at the recorded temperature to obtain volume in mL.
+5. Repeat for the intended fill level. Record each sample result in mL and specify US or Imperial units when reporting fl oz.
 
 This checklist helps buyers turn a catalog description into a documented sample check. Use it alongside the [Shot Glass Buying Guide for Wholesale Buyers](https://www.glarivoglass.com/blog/shot-glass-buying-guide-for-wholesale-buyers) when comparing products, decoration and packing.
 
@@ -21,7 +35,7 @@ This checklist helps buyers turn a catalog description into a documented sample 
 
 **Intended fill volume** is the amount you plan to put in the glass for the application. It may leave space below the rim. Confirm that volume with the actual sample, then assess how the filled glass looks and handles in your service or retail setting.
 
-![AI-generated schematic comparing brimful and intended fill levels in two matching generic shot glasses. Conceptual only; no measured capacity is shown.](/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/fill-levels.webp)
+![schematic comparing brimful and intended fill levels in two matching generic shot glasses. Conceptual only; no measured capacity is shown.](/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/fill-levels.webp)
 
 Keep **unused volume in mL** separate from **vertical headspace in mm**. Subtracting intended fill from measured brimful capacity gives a volume difference. It does not give the distance from the liquid surface to the rim. Measure that distance separately, particularly on a tapered glass; half the internal height need not mean half the volume.
 
@@ -51,7 +65,7 @@ For a simplified gravimetric screening check, weigh the dry empty glass, fill it
 
 [NIST's volumetric calibration procedures](https://nvlpubs.nist.gov/nistpubs/ir/2019/NIST.IR.7383-2019.pdf) describe the more rigorous controls and corrections needed for calibration, including temperature and buoyancy effects. A buyer's simplified screening check does not replace that process. For tight acceptance limits, agree a validated method and its measurement uncertainty with the supplier or a suitable laboratory.
 
-![AI-generated illustration of a generic shot glass on a balance beside a blank record book. The blank display represents no actual measurement or calibration result.](/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/sample-check.webp)
+![illustration of a generic shot glass on a balance beside a blank record book. The blank display represents no actual measurement or calibration result.](/images/blog/shot-glass-capacity-check-ml-fl-oz-fill-levels/sample-check.webp)
 
 ## 4. Check the rim endpoint and intended fill separately
 

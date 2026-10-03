@@ -1,0 +1,6 @@
+.definitionTable { width: 100%; margin-block: 24px; border-collapse: collapse; font-size: 16px; line-height: 1.7; }
+.definitionTable caption { margin-bottom: 12px; text-align: left; font-weight: 700; color: #071d32; }
+.definitionTable th, .definitionTable td { padding: 12px; border: 1px solid #d8cebe; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.definitionTable thead th { background: #efebe4; }
+.definitionTable tbody th { width: 30%; color: #071d32; }
+@media (max-width: 767px) { .definitionTable { font-size: 14px; } .definitionTable th, .definitionTable td { padding: 9px; } }

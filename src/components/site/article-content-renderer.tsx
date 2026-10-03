@@ -6,6 +6,7 @@ import {
   sanitizeArticleInlineHtml,
 } from "@/lib/article-content-server";
 import { isSafeArticleImageUrl, type ArticleListItem } from "@/lib/article-content";
+import tableStyles from "./article-tables.module.css";
 
 export function headingId(value: string, index: number) {
   const base = plainTextFromEditorHtml(value)
@@ -76,6 +77,17 @@ export function RichContentRenderer({
 
     if (block.type === "list") {
       const items = (block.data.items as ArticleListItem[]) || [];
+      if (block.id === "capacity-definitions-20261003") {
+        return <table key={key} className={tableStyles.definitionTable}>
+          <caption>Shot glass capacity definitions</caption>
+          <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th></tr></thead>
+          <tbody>{items.map((item, row) => {
+            const text = plainTextFromEditorHtml(typeof item === "string" ? item : item.content);
+            const separator = text.indexOf(":");
+            return <tr key={row}><th scope="row">{text.slice(0, separator)}</th><td>{text.slice(separator + 1).trim()}</td></tr>;
+          })}</tbody>
+        </table>;
+      }
       return block.data.style === "ordered" ? (
         <ol key={key}>{listItems(items, true)}</ol>
       ) : (
