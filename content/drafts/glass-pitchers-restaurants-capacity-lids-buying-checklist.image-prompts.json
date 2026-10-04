@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "transparent_background": false,
+  "generatedAt": "2026-10-04",
+  "prompts": [
+    {
+      "name": "hero",
+      "prompt": "Use case: photorealistic-natural. Asset type: editorial cover for an English B2B blog about choosing glass water pitchers for restaurant table service. Create one landscape 1536x1024 image. Scene: a quiet contemporary restaurant table in soft daylight, warm neutral oak and pale linen, blurred dining room. Subject: one generic unbranded clear glass water pitcher with an integral glass handle and a clean open pouring lip, partly filled with room-temperature water, beside three plain water tumblers and folded linen. Physically plausible glass thickness, reflections, refraction and liquid level; no boiling water, steam, heat source, measuring marks, logos or exact-model claims. Composition: pitcher and tumblers clearly visible, restrained editorial photography, natural texture, not a collage, no people or hands, no text or watermark. This is a conceptual illustration, not a photograph of a Glarivo catalog SKU."
+    },
+    {
+      "name": "sample-check",
+      "prompt": "Use case: photorealistic-natural. Asset type: inline editorial illustration for an English restaurant glass pitcher procurement article. Create one landscape 1536x1024 image. Scene: a clean hospitality purchasing sample bench in warm daylight. Subject: two generic unbranded clear glass water pitchers with realistic integral handles and pouring spouts, one plain open-top and one with a simple removable lid, a small stainless steel ruler lying flat beside them and a plain translucent measuring jug in the background. One pitcher partly filled with room-temperature water; no pouring action and no people. Compose an understated natural editorial photograph that suggests comparing overall height, handle projection, opening and fill volume. Physically plausible glass, reflections, and horizontal liquid surfaces. Measuring jug has no readable calibration, ruler has no legible numeric scale; do not depict measurements or model-specific dimensions. Pale neutral worktop, subtle texture, clear subjects, no text, logos, badges, check marks, arrows, heat or steam, no collage or watermark. These are conceptual generic shapes, not Glarivo product photographs or proof of completed sample testing."
+    },
+    {
+      "name": "packing-check",
+      "prompt": "Use case: photorealistic-natural. Asset type: inline editorial illustration for a glass pitcher wholesale buyer's packing checklist. Create one landscape 1536x1024 image. Scene: clean packing inspection bench, warm neutral background and soft natural daylight. Subject: a generic clear glass water pitcher with integral handle and modest pouring lip standing beside an open unbranded corrugated carton with broad individual full-height cells sized to accommodate both pitcher body and protruding handle. Show only two packed glass pitchers in spacious separate cells, their mouths and handles partly visible, with plain protective paper cushioning preventing glass-to-glass contact. The free-standing pitcher and packing components are fully legible. A plain removable lid rests separately in its own paper-wrapped small compartment. Physically plausible carton geometry, enough space for handles, no crushed boxes, no broken glass, no stacked pitchers, no people. Restrained professional editorial photography, no labels, numbers, logos, text, watermark, seals, claims or diagrams. These are conceptual packing examples, not actual Glarivo product photographs or evidence of transit testing."
+    }
+  ]
+}

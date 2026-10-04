@@ -1,0 +1,155 @@
+{
+  "verifiedAt": "2026-10-04T06:05:53.791Z",
+  "sourceSha256": "9d832eebb2785fd435e87cf7360b07568bd576d6dc5067a9f5479df00dd122f1",
+  "contentSha256": "c87074f4e5bd616008942cdb28ec7592559e1acebaf5453540b079848b6d050e",
+  "bodyImages": 2,
+  "totalImages": 3,
+  "validation": true,
+  "wordCount": 882,
+  "blocks": 37,
+  "images": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/hero.webp",
+      "localUrl": "/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/hero.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 163984,
+      "sha256": "03f20dd5662e816d938c1479782395614bc8a05aee311dafceae4aee05f5184c"
+    },
+    {
+      "name": "sample-check",
+      "file": "public/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/sample-check.webp",
+      "localUrl": "/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/sample-check.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 129570,
+      "sha256": "de806a178745b9df533caedd5997960d05c839c0c431a22a8d0fc6bc1f7740fb"
+    },
+    {
+      "name": "packing-check",
+      "file": "public/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/packing-check.webp",
+      "localUrl": "/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/packing-check.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 151300,
+      "sha256": "47caa8d8559986123914fad334eeb217e72e954d0b1bd6d0e77c0398353a6d19"
+    }
+  ],
+  "cms": {
+    "id": "cmutc6t0i0000ykumhsuulyh8",
+    "title": "Glass Pitchers for Restaurants: Capacity, Lids & Buying Checklist",
+    "slug": "glass-pitchers-restaurants-capacity-lids-buying-checklist",
+    "status": "DRAFT",
+    "featured": false,
+    "publishedAt": null,
+    "publiclyEligible": 0,
+    "bodyImages": 2,
+    "totalImages": 3,
+    "contentSha256": "9e05d461dc13198b1aa9e868fde47571f3186ce1a26134dfab454d20699c1698",
+    "adminUrl": "https://www.glarivoglass.com/admin/blog/cmutc6t0i0000ykumhsuulyh8",
+    "verifiedAt": "2026-10-04T06:05:58.189Z",
+    "copyReview": {
+      "wordCount": 882,
+      "excerpt": "Choose a restaurant water pitcher by fill volume, shelf space, lid fit and packing. Compare three Glarivo models and prepare your wholesale inquiry.",
+      "readTimeMinutes": 5,
+      "sourceSha256": "9d832eebb2785fd435e87cf7360b07568bd576d6dc5067a9f5479df00dd122f1"
+    }
+  },
+  "publicChecks": [
+    {
+      "name": "article",
+      "url": "https://www.glarivoglass.com/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist",
+      "file": "output/pitcher-guide-20261004/public-article.html",
+      "status": 404,
+      "contentType": "text/html; charset=utf-8",
+      "finalUrl": "https://www.glarivoglass.com/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist"
+    },
+    {
+      "name": "sitemap",
+      "url": "https://www.glarivoglass.com/sitemap.xml",
+      "file": "output/pitcher-guide-20261004/sitemap.xml",
+      "status": 200,
+      "contentType": "application/xml",
+      "finalUrl": "https://www.glarivoglass.com/sitemap.xml"
+    }
+  ],
+  "sitemapExcluded": true,
+  "linkChecks": [
+    {
+      "path": "/products/category/glass-pitchers",
+      "url": "https://www.glarivoglass.com/products/category/glass-pitchers",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/products/category/glass-pitchers"
+    },
+    {
+      "path": "/products/category/glass-tumblers",
+      "url": "https://www.glarivoglass.com/products/category/glass-tumblers",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/products/category/glass-tumblers"
+    },
+    {
+      "path": "/products/1-2l-engraved-glass-pitcher-glass-jug-glass-carafe",
+      "url": "https://www.glarivoglass.com/products/1-2l-engraved-glass-pitcher-glass-jug-glass-carafe",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/products/1-2l-engraved-glass-pitcher-glass-jug-glass-carafe"
+    },
+    {
+      "path": "/products/1350ml-glass-water-dispenser-in-bulk-pack",
+      "url": "https://www.glarivoglass.com/products/1350ml-glass-water-dispenser-in-bulk-pack",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/products/1350ml-glass-water-dispenser-in-bulk-pack"
+    },
+    {
+      "path": "/products/1300ml-ion-plating-jug-innovative-design-meets-market-demand",
+      "url": "https://www.glarivoglass.com/products/1300ml-ion-plating-jug-innovative-design-meets-market-demand",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/products/1300ml-ion-plating-jug-innovative-design-meets-market-demand"
+    },
+    {
+      "path": "/blog/glassware-spec-sheet-guide-wholesale",
+      "url": "https://www.glarivoglass.com/blog/glassware-spec-sheet-guide-wholesale",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/blog/glassware-spec-sheet-guide-wholesale"
+    },
+    {
+      "path": "/guides/restaurant-bar-glassware",
+      "url": "https://www.glarivoglass.com/guides/restaurant-bar-glassware",
+      "status": 200,
+      "finalUrl": "https://www.glarivoglass.com/guides/restaurant-bar-glassware"
+    }
+  ],
+  "visualQA": {
+    "surface": "standalone draft preview",
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "imagesLoaded": 3
+    },
+    "desktop": {
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "imagesLoaded": 3
+    },
+    "screenshots": [
+      "output/playwright/pitcher-guide-20261004-mobile-top.png",
+      "output/playwright/pitcher-guide-20261004-mobile.png",
+      "output/playwright/pitcher-guide-20261004-mobile-comparison.png",
+      "output/playwright/pitcher-guide-20261004-desktop-top.png"
+    ]
+  },
+  "copyReviewAudit": {
+    "checkedAt": "2026-10-04T06:08:03.1508106Z",
+    "beforeWordCount": 1274,
+    "afterWordCount": 882,
+    "imageDisclosureCount": 1,
+    "mobileWidth": 390,
+    "mobileScrollWidth": 390,
+    "imagesLoaded": 3,
+    "previewScreenshot": "output/playwright/pitcher-guide-20261004-copy-review-mobile.png",
+    "cmsContentHash": "9e05d461dc13198b1aa9e868fde47571f3186ce1a26134dfab454d20699c1698",
+    "status": "DRAFT"
+  }
+}

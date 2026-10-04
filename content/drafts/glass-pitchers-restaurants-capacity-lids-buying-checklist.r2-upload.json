@@ -1,0 +1,44 @@
+[
+  {
+    "name": "hero",
+    "file": "public/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/hero.webp",
+    "localUrl": "/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/hero.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 163984,
+    "sha256": "03f20dd5662e816d938c1479782395614bc8a05aee311dafceae4aee05f5184c",
+    "key": "site/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/hero-03f20dd5662e.webp",
+    "url": "https://media.glarivoglass.com/site/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/hero-03f20dd5662e.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "sample-check",
+    "file": "public/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/sample-check.webp",
+    "localUrl": "/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/sample-check.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 129570,
+    "sha256": "de806a178745b9df533caedd5997960d05c839c0c431a22a8d0fc6bc1f7740fb",
+    "key": "site/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/sample-check-de806a178745.webp",
+    "url": "https://media.glarivoglass.com/site/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/sample-check-de806a178745.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  },
+  {
+    "name": "packing-check",
+    "file": "public/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/packing-check.webp",
+    "localUrl": "/images/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/packing-check.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 151300,
+    "sha256": "47caa8d8559986123914fad334eeb217e72e954d0b1bd6d0e77c0398353a6d19",
+    "key": "site/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/packing-check-47caa8d85599.webp",
+    "url": "https://media.glarivoglass.com/site/blog/glass-pitchers-restaurants-capacity-lids-buying-checklist/packing-check-47caa8d85599.webp",
+    "signedReadbackVerified": true,
+    "publicStatus": 200,
+    "publicHashVerified": true
+  }
+]
