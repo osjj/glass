@@ -4,6 +4,16 @@ A glass can suit the drinks menu and still be awkward to wash, carry or store. B
 
 Start with the [Restaurant & Bar Glassware guide](/guides/restaurant-bar-glassware) for the wider buying brief. This checklist focuses on equipment fit and sample records. Fitting inside a rack does not establish that the glass or its decoration is suitable for commercial dishwashing; confirm those use conditions separately for the exact finished item.
 
+## A quick check before shortlisting
+
+1. Identify the machine, rack model and any fitted extenders.
+2. Record the glass's overall height and largest outside width, including handles.
+3. Compare those dimensions with the limits for that exact rack configuration.
+4. Check insertion, removal, contact points and the loaded rack's route to storage with samples.
+5. Keep dimensional fit and finished-item washing instructions as separate approvals.
+
+Use this sequence to prepare a sample review. It is not a list of tested glass-and-rack combinations.
+
 ## 1. Record the equipment you already use
 
 Ask the operating team for the dishwasher make and model, the rack reference, its compartment arrangement and any fitted extenders. Record the available opening and handling clearances from the equipment documentation. A description such as “standard rack” is not specific enough to approve a purchase.
@@ -47,6 +57,8 @@ Do not assume that glasses can be nested or stacked because their shapes look co
 
 ## 6. Keep a short approval record
 
+Download the [glass-and-rack fit record (Excel)](https://media.glarivoglass.com/site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/glass-and-rack-fit-record-5447dbb24927.xlsx). Record sample dimensions and equipment limits in Dimensions, then keep fit and washing decisions separate in Trial & approval.
+
 Use one record for each glass-and-equipment combination:
 
 - **Glass:** product reference, finish, sample identifier and drawing revision.
@@ -58,7 +70,7 @@ Use one record for each glass-and-equipment combination:
 - **Storage:** shelf or trolley reference, arrangement and any confirmed stacking limits.
 - **Decision:** approved for the documented use, revision required, or information still needed.
 
-Keep unknown fields marked “not confirmed.” Link the record to the retained sample so that a future change in dimensions, decoration or rack configuration can trigger a fresh review.
+Keep blank fields open until the responsible reviewer supplies the information. Link the record to the retained sample so that a future change in dimensions, decoration or rack configuration can trigger a fresh review. For a chain operating different machines or rack models, keep one record for each configuration; the [coffee-chain rollout guide](/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders) explains how to carry store trial records into allocations and repeat orders.
 
 ## 7. Request a shortlist that matches the service setup
 
@@ -80,6 +92,6 @@ No. Dimensional fit and washing suitability are separate approvals. Obtain guida
 
 Possibly, but check each profile. Height, bowl width, base and handles can differ even when the listed volumes are similar.
 
-### Should I publish a fixed clearance rule for every glass?
+### How much clearance does a glass need inside the rack?
 
 Use the specified rack limits, the actual glass dimensions and the approved sample arrangement. A generic clearance number cannot replace that information.

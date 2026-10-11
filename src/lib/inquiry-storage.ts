@@ -2,18 +2,23 @@ import { prisma } from "@/lib/prisma";
 import { inquirySchema } from "@/lib/inquiries";
 import type { z } from "zod";
 import { isArticleProduct } from "@/data/article-products";
+import type { InquiryEmailRecord } from "@/lib/inquiry-email";
 
-export async function storeInquiry(input: z.infer<typeof inquirySchema>) {
+type StoreInquiryResult =
+  | { status: "accepted"; notification: InquiryEmailRecord | null }
+  | { status: "invalid-product" | "limited" | "conflict" };
+
+export async function storeInquiry(input: z.infer<typeof inquirySchema>): Promise<StoreInquiryResult> {
   const { website: _website, productSlug, ...data } = input;
   void _website;
   // Look up product facts on the server; never trust customer-supplied names/SKUs.
   const pageSlug = /^\/products\/([^/]+)$/.exec(data.sourcePath)?.[1];
-  if (productSlug && productSlug !== pageSlug && !isArticleProduct(data.sourcePath, productSlug)) return "invalid-product";
+  if (productSlug && productSlug !== pageSlug && !isArticleProduct(data.sourcePath, productSlug)) return { status: "invalid-product" };
   const slug = productSlug || pageSlug;
   const product = slug ? await prisma.product.findFirst({
     where: { slug, status: "PUBLISHED" }, select: { name: true, sku: true },
   }) : null;
-  if (productSlug && !product) return "invalid-product";
+  if (productSlug && !product) return { status: "invalid-product" };
 
   return prisma.$transaction(async (tx) => {
     // Database locks and rate checks work across multiple app workers.
@@ -22,11 +27,11 @@ export async function storeInquiry(input: z.infer<typeof inquirySchema>) {
     if (existing) {
       const sameProduct = !productSlug || (existing.productSku === product?.sku && existing.productName === product?.name);
       const matches = sameProduct && Object.entries(data).every(([key, value]) => existing[key as keyof typeof existing] === value);
-      return matches ? "accepted" : "conflict";
+      return matches ? { status: "accepted", notification: null } : { status: "conflict" };
     }
     const recent = await tx.inquiry.count({ where: { email: data.email, createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) } } });
-    if (recent >= 5) return "limited";
-    await tx.inquiry.create({ data: { ...data, productName: product?.name, productSku: product?.sku } });
-    return "accepted";
+    if (recent >= 5) return { status: "limited" };
+    const record = await tx.inquiry.create({ data: { ...data, productName: product?.name, productSku: product?.sku } });
+    return { status: "accepted", notification: record };
   }, { maxWait: 10000, timeout: 15000 });
 }

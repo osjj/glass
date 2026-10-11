@@ -20,6 +20,33 @@
       }
     },
     {
+      "id": "rack-quick-check-20261010",
+      "type": "header",
+      "data": {
+        "text": "A quick check before shortlisting",
+        "level": 2
+      }
+    },
+    {
+      "type": "list",
+      "data": {
+        "style": "ordered",
+        "items": [
+          "Identify the machine, rack model and any fitted extenders.",
+          "Record the glass’s overall height and largest outside width, including handles.",
+          "Compare those dimensions with the limits for that exact rack configuration.",
+          "Check insertion, removal, contact points and the loaded rack’s route to storage with samples.",
+          "Keep dimensional fit and finished-item washing instructions as separate approvals."
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Use this sequence to prepare a sample review. It is not a list of tested glass-and-rack combinations."
+      }
+    },
+    {
       "type": "header",
       "data": {
         "text": "1. Record the equipment you already use",
@@ -75,7 +102,7 @@
       "type": "image",
       "data": {
         "file": {
-          "url": "/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/dimensions.webp"
+          "url": "https://media.glarivoglass.com/site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/dimensions-ce972ab59ab9.webp"
         },
         "caption": "AI-generated dimensional illustration: check overall height, maximum outside diameter and width including the handle. No measured product specifications are shown.",
         "withBorder": false,
@@ -156,7 +183,7 @@
       "type": "image",
       "data": {
         "file": {
-          "url": "/images/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/storage.webp"
+          "url": "https://media.glarivoglass.com/site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/storage-62b38506cb01.webp"
         },
         "caption": "AI-generated storage-planning illustration: review shelf height, trolley access and the documented arrangement. This is not an approved storage layout or product test.",
         "withBorder": false,
@@ -169,6 +196,12 @@
       "data": {
         "text": "6. Keep a short approval record",
         "level": 2
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Download the <a href=\"https://media.glarivoglass.com/site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/glass-and-rack-fit-record-5447dbb24927.xlsx\">glass-and-rack fit record (Excel)</a>. Record sample dimensions and equipment limits in Dimensions, then keep fit and washing decisions separate in Trial &amp; approval."
       }
     },
     {
@@ -196,7 +229,7 @@
     {
       "type": "paragraph",
       "data": {
-        "text": "Keep unknown fields marked “not confirmed.” Link the record to the retained sample so that a future change in dimensions, decoration or rack configuration can trigger a fresh review."
+        "text": "Keep blank fields open until the responsible reviewer supplies the information. Link the record to the retained sample so that a future change in dimensions, decoration or rack configuration can trigger a fresh review. For a chain operating different machines or rack models, keep one record for each configuration; the <a href=\"/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders\">coffee-chain rollout guide</a> explains how to carry store trial records into allocations and repeat orders."
       }
     },
     {
@@ -267,7 +300,7 @@
     {
       "type": "header",
       "data": {
-        "text": "Should I publish a fixed clearance rule for every glass?",
+        "text": "How much clearance does a glass need inside the rack?",
         "level": 3
       }
     },

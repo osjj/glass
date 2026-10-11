@@ -1,0 +1,73 @@
+{
+  "sourceSha256": "6aa85cf5e01c1f5697b3a04a11bc03d13b00eed1f1dc723741750bfb0ab79fd3",
+  "contentSha256": "f5d0000c90f62bf851d37816cec9772c31f2df64fbf68ec07f8c5cc462872ca9",
+  "wordCount": 1230,
+  "status": "DRAFT",
+  "publiclyEligible": 0,
+  "assets": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/hero.webp",
+      "localUrl": "/images/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/hero.webp",
+      "sha256": "5e06b088a08e04d4b00c39270245609e5ad2213c9aaf68025a97986adf181137",
+      "bytes": 136154,
+      "width": 1536,
+      "height": 1024,
+      "contentType": "image/webp",
+      "key": "site/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/hero-5e06b088a08e.webp",
+      "url": "https://media.glarivoglass.com/site/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/hero-5e06b088a08e.webp",
+      "storageHashMatches": true,
+      "publicHashMatches": true
+    },
+    {
+      "name": "components",
+      "file": "public/images/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/components.webp",
+      "localUrl": "/images/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/components.webp",
+      "sha256": "ccec7e85413028323bda76659f7a3d62836c22e8b17d3fdce097ab4e9e9cb713",
+      "bytes": 152874,
+      "width": 1536,
+      "height": 1024,
+      "contentType": "image/webp",
+      "key": "site/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/components-ccec7e854130.webp",
+      "url": "https://media.glarivoglass.com/site/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/components-ccec7e854130.webp",
+      "storageHashMatches": true,
+      "publicHashMatches": true
+    }
+  ],
+  "generatedImagesMethod": "built-in imagegen",
+  "mobileWidth": 390,
+  "desktopWidth": 1440,
+  "layoutScreenshots": [
+    "output/content-improvements-20261011/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes-390.png",
+    "output/content-improvements-20261011/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes-1440.png"
+  ],
+  "createdAt": "2026-10-10T15:49:44.386Z",
+  "publishedAt": null,
+  "validation": true,
+  "verifiedAt": "2026-10-10T16:07:29.927Z",
+  "adminUrl": "https://www.glarivoglass.com/admin/blog/cmv2khpzw0003u4umb5jdflop",
+  "publicVerificationFile": "output/content-update-20261010/public-verification.json",
+  "id": "cmv2khpzw0003u4umb5jdflop",
+  "slug": "whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes",
+  "featured": false,
+  "downloads": [
+    {
+      "name": "whiskey-decanter-set-checklist.xlsx",
+      "file": "D:\\glarivo\\outputs\\01a12672-6ad6-7632-9f6a-e4245ba29f3b\\whiskey-decanter-set-checklist.xlsx",
+      "bytes": 7531,
+      "sha256": "de79786115cb929631a8de79d4551355bd16166ddcb7232af8e4e5aa363ae2e1",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sheets": [
+        "Components",
+        "Packing & quote"
+      ],
+      "slug": "whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes",
+      "key": "site/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/whiskey-decanter-set-checklist-de79786115cb.xlsx",
+      "url": "https://media.glarivoglass.com/site/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/whiskey-decanter-set-checklist-de79786115cb.xlsx",
+      "localPath": "public/files/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes/whiskey-decanter-set-checklist.xlsx",
+      "verifiedAt": "2026-10-10T16:07:17.112Z"
+    }
+  ],
+  "browserDownloadsVerified": true,
+  "layoutVerifiedAt": "2026-10-10T16:13:21.400Z"
+}

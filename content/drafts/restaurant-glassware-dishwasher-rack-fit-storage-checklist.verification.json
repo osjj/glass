@@ -1,7 +1,7 @@
 {
-  "verifiedAt": "2026-09-28T07:01:00.200Z",
-  "sourceSha256": "a6f36b9072dd88d7be58c89384a29645bacd4f863dde6e7fd77947e1e2f441b3",
-  "contentSha256": "2d20cdcda67bf01023f29cb7e7cb63550a75df5ae0b674b812fa02c79ded34e7",
+  "verifiedAt": "2026-10-10T16:07:29.922Z",
+  "sourceSha256": "6c742bc6389fb838c7206e7552d76a47f11ab31d3dc9fb3719b1057fd1a3c883",
+  "contentSha256": "4c6e9a5f0902a159d8bad59e147e7a2f0f0790f0830f4f4e832b9e1537fa9ad4",
   "bodyImages": 2,
   "totalImages": 3,
   "validation": true,
@@ -33,5 +33,38 @@
       "bytes": 84010,
       "sha256": "62b38506cb01895a384e6c2d9f0ba7606d1773a50533522a8933ed8bb98e5672"
     }
-  ]
+  ],
+  "status": "DRAFT",
+  "publishedAt": null,
+  "publiclyEligible": 0,
+  "adminUrl": "https://www.glarivoglass.com/admin/blog/cmukwgcbp0000v4umyo94wyls",
+  "publicVerificationFile": "output/content-update-20261010/public-verification.json",
+  "layoutScreenshots": [
+    "output/content-improvements-20261011/restaurant-glassware-dishwasher-rack-fit-storage-checklist-390.png",
+    "output/content-improvements-20261011/restaurant-glassware-dishwasher-rack-fit-storage-checklist-1440.png"
+  ],
+  "id": "cmukwgcbp0000v4umyo94wyls",
+  "slug": "restaurant-glassware-dishwasher-rack-fit-storage-checklist",
+  "featured": false,
+  "wordCount": 1215,
+  "downloads": [
+    {
+      "name": "glass-and-rack-fit-record.xlsx",
+      "file": "D:\\glarivo\\outputs\\01a12672-6ad6-7632-9f6a-e4245ba29f3b\\glass-and-rack-fit-record.xlsx",
+      "bytes": 7140,
+      "sha256": "5447dbb2492706bee81e5c95397fe5e4b24e3ee37c16fae023fd477a55aefcb0",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sheets": [
+        "Dimensions",
+        "Trial & approval"
+      ],
+      "slug": "restaurant-glassware-dishwasher-rack-fit-storage-checklist",
+      "key": "site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/glass-and-rack-fit-record-5447dbb24927.xlsx",
+      "url": "https://media.glarivoglass.com/site/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/glass-and-rack-fit-record-5447dbb24927.xlsx",
+      "localPath": "public/files/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist/glass-and-rack-fit-record.xlsx",
+      "verifiedAt": "2026-10-10T16:07:22.606Z"
+    }
+  ],
+  "browserDownloadsVerified": true,
+  "layoutVerifiedAt": "2026-10-10T16:13:21.400Z"
 }

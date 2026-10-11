@@ -1,0 +1,13 @@
+{
+  "mode": "built-in image_gen",
+  "generatedAt": "2026-10-06",
+  "assets": [
+    {
+      "name": "hero",
+      "purpose": "Editorial illustration, not a real project or catalog product photograph",
+      "prompt": "Use case: photorealistic-natural\nAsset type: wide editorial cover for a B2B glassware procurement article, Custom Glassware for Coffee Chains: Store Trials, Rollouts & Reorders.\nPrimary request: a realistic editorial still life on a cafe operations workbench showing a small shortlisted collection of clear glass coffee cups and a careful procurement review.\nScene: a quiet modern cafe before opening, warm natural daylight, neutral stone counter, understated walnut accents, blurred espresso machine in background.\nSubject: three different generic clear glass coffee vessels, one latte glass, one cold brew tumbler, one handled mug, all separated and standing upright. To one side a modest open corrugated carton with divider cells and a clipboard showing a simple blank grid with no legible writing. Empty glasses so their shapes are visible. A single pencil beside the clipboard.\nComposition: wide landscape 3:2, camera at counter level slightly elevated; clear focal group, restrained professional composition; physically plausible glass rims, handles, reflections and carton.\nConstraints: generic illustrative scene, do not portray the Dawn Coffee project or any real Glarivo product. No people, brand logos, product model labels, text, numerals, dimensions, badges or watermarks. No implied test result or certified feature. Do not stack glasses or add glass straws. Natural materials and soft editorial lighting, no exaggerated advertising effects.",
+      "original": "C:/Users/osjj/.codex/generated_images/01a10f8f-4e42-7582-b867-e3d3e844ed3b/exec-e7ad18ed-a0c3-41cc-9673-8b565694777d.png",
+      "output": "public/images/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero.webp"
+    }
+  ]
+}

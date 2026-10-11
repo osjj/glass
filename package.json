@@ -22,6 +22,8 @@
     "catalog:sunwin:categories": "tsx scripts/sync-sunwin-categories.ts",
     "catalog:sunwin:check": "tsx scripts/check-sunwin-catalog.ts",
     "test:catalog": "tsx --test tests/sunwin.test.ts",
+    "test:inquiry-email": "tsx --test src/lib/inquiries.test.ts src/lib/inquiry-email.test.ts",
+    "mail:verify": "tsx scripts/verify-inquiry-smtp.ts",
     "r2:smoke": "tsx scripts/r2-smoke-test.ts"
   },
   "dependencies": {
@@ -42,6 +44,7 @@
     "jose": "^6.1.0",
     "lucide-react": "^0.562.0",
     "next": "^16.3.3",
+    "nodemailer": "^10.0.16",
     "pg": "^8.16.3",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -52,6 +55,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24.3.0",
+    "@types/nodemailer": "^8.0.2",
     "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",

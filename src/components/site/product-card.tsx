@@ -19,7 +19,6 @@ export function ProductCard({ product, index, display }: { product: PublicProduc
   const capacity = display?.capacity !== undefined ? display.capacity : fieldValue(["capacity", "volume"]);
   const material = display?.material !== undefined ? display.material : fieldValue(["material"]);
   const packing = display?.packing !== undefined ? display.packing : fieldValue(["package", "packaging", "packing"]);
-  const specifications = [capacity ? `Capacity: ${capacity}` : null, material].filter(Boolean).join(" · ");
 
   return (
     <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-[var(--line)] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,42,89,0.1)]">
@@ -31,11 +30,12 @@ export function ProductCard({ product, index, display }: { product: PublicProduc
         <h3 className="mt-2 h-12 text-lg font-bold leading-6 tracking-[-0.025em] text-[var(--navy)]">
           <Link href={`/products/${product.slug}`} className="line-clamp-2 break-words" title={name}>{name}</Link>
         </h3>
-        <div className="mt-2 h-10 text-[0.8125rem] leading-5 text-[var(--ink-muted)]">
-          {specifications ? <p className="truncate" title={specifications}>{specifications}</p> : null}
-          {packing ? <p className="truncate" title={`Packing: ${packing}`}>Packing: {packing}</p> : null}
+        <div className="mb-3 mt-2 min-h-15 text-[0.8125rem] leading-5 text-[var(--ink-muted)] [overflow-wrap:anywhere]">
+          {capacity ? <p>Capacity: {capacity}</p> : null}
+          {material ? <p>Material: {material}</p> : null}
+          {packing ? <p>Packing: {packing}</p> : null}
         </div>
-        <Link href={`/products/${product.slug}`} className="mt-3 inline-flex min-h-11 items-center justify-between border-t border-[var(--line)] pt-2 text-xs font-bold text-[var(--navy)]">
+        <Link href={`/products/${product.slug}`} className="mt-auto inline-flex min-h-11 items-center justify-between border-t border-[var(--line)] pt-2 text-xs font-bold text-[var(--navy)]">
           View product
           <span className="grid size-7 place-items-center rounded-full bg-[var(--surface-blue)] transition group-hover:bg-[var(--lime)]">
             <ArrowUpRight size={15} weight="bold" aria-hidden="true" />

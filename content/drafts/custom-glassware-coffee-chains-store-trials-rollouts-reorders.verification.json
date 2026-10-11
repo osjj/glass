@@ -1,0 +1,113 @@
+{
+  "wordCount": 1309,
+  "blocks": 45,
+  "sourceSha256": "8c7492a796af42dc474b8f0692d572cd2483946b0e7bce60007d3812e5fc69dc",
+  "contentSha256": "f973624ec3829a3f1f243b3eafccb013bcbfd67433afb9076f2fd680a8dd8e5f",
+  "assets": [
+    {
+      "name": "hero",
+      "file": "public/images/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero.webp",
+      "localUrl": "/images/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero.webp",
+      "sha256": "d19234eb7eb305b446f5799afde28d655883232708747d9b7bcd2ab7725bd56f",
+      "bytes": 184282,
+      "width": 1536,
+      "height": 1024,
+      "contentType": "image/webp",
+      "suffix": "webp",
+      "key": "site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero-d19234eb7eb3.webp",
+      "url": "https://media.glarivoglass.com/site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero-d19234eb7eb3.webp",
+      "storageHashMatches": true,
+      "publicStatus": 200,
+      "publicHashMatches": true
+    },
+    {
+      "name": "store-trials-and-allocation",
+      "file": "output/coffee-chain-20261006/outputs/coffee-chain-20261006/coffee-chain-store-trials-and-allocation.xlsx",
+      "localUrl": "/downloads/custom-glassware-coffee-chains-store-trials-rollouts-reorders/coffee-chain-store-trials-and-allocation.xlsx",
+      "sha256": "645ba89d0b03643f5860e840ce201210b2ed61f228545a80dccdce3f6dc55e90",
+      "bytes": 6868,
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "suffix": "xlsx",
+      "key": "site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/store-trials-and-allocation-645ba89d0b03.xlsx",
+      "url": "https://media.glarivoglass.com/site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/store-trials-and-allocation-645ba89d0b03.xlsx",
+      "storageHashMatches": true,
+      "publicStatus": 200,
+      "publicHashMatches": true
+    }
+  ],
+  "localValidation": true,
+  "createdAt": "2026-10-06T05:08:37.059Z",
+  "databaseReadback": {
+    "id": "cmuw7xv7z0000wkumon83i1tc",
+    "title": "Custom Glassware for Coffee Chains: Store Trials, Rollouts & Reorders",
+    "slug": "custom-glassware-coffee-chains-store-trials-rollouts-reorders",
+    "status": "DRAFT",
+    "featured": false,
+    "publishedAt": null,
+    "publiclyEligible": 0,
+    "wordCount": 1309,
+    "readTimeMinutes": 6,
+    "bodyImages": 0,
+    "totalImages": 1,
+    "workbookUrl": "https://media.glarivoglass.com/site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/store-trials-and-allocation-645ba89d0b03.xlsx",
+    "contentSha256": "f973624ec3829a3f1f243b3eafccb013bcbfd67433afb9076f2fd680a8dd8e5f",
+    "contentMatches": true,
+    "adminUrl": "https://www.glarivoglass.com/admin/blog/cmuw7xv7z0000wkumon83i1tc",
+    "verifiedAt": "2026-10-06T05:08:56.248Z"
+  },
+  "publicChecks": {
+    "publicArticleStatus": 404,
+    "sitemapExcluded": true,
+    "linkedPages": [
+      {
+        "url": "https://www.glarivoglass.com/blog/coffee-tea-glassware-buying-guide",
+        "status": 200
+      },
+      {
+        "url": "https://www.glarivoglass.com/blog/custom-logo-shot-glasses-artwork-sample-approval-checklist",
+        "status": 200
+      },
+      {
+        "url": "https://www.glarivoglass.com/case-studies/dawn-coffee-chain-custom-glassware",
+        "status": 200
+      },
+      {
+        "url": "https://www.glarivoglass.com/guides/coffee-tea-glassware",
+        "status": 200
+      },
+      {
+        "url": "https://www.glarivoglass.com/products/category/glass-coffee-mugs",
+        "status": 200
+      },
+      {
+        "url": "https://www.glarivoglass.com/products/category/glass-tumblers",
+        "status": 200
+      }
+    ],
+    "workbookStatus": 200,
+    "workbookContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "workbookContentDisposition": "attachment; filename=\"coffee-chain-store-trials-and-allocation.xlsx\"",
+    "workbookHashMatches": true,
+    "verifiedAt": "2026-10-06T05:09:38.165Z"
+  },
+  "visualChecks": {
+    "desktop": {
+      "viewport": 1440,
+      "scrollWidth": 1440,
+      "coverLoaded": true,
+      "headings": 10,
+      "workbookLinks": 2
+    },
+    "mobile": {
+      "viewport": 390,
+      "scrollWidth": 390,
+      "overflow": [],
+      "imageNoteCount": 1
+    },
+    "sheetsVisuallyReviewed": [
+      "Store allocation",
+      "Store trials"
+    ],
+    "verifiedAt": "2026-10-06T05:09:56.498Z"
+  }
+}

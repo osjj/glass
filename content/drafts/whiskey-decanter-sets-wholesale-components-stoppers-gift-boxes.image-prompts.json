@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-10",
+  "method": "built-in imagegen",
+  "assets": [
+    {
+      "name": "hero",
+      "prompt": "Create a landscape 3:2 editorial illustration for a B2B glassware procurement article about whiskey decanter sets, components, stoppers and gift boxes. A generic clear square glass decanter with a separate glass stopper and four generic low clear drinking tumblers, arranged beside an open unbranded cream gift box with separated protective compartments on a pale neutral studio workbench. Carefully composed, natural soft daylight, restrained warm grey and cream palette, clear readable glass reflections, refined realistic editorial still life. All vessels empty. No alcohol labels, no brands, no logos, no text, no numerical markings, no certificates, no people. This is an illustrative concept rather than an exact commercial SKU; show no measurements, tests, or claims of sealing. Leave comfortable space around the objects and balanced horizontal composition.",
+      "role": "cover illustration"
+    },
+    {
+      "name": "components",
+      "prompt": "Create a landscape 3:2 editorial illustration for a wholesale procurement guide. Top-down organized workbench flat lay: one generic empty clear glass decanter, its stopper separated, four matching empty short tumblers, and an open plain gift box with a simple protective insert arranged as distinct components, with a small blank paper checklist and a plain pencil off to the side. Neutral cream and pale grey background, gentle diffuse daylight, precise attractive glass reflections, realistic editorial illustration, no brands, labels, logos, printed words, numbers, hands, liquid or measurement devices. No implied dimension or testing result; a generic conceptual assembly review, not a specific product. Every glass has a coherent circular rim and realistic shape, with no extra duplicate objects.",
+      "role": "body illustration"
+    }
+  ]
+}

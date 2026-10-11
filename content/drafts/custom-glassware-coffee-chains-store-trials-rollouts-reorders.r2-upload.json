@@ -1,0 +1,32 @@
+[
+  {
+    "name": "hero",
+    "file": "public/images/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero.webp",
+    "localUrl": "/images/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero.webp",
+    "sha256": "d19234eb7eb305b446f5799afde28d655883232708747d9b7bcd2ab7725bd56f",
+    "bytes": 184282,
+    "width": 1536,
+    "height": 1024,
+    "contentType": "image/webp",
+    "suffix": "webp",
+    "key": "site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero-d19234eb7eb3.webp",
+    "url": "https://media.glarivoglass.com/site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/hero-d19234eb7eb3.webp",
+    "storageHashMatches": true,
+    "publicStatus": 200,
+    "publicHashMatches": true
+  },
+  {
+    "name": "store-trials-and-allocation",
+    "file": "output/coffee-chain-20261006/outputs/coffee-chain-20261006/coffee-chain-store-trials-and-allocation.xlsx",
+    "localUrl": "/downloads/custom-glassware-coffee-chains-store-trials-rollouts-reorders/coffee-chain-store-trials-and-allocation.xlsx",
+    "sha256": "645ba89d0b03643f5860e840ce201210b2ed61f228545a80dccdce3f6dc55e90",
+    "bytes": 6868,
+    "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "suffix": "xlsx",
+    "key": "site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/store-trials-and-allocation-645ba89d0b03.xlsx",
+    "url": "https://media.glarivoglass.com/site/blog/custom-glassware-coffee-chains-store-trials-rollouts-reorders/store-trials-and-allocation-645ba89d0b03.xlsx",
+    "storageHashMatches": true,
+    "publicStatus": 200,
+    "publicHashMatches": true
+  }
+]
