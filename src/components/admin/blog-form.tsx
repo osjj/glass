@@ -10,11 +10,13 @@ import {
   Loader2,
   Save,
   Settings2,
+  Sparkles,
   Trash2,
   Upload,
 } from "lucide-react";
 import { createBlogPost, deleteBlogPost, updateBlogPost } from "@/actions/blog";
 import { ContentEditor, type ContentEditorRef } from "@/components/admin/content-editor";
+import { AiImageEditorModal } from "@/components/admin/ai-image-editor-modal";
 import { parseStoredArticleContent } from "@/lib/article-content";
 import type { AdminBlogPostInput, BlogPostFormState } from "@/types/admin-blog";
 
@@ -79,6 +81,8 @@ export function BlogForm({ post }: { post?: AdminBlogPostInput }) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [contentSaveError, setContentSaveError] = useState<string | null>(null);
+  const [coverAiTarget, setCoverAiTarget] = useState<{ image: { url: string; alt: string } | null } | null>(null);
+  const [editingContentImage, setEditingContentImage] = useState(false);
   const contentEditorRef = useRef<ContentEditorRef>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const initialContent = useMemo(
@@ -133,6 +137,7 @@ export function BlogForm({ post }: { post?: AdminBlogPostInput }) {
 
   async function submitArticle(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (coverAiTarget || editingContentImage) return;
     const form = formRef.current;
     if (!form) return;
 
@@ -249,6 +254,14 @@ export function BlogForm({ post }: { post?: AdminBlogPostInput }) {
                 <input className="mt-3 block w-full text-sm font-normal file:mr-4 file:rounded-lg file:border-0 file:bg-[var(--ink)] file:px-4 file:py-2 file:font-bold file:text-white" type="file" accept="image/*" onChange={uploadCover} disabled={uploading} />
                 <span className="mt-2 block text-xs font-normal leading-5 text-[var(--ink-muted)]">Images are converted to WebP. Without R2 credentials, enter an image URL above.</span>
               </label>
+              <button
+                type="button"
+                className="button-secondary"
+                disabled={uploading || pending}
+                onClick={() => setCoverAiTarget({ image: coverImage ? { url: coverImage, alt: coverImageAlt || title } : null })}
+              >
+                <Sparkles className="size-4" /> {coverImage ? "AI 编辑" : "AI 生成封面"}
+              </button>
               {uploading ? <p className="flex items-center gap-2 text-sm font-bold text-[var(--accent-dark)]"><Loader2 className="size-4 animate-spin" /> Uploading and converting image…</p> : null}
               {uploadError ? <p role="alert" className="text-sm font-bold text-[#a33c32]">{uploadError}</p> : null}
             </div>
@@ -295,6 +308,8 @@ export function BlogForm({ post }: { post?: AdminBlogPostInput }) {
             slug={slug}
             imageAlt={title}
             placeholder="Start with an introduction…"
+            enableAiImageEditing
+            onAiEditingChange={setEditingContentImage}
           />
           <input type="hidden" name="content" defaultValue="" />
           {contentSaveError ? (
@@ -313,13 +328,33 @@ export function BlogForm({ post }: { post?: AdminBlogPostInput }) {
           <p className="text-xs leading-5 text-[var(--ink-muted)]">Draft and archived articles are visible only in this admin area.</p>
           <div className="flex flex-wrap justify-end gap-3">
             <Link href="/admin/blog" className="button-secondary">Cancel</Link>
-            <button type="submit" className="button-primary" disabled={pending || uploading}>
+            <button type="submit" className="button-primary" disabled={pending || uploading || Boolean(coverAiTarget) || editingContentImage}>
               {pending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
               {pending ? "Saving…" : post ? "Save changes" : "Create article"}
             </button>
           </div>
         </div>
       </form>
+
+      {coverAiTarget ? (
+        <AiImageEditorModal
+          open
+          sourceImage={coverAiTarget.image}
+          slug={slug}
+          imageAlt={coverImageAlt || title}
+          uploadEndpoint="/api/admin/blog-images"
+          onClose={() => setCoverAiTarget(null)}
+          onFinish={(image) => {
+            if (coverImage !== (coverAiTarget.image?.url || "")) {
+              throw new Error("The cover image changed while AI editing was open. Close this window and select it again.");
+            }
+            setCoverImage(image.url);
+            setCoverImageAlt(current => current || image.alt);
+            setUploadError(null);
+            setCoverAiTarget(null);
+          }}
+        />
+      ) : null}
 
       {post && deleteAction ? (
         <section className="rounded-3xl border border-[#e7aaa3] bg-[#fff8f7] p-5 sm:p-7">

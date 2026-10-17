@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ImageIcon,
   Loader2,
@@ -49,6 +50,7 @@ type PromptTemplate = {
   label: string;
   prompt: string;
   referenceImage: ReferenceImage;
+  useSourceImage?: boolean;
 };
 
 type GeneratedImage = {
@@ -63,8 +65,10 @@ type AiImageEditorModalProps = {
   open: boolean;
   sourceImage: AdminProductImageInput | null;
   slug: string;
+  uploadEndpoint?: "/api/admin/product-images" | "/api/admin/blog-images" | "/api/admin/case-study-images";
+  imageAlt?: string;
   onClose: () => void;
-  onFinish: (image: AdminProductImageInput) => void;
+  onFinish: (image: AdminProductImageInput, signal: AbortSignal) => void | Promise<void>;
 };
 
 const REMOVE_ICON_PROMPT =
@@ -103,7 +107,9 @@ function parsePromptTemplates(value: string | null): PromptTemplate[] | null {
         typeof (template as PromptTemplate).id === "string" &&
         typeof (template as PromptTemplate).label === "string" &&
         typeof (template as PromptTemplate).prompt === "string" &&
-        isReferenceImage((template as PromptTemplate).referenceImage),
+        isReferenceImage((template as PromptTemplate).referenceImage) &&
+        ((template as PromptTemplate).useSourceImage === undefined ||
+          typeof (template as PromptTemplate).useSourceImage === "boolean"),
     );
     const uniqueIds = new Set(templates.map((template) => template.id));
     return templates.length === parsed.length && uniqueIds.size === templates.length
@@ -144,6 +150,8 @@ export function AiImageEditorModal({
   open,
   sourceImage,
   slug,
+  uploadEndpoint = "/api/admin/product-images",
+  imageAlt = "",
   onClose,
   onFinish,
 }: AiImageEditorModalProps) {
@@ -151,6 +159,8 @@ export function AiImageEditorModal({
   const dialogRef = useRef<HTMLElement>(null);
   const promptRef = useRef<HTMLTextAreaElement>(null);
   const operationAbortRef = useRef<AbortController | null>(null);
+  const onCloseRef = useRef(onClose);
+  const [useSourceImage, setUseSourceImage] = useState(Boolean(sourceImage?.url));
   const [prompt, setPrompt] = useState("");
   const [size, setSize] = useState<ImageSize>("auto");
   const [quality, setQuality] = useState<ImageQuality>("auto");
@@ -168,6 +178,10 @@ export function AiImageEditorModal({
   const [generating, setGenerating] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -191,13 +205,14 @@ export function AiImageEditorModal({
 
   useEffect(() => {
     if (!open) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         operationAbortRef.current?.abort();
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (event.key !== "Tab" || !dialogRef.current) return;
@@ -210,7 +225,10 @@ export function AiImageEditorModal({
       if (!focusable.length) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      if (!focusable.some((element) => element === document.activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && document.activeElement === last) {
@@ -224,8 +242,9 @@ export function AiImageEditorModal({
       operationAbortRef.current?.abort();
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected) previousFocus.focus();
     };
-  }, [onClose, open]);
+  }, [open]);
 
   function dismiss() {
     operationAbortRef.current?.abort();
@@ -276,6 +295,7 @@ export function AiImageEditorModal({
   function applyPromptTemplate(template: PromptTemplate) {
     setPrompt(template.prompt);
     setReferenceImage(template.referenceImage);
+    setUseSourceImage(Boolean(sourceImage?.url) && template.useSourceImage !== false);
     setSelectedTemplateId(template.id);
     setGeneratedImage(null);
     setError(null);
@@ -285,10 +305,12 @@ export function AiImageEditorModal({
   async function generateImage() {
     const selectedBackground = BACKGROUND_OPTIONS.find((option) => option.value === background);
     const backgroundPrompt = selectedBackground?.prompt
-      ? `背景要求（优先于上述保持背景或构图不变的要求）：将产品置于${selectedBackground.prompt}。保持产品数量、外形、比例、材质、颜色和细节，玻璃透明度、折射、反射及接触阴影应与新场景自然一致。产品作为清晰主体，不添加文字、图标或额外品牌标识。`
+      ? useSourceImage && sourceImage?.url
+        ? `背景要求（优先于上述保持背景或构图不变的要求）：将产品置于${selectedBackground.prompt}。保持产品数量、外形、比例、材质、颜色和细节，玻璃透明度、折射、反射及接触阴影应与新场景自然一致。产品作为清晰主体，不添加文字、图标或额外品牌标识。`
+        : `场景要求：${selectedBackground.prompt}。根据提示词生成图片，主体清晰，光影自然，不添加未要求的文字、图标或品牌标识。`
       : "";
     const finalPrompt = [prompt.trim(), backgroundPrompt].filter(Boolean).join("\n\n");
-    if (!sourceImage || !finalPrompt) return;
+    if (!finalPrompt) return;
     if (finalPrompt.length > 4000) {
       setError("提示词与背景要求合计不能超过 4000 字，请缩短提示词。");
       return;
@@ -305,7 +327,7 @@ export function AiImageEditorModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sourceUrl: sourceImage.url,
+          ...(useSourceImage && sourceImage?.url ? { sourceUrl: sourceImage.url } : {}),
           prompt: finalPrompt,
           size,
           quality,
@@ -342,6 +364,7 @@ export function AiImageEditorModal({
         throw new Error("The image service returned an incomplete result.");
       }
 
+      if (controller.signal.aborted) return;
       setGeneratedImage({
         b64Json: normalizeBase64(payload.image.b64Json),
         mimeType: payload.image.mimeType,
@@ -350,7 +373,7 @@ export function AiImageEditorModal({
         height: payload.image.height,
       });
     } catch (caughtError) {
-      if (caughtError instanceof DOMException && caughtError.name === "AbortError") return;
+      if (controller.signal.aborted) return;
       setError(
         caughtError instanceof Error ? caughtError.message : "The image could not be generated.",
       );
@@ -363,7 +386,7 @@ export function AiImageEditorModal({
   }
 
   async function finishEditing() {
-    if (!sourceImage || !generatedImage) return;
+    if (!generatedImage) return;
     operationAbortRef.current?.abort();
     const controller = new AbortController();
     operationAbortRef.current = controller;
@@ -374,11 +397,11 @@ export function AiImageEditorModal({
       const uploadData = new FormData();
       uploadData.set("image", base64ToFile(generatedImage));
       uploadData.set("slug", slug);
-      uploadData.set("alt", sourceImage.alt || "Product image");
+      uploadData.set("alt", sourceImage?.alt || imageAlt || "Image");
       uploadData.set("aiGenerated", "true");
       uploadData.set("outputFormat", generatedImage.format);
 
-      const response = await fetch("/api/admin/product-images", {
+      const response = await fetch(uploadEndpoint, {
         method: "POST",
         body: uploadData,
         signal: controller.signal,
@@ -394,12 +417,13 @@ export function AiImageEditorModal({
         );
       }
 
-      onFinish({
+      if (controller.signal.aborted) return;
+      await onFinish({
         ...payload.image,
-        alt: payload.image.alt || sourceImage.alt,
-      });
+        alt: sourceImage?.alt || payload.image.alt || imageAlt,
+      }, controller.signal);
     } catch (caughtError) {
-      if (caughtError instanceof DOMException && caughtError.name === "AbortError") return;
+      if (controller.signal.aborted) return;
       setError(
         caughtError instanceof Error
           ? caughtError.message
@@ -413,14 +437,14 @@ export function AiImageEditorModal({
     }
   }
 
-  if (!open || !sourceImage) return null;
+  if (!open || typeof document === "undefined") return null;
 
   const generatedPreview = generatedImage
     ? "data:" + generatedImage.mimeType + ";base64," + generatedImage.b64Json
     : null;
   const busy = generating || finishing;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-[#071427]/70 p-3 backdrop-blur-sm sm:p-6"
       onMouseDown={(event) => {
@@ -446,7 +470,7 @@ export function AiImageEditorModal({
                 AI image editor
               </h2>
               <p className="mt-1 text-sm leading-5 text-[var(--ink-muted)]">
-                Edit this product image with gpt-image-2, then finish to replace it in the form.
+                编辑或生成图片，预览满意后点击 Finish 应用到表单。
               </p>
             </div>
           </div>
@@ -464,7 +488,30 @@ export function AiImageEditorModal({
           <div className="grid gap-5 lg:grid-cols-2">
             <figure>
               <figcaption className="mb-2 text-sm font-black">Original image</figcaption>
-              <MagnifiableImage key={sourceImage.url} src={sourceImage.url} alt={sourceImage.alt || "Original product image"} />
+              {sourceImage?.url ? (
+                <MagnifiableImage key={sourceImage.url} src={sourceImage.url} alt={sourceImage.alt || "Current image"} />
+              ) : (
+                <div className="grid aspect-square place-items-center rounded-2xl border border-dashed border-[#d7dcd8] bg-[#f8f9f7] p-6 text-sm text-[var(--ink-muted)]">
+                  没有当前图片，可根据提示词直接生成。
+                </div>
+              )}
+              <label className="mt-3 flex items-center gap-2 text-sm font-bold">
+                <input
+                  type="checkbox"
+                  checked={useSourceImage && Boolean(sourceImage?.url)}
+                  disabled={busy || !sourceImage?.url}
+                  onChange={(event) => {
+                    setUseSourceImage(event.target.checked);
+                    setSelectedTemplateId(null);
+                    setGeneratedImage(null);
+                    setError(null);
+                  }}
+                />
+                引用当前图片作为上下文
+              </label>
+              <p className="mt-1 text-xs leading-5 text-[var(--ink-muted)]">
+                {useSourceImage && sourceImage?.url ? "生成时会附上当前图片。" : "生成时不发送当前图片，按提示词和模板中的附加参考图生成。"}
+              </p>
             </figure>
 
             <figure>
@@ -480,7 +527,7 @@ export function AiImageEditorModal({
                   <MagnifiableImage
                     key={generatedPreview}
                     src={generatedPreview}
-                    alt="AI-generated product image preview"
+                    alt="AI-generated image preview"
                   />
                 ) : (
                   <div className="grid aspect-square place-items-center rounded-2xl border border-[#d7dcd8] bg-[#eef0ed] p-6 text-center text-sm text-[var(--ink-muted)]">
@@ -576,7 +623,7 @@ export function AiImageEditorModal({
                   <div>
                     <h3 className="text-sm font-black">Configure prompt templates</h3>
                     <p className="mt-1 text-xs leading-5 text-[var(--ink-muted)]">
-                      Changes are saved in this browser and reused for every product image.
+                      模板保存在当前浏览器，产品、博客和案例图片共用。
                     </p>
                   </div>
                   <button
@@ -620,7 +667,7 @@ export function AiImageEditorModal({
                             />
                           </label>
                           <label className="text-xs font-black">
-                            Reference image
+                            附加参考图
                             <select
                               className="mt-1.5 h-10 w-full rounded-lg border border-[#ccd3ce] bg-white px-3 text-sm font-normal focus:border-[var(--accent)]"
                               value={template.referenceImage}
@@ -655,6 +702,16 @@ export function AiImageEditorModal({
                           <Trash2 className="size-4" aria-hidden="true" />
                         </button>
                       </div>
+                      <label className="mt-3 flex items-center gap-2 text-xs font-bold">
+                        <input
+                          type="checkbox"
+                          checked={template.useSourceImage !== false}
+                          onChange={(event) => setTemplateDrafts((current) => current.map((item, itemIndex) =>
+                            itemIndex === index ? { ...item, useSourceImage: event.target.checked } : item,
+                          ))}
+                        />
+                        使用此模板时引用当前图片（如有）
+                      </label>
                       <label className="mt-3 block text-xs font-black">
                         Prompt
                         <textarea
@@ -688,6 +745,7 @@ export function AiImageEditorModal({
                           label: "New template",
                           prompt: "",
                           referenceImage: "none",
+                          useSourceImage: Boolean(sourceImage?.url) && useSourceImage,
                         },
                       ]);
                       setTemplateConfigError(null);
@@ -737,7 +795,7 @@ export function AiImageEditorModal({
                   />
                 </span>
                 <p className="text-xs font-bold leading-5 text-[var(--ink-muted)]">
-                  This blue GLARIVO logo is attached as the second reference image.
+                  {useSourceImage && sourceImage?.url ? "蓝色 GLARIVO Logo 将作为第二张参考图。" : "蓝色 GLARIVO Logo 将作为唯一参考图。"}
                 </p>
               </div>
             ) : null}
@@ -755,7 +813,7 @@ export function AiImageEditorModal({
               }}
               disabled={busy}
             >
-              {BACKGROUND_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              {BACKGROUND_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.value === "original" && !useSourceImage ? "按提示词生成背景" : option.label}</option>)}
             </select>
             <span className="mt-2 block text-xs font-normal text-[var(--ink-muted)]">可单独更换背景，也可搭配去除图标或替换图标。鼠标移入预览图片可放大查看细节。</span>
           </label>
@@ -824,7 +882,7 @@ export function AiImageEditorModal({
         <footer className="flex flex-col-reverse gap-3 border-t border-[#e4e7e3] bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
           <p className="text-xs leading-5 text-[var(--ink-muted)]">
             The selected format controls the AI preview. Finish uploads an optimized WebP to R2
-            and replaces only this image in the form. Save the product to persist the change.
+            and applies it to the form. 保存文章、案例或产品后，图片修改才会保存到该内容。
           </p>
           <div className="flex shrink-0 flex-wrap justify-end gap-3">
             <button type="button" className="button-secondary" onClick={dismiss}>
@@ -855,6 +913,7 @@ export function AiImageEditorModal({
           </div>
         </footer>
       </section>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -9,9 +9,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { ImagePlus, Link2, Loader2 } from "lucide-react";
+import { ImagePlus, Link2, Loader2, Sparkles } from "lucide-react";
 import type EditorJS from "@editorjs/editorjs";
+import { AiImageEditorModal } from "@/components/admin/ai-image-editor-modal";
 import type { ArticleEditorData } from "@/lib/article-content";
+import type { AdminProductImageInput } from "@/types/admin-product";
 
 export type ContentEditorRef = {
   save: () => Promise<ArticleEditorData | null>;
@@ -24,7 +26,20 @@ type ContentEditorProps = {
   placeholder?: string;
   uploadEndpoint?: "/api/admin/blog-images" | "/api/admin/product-images";
   contentLabel?: string;
+  enableAiImageEditing?: boolean;
+  onAiEditingChange?: (editing: boolean) => void;
 };
+
+type AiImageTarget = {
+  blockId: string | null;
+  sourceImage: AdminProductImageInput | null;
+};
+
+function imageFile(data: Record<string, unknown>): Record<string, unknown> {
+  return data.file && typeof data.file === "object" && !Array.isArray(data.file)
+    ? data.file as Record<string, unknown>
+    : {};
+}
 
 function validImageUrl(value: string) {
   return value.startsWith("/") || /^https?:\/\//i.test(value);
@@ -39,6 +54,8 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
       placeholder = "Start writing your article…",
       uploadEndpoint = "/api/admin/blog-images",
       contentLabel = "article",
+      enableAiImageEditing = false,
+      onAiEditingChange,
     },
     ref,
   ) {
@@ -49,6 +66,12 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
     const [ready, setReady] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
     const [imageError, setImageError] = useState<string | null>(null);
+    const [aiTarget, setAiTarget] = useState<AiImageTarget | null>(null);
+
+    useEffect(() => {
+      onAiEditingChange?.(Boolean(aiTarget));
+      return () => onAiEditingChange?.(false);
+    }, [aiTarget, onAiEditingChange]);
 
     useEffect(() => {
       uploadContextRef.current = { slug, imageAlt };
@@ -77,6 +100,63 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
         const Quote = (await import("@editorjs/quote")).default;
         const ImageTool = (await import("@editorjs/image")).default;
         if (cancelled) return;
+
+        class EditableImageTool extends ImageTool {
+          private readonly imageBlockId: string;
+          private readonly originalData: ConstructorParameters<typeof ImageTool>[0]["data"];
+
+          constructor(options: ConstructorParameters<typeof ImageTool>[0]) {
+            super(options);
+            this.imageBlockId = options.block.id;
+            this.originalData = options.data;
+          }
+
+          save() {
+            return { ...this.originalData, ...super.save() };
+          }
+
+          render() {
+            const element = super.render();
+            const toolbar = document.createElement("div");
+            toolbar.contentEditable = "false";
+            toolbar.className = "mt-3 flex justify-end";
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "button-secondary min-h-10 text-sm";
+            button.textContent = "✦ AI 编辑";
+            button.setAttribute("aria-label", "AI 编辑此内容图片");
+            button.dataset.aiImageEdit = this.imageBlockId;
+            button.addEventListener("keydown", (event) => {
+              if (event.key === "Enter" || event.key === " ") event.stopPropagation();
+            });
+            button.addEventListener("click", (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              void (async () => {
+                const currentEditor = editorRef.current;
+                const block = currentEditor?.blocks.getById(this.imageBlockId);
+                if (!block || block.name !== "image") throw new Error("This image was removed. Select an image again.");
+                const saved = await block.save();
+                if (!saved || !currentEditor?.blocks.getById(this.imageBlockId)) {
+                  throw new Error("This image is no longer available. Select an image again.");
+                }
+                const file = imageFile(saved.data);
+                setImageError(null);
+                setAiTarget({
+                  blockId: this.imageBlockId,
+                  sourceImage: typeof file.url === "string" && file.url
+                    ? { url: file.url, alt: typeof file.alt === "string" ? file.alt : uploadContextRef.current.imageAlt }
+                    : null,
+                });
+              })().catch((error) => {
+                setImageError(error instanceof Error ? error.message : "The image editor could not be opened.");
+              });
+            });
+            toolbar.append(button);
+            element.append(toolbar);
+            return element;
+          }
+        }
 
         editor = new Editor({
           holder: holderId,
@@ -108,7 +188,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
             },
             delimiter: Delimiter as never,
             image: {
-              class: ImageTool as never,
+              class: (enableAiImageEditing ? EditableImageTool : ImageTool) as never,
               config: {
                 features: { caption: "optional" },
                 uploader: {
@@ -185,7 +265,42 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
         }
         editorRef.current = null;
       };
-    }, [contentLabel, holderId, placeholder, uploadEndpoint]);
+    }, [contentLabel, enableAiImageEditing, holderId, placeholder, uploadEndpoint]);
+
+    async function applyAiImage(image: AdminProductImageInput, signal: AbortSignal) {
+      if (signal.aborted) return;
+      const editor = editorRef.current;
+      if (!editor || !aiTarget) throw new Error("The content editor is unavailable. Close this window and try again.");
+
+      if (aiTarget.blockId) {
+        const block = editor.blocks.getById(aiTarget.blockId);
+        if (!block || block.name !== "image") throw new Error("This image was removed. Close this window and select an image again.");
+        const saved = await block.save();
+        if (signal.aborted) return;
+        if (!saved || !editor.blocks.getById(aiTarget.blockId)) throw new Error("This image is no longer available.");
+        const file = imageFile(saved.data);
+        if ((file.url || "") !== (aiTarget.sourceImage?.url || "")) {
+          throw new Error("This image changed while AI editing was open. Close this window and select it again.");
+        }
+        // Updating by ID preserves block order and tunes; merge the current data so
+        // captions, layout settings, and custom file metadata are retained.
+        await editor.blocks.update(aiTarget.blockId, {
+          ...saved.data,
+          file: { ...file, ...image, alt: typeof file.alt === "string" ? file.alt : image.alt },
+        });
+      } else {
+        editor.blocks.insert("image", {
+          file: image,
+          caption: "",
+          withBorder: false,
+          withBackground: false,
+          stretched: false,
+        }, undefined, editor.blocks.getBlocksCount(), false);
+      }
+      if (signal.aborted) return;
+      setImageError(null);
+      setAiTarget(null);
+    }
 
     const insertImageUrl = useCallback(() => {
       const trimmed = imageUrl.trim();
@@ -239,6 +354,16 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
           >
             <ImagePlus className="size-4" /> Add to content
           </button>
+          {enableAiImageEditing ? (
+            <button
+              type="button"
+              className="button-secondary h-11 shrink-0"
+              disabled={!ready}
+              onClick={() => setAiTarget({ blockId: null, sourceImage: null })}
+            >
+              <Sparkles className="size-4" /> AI 生成图片
+            </button>
+          ) : null}
         </div>
 
         {imageError ? (
@@ -261,6 +386,17 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
           quotes, dividers, and image upload. Image files are converted to WebP and require R2;
           image URLs work without R2.
         </p>
+        {aiTarget ? (
+          <AiImageEditorModal
+            open
+            sourceImage={aiTarget.sourceImage}
+            slug={slug}
+            imageAlt={imageAlt}
+            uploadEndpoint={uploadEndpoint}
+            onClose={() => setAiTarget(null)}
+            onFinish={applyAiImage}
+          />
+        ) : null}
       </div>
     );
   },

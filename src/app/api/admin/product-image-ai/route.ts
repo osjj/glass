@@ -39,7 +39,7 @@ const imageFormatSchema = z.enum(["webp", "png", "jpeg"]);
 const referenceImageSchema = z.enum(["none", "glarivo-blue-logo"]);
 const requestSchema = z
   .object({
-    sourceUrl: z.string().trim().min(1).max(2_048),
+    sourceUrl: z.string().trim().min(1).max(2_048).optional(),
     prompt: z.string().trim().min(1).max(4_000),
     size: imageSizeSchema,
     quality: imageQualitySchema,
@@ -135,7 +135,7 @@ function authorizedSourceUrl(value: string, requestUrl: string) {
   try {
     sourceUrl = new URL(value, requestOrigin);
   } catch {
-    throw new RouteError("Select a valid product image URL.", 400);
+    throw new RouteError("Select a valid image URL.", 400);
   }
 
   if (
@@ -144,7 +144,7 @@ function authorizedSourceUrl(value: string, requestUrl: string) {
     sourceUrl.password ||
     !allowedOrigins.has(sourceUrl.origin)
   ) {
-    throw new RouteError("That product image source is not allowed.", 400);
+    throw new RouteError("That image source is not allowed.", 400);
   }
 
   return sourceUrl.toString();
@@ -193,13 +193,13 @@ async function readLimitedBody(response: Response, maximumBytes: number) {
 function waitForSourceRetry(requestSignal: AbortSignal, delayMs: number) {
   return new Promise<void>((resolve, reject) => {
     if (requestSignal.aborted) {
-      reject(new RouteError("The image edit request was cancelled.", 499));
+      reject(new RouteError("The image request was cancelled.", 499));
       return;
     }
 
     const abort = () => {
       clearTimeout(timeout);
-      reject(new RouteError("The image edit request was cancelled.", 499));
+      reject(new RouteError("The image request was cancelled.", 499));
     };
     const timeout = setTimeout(() => {
       requestSignal.removeEventListener("abort", abort);
@@ -223,30 +223,30 @@ async function fetchSourceImage(sourceUrl: string, requestSignal: AbortSignal) {
       });
 
       if (response.status >= 300 && response.status < 400) {
-        throw new RouteError("The product image URL redirects and cannot be used.", 400);
+        throw new RouteError("The image URL redirects and cannot be used.", 400);
       }
       if (!response.ok) {
-        throw new RouteError("The original product image could not be loaded.", 400);
+        throw new RouteError("The original image could not be loaded.", 400);
       }
 
       const responseMimeType = normalizedMimeType(response.headers.get("content-type"));
       const responseFormat = formatForMimeType(responseMimeType);
       if (!responseFormat) {
-        throw new RouteError("The product image must be a WebP, PNG, or JPEG file.", 415);
+        throw new RouteError("The image must be a WebP, PNG, or JPEG file.", 415);
       }
 
       const data = await readLimitedBody(response, MAX_SOURCE_IMAGE_BYTES);
-      if (!data.byteLength) throw new RouteError("The original product image is empty.", 400);
+      if (!data.byteLength) throw new RouteError("The original image is empty.", 400);
 
       let metadata: sharp.Metadata;
       try {
         metadata = await sharp(data, { failOn: "error", limitInputPixels: MAX_INPUT_PIXELS }).metadata();
       } catch {
-        throw new RouteError("The original product image is invalid or too large.", 415);
+        throw new RouteError("The original image is invalid or too large.", 415);
       }
       const detectedFormat = metadata.format ? FORMAT_BY_SHARP_FORMAT[metadata.format] : undefined;
       if (!metadata.width || !metadata.height || !detectedFormat || detectedFormat !== responseFormat) {
-        throw new RouteError("The original product image type could not be verified.", 415);
+        throw new RouteError("The original image type could not be verified.", 415);
       }
 
       return {
@@ -257,13 +257,13 @@ async function fetchSourceImage(sourceUrl: string, requestSignal: AbortSignal) {
     } catch (error) {
       if (error instanceof RouteError) throw error;
       if (requestSignal.aborted) {
-        throw new RouteError("The image edit request was cancelled.", 499);
+        throw new RouteError("The image request was cancelled.", 499);
       }
       if (attempt === SOURCE_FETCH_ATTEMPTS) {
         if (operation.timedOut() || (error instanceof Error && error.name === "AbortError")) {
-          throw new RouteError("Loading the original product image timed out.", 504);
+          throw new RouteError("Loading the original image timed out.", 504);
         }
-        throw new RouteError("The original product image could not be loaded.", 502);
+        throw new RouteError("The original image could not be loaded.", 502);
       }
       await waitForSourceRetry(requestSignal, SOURCE_FETCH_RETRY_DELAY_MS * attempt);
     } finally {
@@ -271,7 +271,7 @@ async function fetchSourceImage(sourceUrl: string, requestSignal: AbortSignal) {
     }
   }
 
-  throw new RouteError("The original product image could not be loaded.", 502);
+  throw new RouteError("The original image could not be loaded.", 502);
 }
 
 async function loadGlarivoBlueLogo() {
@@ -400,47 +400,64 @@ export async function POST(request: Request) {
     const parsed = requestSchema.safeParse(await request.json());
     if (!parsed.success) return errorResponse("Check the image prompt and output options.", 400);
 
-    const sourceUrl = authorizedSourceUrl(parsed.data.sourceUrl, request.url);
+    const sourceUrl = parsed.data.sourceUrl
+      ? authorizedSourceUrl(parsed.data.sourceUrl, request.url)
+      : null;
     const [sourceImage, configuration, referenceImage] = await Promise.all([
-      fetchSourceImage(sourceUrl, request.signal),
+      sourceUrl ? fetchSourceImage(sourceUrl, request.signal) : Promise.resolve(null),
       Promise.resolve(openAiConfiguration()),
       parsed.data.referenceImage === "glarivo-blue-logo"
         ? loadGlarivoBlueLogo()
         : Promise.resolve(null),
     ]);
 
-    const body = new FormData();
-    body.append(
-      "image[]",
-      new Blob([Uint8Array.from(sourceImage.data)], { type: sourceImage.mimeType }),
-      `product.${sourceImage.extension}`,
-    );
-    if (referenceImage) {
-      body.append(
-        "image[]",
-        new Blob([Uint8Array.from(referenceImage.data)], { type: referenceImage.mimeType }),
-        `glarivo-logo-blue.${referenceImage.extension}`,
-      );
+    const prompt = referenceImage
+      ? `${parsed.data.prompt}\n\n${sourceImage
+        ? "The first input image is the current image. The second input image is the approved blue GLARIVO GLASSWARE logo reference. Use the second image only as the logo reference"
+        : "The input image is only the approved blue GLARIVO GLASSWARE logo reference, not the scene to edit. Create a new scene from the prompt and use the reference only for the logo"}; preserve its exact geometry, wording, and blue color.`
+      : parsed.data.prompt;
+    const options = {
+      model: OPENAI_IMAGE_MODEL,
+      prompt,
+      n: 1,
+      size: parsed.data.size,
+      quality: parsed.data.quality,
+      output_format: parsed.data.outputFormat,
+    };
+    const hasImageReference = Boolean(sourceImage || referenceImage);
+    let body: FormData | string;
+    if (hasImageReference) {
+      const formData = new FormData();
+      if (sourceImage) {
+        formData.append(
+          "image[]",
+          new Blob([Uint8Array.from(sourceImage.data)], { type: sourceImage.mimeType }),
+          `source.${sourceImage.extension}`,
+        );
+      }
+      if (referenceImage) {
+        formData.append(
+          "image[]",
+          new Blob([Uint8Array.from(referenceImage.data)], { type: referenceImage.mimeType }),
+          `glarivo-logo-blue.${referenceImage.extension}`,
+        );
+      }
+      for (const [key, value] of Object.entries(options)) formData.set(key, String(value));
+      body = formData;
+    } else {
+      body = JSON.stringify(options);
     }
-    body.set("model", OPENAI_IMAGE_MODEL);
-    body.set(
-      "prompt",
-      referenceImage
-        ? `${parsed.data.prompt}\n\nThe first input image is the product image. The second input image is the approved blue GLARIVO GLASSWARE logo reference. Use the second image only as the replacement logo; preserve its exact geometry, wording, and blue color.`
-        : parsed.data.prompt,
-    );
-    body.set("n", "1");
-    body.set("size", parsed.data.size);
-    body.set("quality", parsed.data.quality);
-    body.set("output_format", parsed.data.outputFormat);
 
     const generation = createOperationSignal(request.signal, GENERATION_TIMEOUT_MS);
     let response: Response;
     let responseData: Buffer;
     try {
-      response = await fetch(`${configuration.endpoint}/v1/images/edits`, {
+      response = await fetch(`${configuration.endpoint}/v1/images/${hasImageReference ? "edits" : "generations"}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${configuration.apiKey}` },
+        headers: {
+          Authorization: `Bearer ${configuration.apiKey}`,
+          ...(!hasImageReference ? { "Content-Type": "application/json" } : {}),
+        },
         body,
         cache: "no-store",
         redirect: "manual",
@@ -450,7 +467,7 @@ export async function POST(request: Request) {
     } catch (error) {
       if (error instanceof RouteError) throw error;
       if (request.signal.aborted) {
-        throw new RouteError("The image edit request was cancelled.", 499);
+        throw new RouteError("The image request was cancelled.", 499);
       }
       if (generation.timedOut() || (error instanceof Error && error.name === "AbortError")) {
         throw new RouteError("AI image generation timed out. Try again.", 504);
@@ -462,7 +479,7 @@ export async function POST(request: Request) {
 
     const payload = parseUpstreamJson(responseData);
     if (!response.ok) {
-      console.error("AI product image edit rejected", {
+      console.error("AI image generation rejected", {
         status: response.status,
         requestId: response.headers.get("x-request-id"),
         contentType: response.headers.get("content-type"),
@@ -496,7 +513,7 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof RouteError) return errorResponse(error.message, error.status);
     if (error instanceof SyntaxError) return errorResponse("Send a valid JSON request.", 400);
-    console.error("AI product image edit failed", error);
-    return errorResponse("The product image could not be edited.", 500);
+    console.error("AI image generation failed", error);
+    return errorResponse("The image could not be generated.", 500);
   }
 }

@@ -3,7 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useActionState, useState, type ReactNode } from "react";
+import { Sparkles } from "lucide-react";
 import { saveCaseStudy, deleteCaseStudy } from "@/actions/case-studies";
+import { AiImageEditorModal } from "@/components/admin/ai-image-editor-modal";
 import type { AdminCaseStudy, CaseStudyContent, CaseFormState } from "@/lib/case-study-content";
 
 const input = "mt-2 w-full rounded-lg border border-[#ccd3ce] bg-white px-3 py-3 text-sm font-normal";
@@ -16,9 +18,14 @@ function Card({ title, children }: { title: string; children: ReactNode }) {
 function Field({ label, value, onChange, multiline = false, required = true }: { label: string; value: string; onChange: (value: string) => void; multiline?: boolean; required?: boolean }) {
   return <label className="block text-sm font-bold">{label}{multiline ? <textarea className={input} rows={5} value={value} onChange={e => onChange(e.target.value)} required={required} /> : <input className={input} value={value} onChange={e => onChange(e.target.value)} required={required} />}</label>;
 }
-function ImageField({ value, onChange, slug, onBusy, showCaption = true }: { value?: { url: string; alt: string; caption: string }; onChange: (image: { url: string; alt: string; caption: string } | undefined) => void; slug: string; onBusy: (busy: boolean) => void; showCaption?: boolean }) {
+function ImageField({ value, onChange, slug, onBusy, imageAlt = "Case study image", showCaption = true }: { value?: { url: string; alt: string; caption: string }; onChange: (image: { url: string; alt: string; caption: string } | undefined) => void; slug: string; onBusy: (busy: boolean) => void; imageAlt?: string; showCaption?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [aiTarget, setAiTarget] = useState<{ image: { url: string; alt: string } | null } | null>(null);
+  function closeAiEditor() {
+    setAiTarget(null);
+    onBusy(false);
+  }
   async function upload(file?: File) {
     if (!file) return;
     setBusy(true); onBusy(true); setError("");
@@ -36,8 +43,30 @@ function ImageField({ value, onChange, slug, onBusy, showCaption = true }: { val
     <Field label="Image URL" value={value?.url ?? ""} required={false} onChange={url => onChange(url ? { url, alt: value?.alt ?? "", caption: value?.caption ?? "" } : undefined)} />
     {value && <><Field label="Image alt text" value={value.alt} onChange={alt => onChange({ ...value, alt })} />{showCaption && <Field label="Image caption" value={value.caption} required={false} onChange={caption => onChange({ ...value, caption })} />}</>}
     <label className="block text-sm font-bold">Upload image<input className="mt-2 block w-full text-sm" type="file" accept="image/*" disabled={busy} onChange={event => { void upload(event.target.files?.[0]); event.target.value = ""; }} /></label>
-    {value && <button type="button" className={small} onClick={() => onChange(undefined)}>Remove image</button>}
+    <div className="flex flex-wrap gap-2">
+      <button type="button" className={`${small} inline-flex items-center gap-2`} disabled={busy} onClick={() => {
+        setAiTarget({ image: value?.url ? { url: value.url, alt: value.alt || imageAlt } : null });
+        onBusy(true);
+      }}><Sparkles className="size-4" />{value?.url ? "AI 编辑" : "AI 生成图片"}</button>
+      {value && <button type="button" className={small} onClick={() => onChange(undefined)}>Remove image</button>}
+    </div>
     {busy && <p role="status">Uploading image…</p>}{error && <p role="alert" className="text-red-800">{error}</p>}
+    {aiTarget && <AiImageEditorModal
+      open
+      sourceImage={aiTarget.image}
+      slug={slug}
+      imageAlt={value?.alt || imageAlt}
+      uploadEndpoint="/api/admin/case-study-images"
+      onClose={closeAiEditor}
+      onFinish={image => {
+        if ((value?.url || "") !== (aiTarget.image?.url || "")) {
+          throw new Error("This image changed while AI editing was open. Close this window and select it again.");
+        }
+        onChange({ url: image.url, alt: value?.alt ?? image.alt, caption: value?.caption ?? "" });
+        setError("");
+        closeAiEditor();
+      }}
+    />}
   </div>;
 }
 
@@ -70,7 +99,7 @@ export function CaseStudyForm({ post }: { post?: AdminCaseStudy }) {
         <label className="text-sm font-bold">Status<select className={input} name="status" value={status} onChange={e => setStatus(e.target.value as typeof status)}><option value="DRAFT">Draft</option><option value="PUBLISHED">Published</option><option value="ARCHIVED">Archived</option></select></label>
         <label className="text-sm font-bold">Publication date (UTC)<input className={input} type="date" name="publishedDate" value={publishedDate} onChange={e => setPublishedDate(e.target.value)} /><span className="mt-1 block text-xs font-normal">Leave blank to use the date you publish.</span></label>
       </div></Card>
-      <Card title="Cover image"><ImageField value={cover} onChange={setCover} slug={slug} onBusy={busy} showCaption={false} /></Card>
+      <Card title="Cover image"><ImageField value={cover} onChange={setCover} slug={slug} onBusy={busy} imageAlt={title} showCaption={false} /></Card>
       <Card title="Project introduction"><Field label="Introduction" multiline value={body.introduction} onChange={introduction => setBody({ ...body, introduction })} /></Card>
       <Card title="Project at a glance"><div className="space-y-4">
         {body.stats.map((stat, index) => <div className="grid items-end gap-3 sm:grid-cols-[1fr_2fr_auto]" key={index}>
@@ -87,7 +116,7 @@ export function CaseStudyForm({ post }: { post?: AdminCaseStudy }) {
           <Field label="Contents label" value={item.navLabel} onChange={navLabel => section(index, { navLabel })} />
           <Field label="Section anchor" value={item.id} onChange={id => section(index, { id })} />
           <div className="sm:col-span-2"><Field label="Paragraphs (separate with a blank line)" multiline value={item.paragraphs.join("\n\n")} onChange={text => section(index, { paragraphs: text.split(/\n\n/) })} /></div>
-          <div className="sm:col-span-2"><ImageField value={item.image} onChange={image => section(index, { image })} slug={slug} onBusy={busy} /></div>
+          <div className="sm:col-span-2"><ImageField value={item.image} onChange={image => section(index, { image })} slug={slug} onBusy={busy} imageAlt={item.title || title} /></div>
         </div>
         <div className="mt-6 space-y-4">
           {item.points?.map((point, pointIndex) => <div className="space-y-3 border-l-2 border-[#ccd3ce] pl-4" key={pointIndex}>
