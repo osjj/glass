@@ -1,11 +1,19 @@
 .rail { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 45; display: flex; flex-direction: column; gap: 12px; }
-.rail a, .rail button { position: relative; width: 58px; height: 58px; display: grid; place-items: center; border: 1px solid #e7e4df; border-radius: 50%; background: #fff; color: #383b3e; box-shadow: 0 3px 16px #24201a16; cursor: pointer; transition: transform 160ms, box-shadow 160ms, border-color 160ms; }
-.rail a:hover, .rail button:hover { transform: translateX(-3px); border-color: #cbb99c; box-shadow: 0 5px 20px #24201a24; }
+.rail > a, .rail > button, .whatsappGroup > button { position: relative; width: 58px; height: 58px; display: grid; place-items: center; border: 1px solid #e7e4df; border-radius: 50%; background: #fff; color: #383b3e; box-shadow: 0 3px 16px #24201a16; cursor: pointer; transition: transform 160ms, box-shadow 160ms, border-color 160ms; }
+.rail > a:hover, .rail > button:hover, .whatsappGroup > button:hover { transform: translateX(-3px); border-color: #cbb99c; box-shadow: 0 5px 20px #24201a24; }
 .rail a:focus-visible, .rail button:focus-visible { outline: 2px solid #8f6840; outline-offset: 4px; }
 .rail .whatsapp { color: #248954; }
 .rail .inquire { color: #8f6840; }
-.rail span { position: absolute; right: calc(100% + 12px); top: 50%; transform: translate(4px, -50%); border: 1px solid #e7e4df; border-radius: 7px; background: #fff; color: #383b3e; padding: 8px 12px; font-size: 12px; line-height: 1.4; font-weight: 600; white-space: nowrap; box-shadow: 0 3px 16px #24201a16; opacity: 0; pointer-events: none; transition: opacity 160ms, transform 160ms; }
-.rail a:hover span, .rail button:hover span, .rail a:focus-visible span, .rail button:focus-visible span { opacity: 1; transform: translate(0, -50%); }
+.rail > a > span, .rail > button > span { position: absolute; right: calc(100% + 12px); top: 50%; transform: translate(4px, -50%); border: 1px solid #e7e4df; border-radius: 7px; background: #fff; color: #383b3e; padding: 8px 12px; font-size: 12px; line-height: 1.4; font-weight: 600; white-space: nowrap; box-shadow: 0 3px 16px #24201a16; opacity: 0; pointer-events: none; transition: opacity 160ms, transform 160ms; }
+.rail > a:hover > span, .rail > button:hover > span, .rail > a:focus-visible > span, .rail > button:focus-visible > span { opacity: 1; transform: translate(0, -50%); }
+.whatsappGroup { position: relative; }
+.whatsappContacts { position: absolute; right: 100%; top: 50%; transform: translateY(-50%); width: 242px; max-width: calc(100vw - 82px); padding-right: 12px; }
+.whatsappContacts[hidden] { display: none; }
+.whatsappPanel { padding: 12px; border: 1px solid #e7e4df; border-radius: 12px; background: #fff; box-shadow: 0 5px 24px #24201a24; }
+.whatsappPanel p { margin: 0 0 6px; padding-inline: 8px; color: #647082; font-size: 12px; font-weight: 600; }
+.whatsappPanel a { display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 8px; border-radius: 7px; color: #248954; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.whatsappPanel a:hover { background: #eff8f2; }
+.whatsappPanel svg { flex-shrink: 0; }
 .dialog { padding: 0; border: 0; margin: auto; width: min(720px, calc(100% - 32px)); max-height: calc(100dvh - 40px); color: var(--ink); background: #f2f4f5; border-radius: 16px; box-shadow: 0 30px 100px #07162955; overflow: auto; overscroll-behavior: contain; }
 .dialog::backdrop { background: #10203899; backdrop-filter: blur(5px); }
 .panel { position: relative; padding: 36px 42px 26px; }
@@ -43,7 +51,7 @@
 .success > p:not(.kicker) { font-size: 15px; line-height: 1.8; color: #647082; }
 @media (max-width: 640px) {
   .rail { right: 12px; top: auto; bottom: max(18px, env(safe-area-inset-bottom)); transform: none; gap: 9px; }
-  .rail a, .rail button { width: 48px; height: 48px; }
+  .rail > a, .rail > button, .whatsappGroup > button { width: 48px; height: 48px; }
   .rail svg { width: 23px; height: 23px; }
   .dialog { width: calc(100% - 20px); max-height: calc(100dvh - 20px); border-radius: 12px; }
   .panel { padding: 34px 20px 22px; }

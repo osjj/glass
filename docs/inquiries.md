@@ -2,7 +2,7 @@
 
 ## Customer flow
 
-- Homepage right-hand fixed rail: Email (`sales@glarivoglass.com`), WhatsApp (`https://wa.me/8618825913441`), and Inquire.
+- Homepage right-hand fixed rail: Email (`sales@glarivoglass.com`), WhatsApp, and Inquire. Hover over or activate WhatsApp to choose `+86 186 8875 7773` (`https://wa.me/8618688757773`) or `+86 188 2591 3441` (`https://wa.me/8618825913441`). The picker also supports touch, keyboard activation, Escape and outside-click dismissal.
 - Inquire opens a keyboard-accessible modal with Email, country calling code / Mobile / WhatsApp, Name, Company name, and Message. Email, Name and Message are required. The optional country code supports suggested values and manual entry.
 - The header quote button and product inquiry buttons open the same form. Product buttons prefill the message; the server resolves the published product name and SKU from the source path.
 - Successful submissions are persisted before showing confirmation. Failed submissions preserve the customer's inputs. Retrying a submission uses the same UUID and does not create another record.

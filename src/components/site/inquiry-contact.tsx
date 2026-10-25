@@ -4,7 +4,8 @@ import { createContext, useContext, useEffect, useRef, useState, type FormEvent,
 import { usePathname } from "next/navigation";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { ChatTeardropText, EnvelopeSimple, WhatsappLogo } from "@phosphor-icons/react";
-import { inquiryAttribution, inquiryMessage, inquirySchema, SALES_EMAIL, SALES_WHATSAPP, type InquiryContext } from "@/lib/inquiries";
+import { inquiryAttribution, inquiryMessage, inquirySchema, SALES_EMAIL, type InquiryContext } from "@/lib/inquiries";
+import { SALES_TELEPHONES } from "@/lib/site-identity";
 import styles from "./inquiry-contact.module.css";
 
 const InquiryContextValue = createContext<(product?: InquiryContext) => void>(() => {});
@@ -26,11 +27,52 @@ export function InquiryProvider({ children }: { children: ReactNode }) {
     {children}
     <aside className={styles.rail} aria-label="Contact sales">
       <a href={`mailto:${SALES_EMAIL}`} title={SALES_EMAIL}><EnvelopeSimple size={25} weight="regular" aria-hidden="true" /><span>Email</span></a>
-      <a className={styles.whatsapp} href={SALES_WHATSAPP} target="_blank" rel="noopener noreferrer" title="WhatsApp +86 18825913441"><WhatsappLogo size={27} weight="regular" aria-hidden="true" /><span>WhatsApp</span></a>
+      <WhatsAppContact />
       <button className={styles.inquire} type="button" onClick={() => open()} aria-haspopup="dialog"><ChatTeardropText size={25} weight="regular" aria-hidden="true" /><span>Inquire</span></button>
     </aside>
     {request && <InquiryModal key={request.id} submissionId={request.id} product={request.product} sourcePath={request.sourcePath} productSlug={request.productSlug} onClose={() => setRequest(null)} />}
   </InquiryContextValue.Provider>;
+}
+
+function WhatsAppContact() {
+  const [expanded, setExpanded] = useState(false);
+  const group = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!expanded) return;
+    function dismissOutside(event: PointerEvent) {
+      if (!group.current?.contains(event.target as Node)) setExpanded(false);
+    }
+    function dismissOnEscape(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setExpanded(false);
+      if (group.current?.contains(document.activeElement)) trigger.current?.focus();
+    }
+    document.addEventListener("pointerdown", dismissOutside);
+    document.addEventListener("keydown", dismissOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", dismissOutside);
+      document.removeEventListener("keydown", dismissOnEscape);
+    };
+  }, [expanded]);
+
+  return <div ref={group} className={styles.whatsappGroup}
+    onPointerEnter={(event) => { if (event.pointerType === "mouse") setExpanded(true); }}
+    onPointerLeave={(event) => { if (event.pointerType === "mouse" && !event.currentTarget.contains(document.activeElement)) setExpanded(false); }}
+    onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setExpanded(false); }}>
+    <button ref={trigger} className={styles.whatsapp} type="button" aria-label="Choose a WhatsApp number" aria-expanded={expanded} aria-controls="whatsapp-contacts" onClick={() => setExpanded((current) => !current)}>
+      <WhatsappLogo size={27} weight="regular" aria-hidden="true" />
+    </button>
+    <div id="whatsapp-contacts" className={styles.whatsappContacts} hidden={!expanded}>
+      <div className={styles.whatsappPanel}>
+        <p>Chat on WhatsApp</p>
+        {SALES_TELEPHONES.map((phone) => <a key={phone} href={`https://wa.me/${phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+          <WhatsappLogo size={20} weight="regular" aria-hidden="true" />{phone}
+        </a>)}
+      </div>
+    </div>
+  </div>;
 }
 
 function InquiryModal({ submissionId, product, sourcePath, productSlug, onClose }: { submissionId: string; product?: InquiryContext; sourcePath: string; productSlug?: string; onClose: () => void }) {
