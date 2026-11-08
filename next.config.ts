@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { productRedirects } from "./src/data/product-redirects";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -6,6 +7,7 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   redirects() {
     return [
+      ...productRedirects,
       {
         source: "/blog/cocktail-glassware-buying-guide",
         destination: "/blog/essential-cocktail-glass-types-bars-restaurants",

@@ -3,9 +3,15 @@ import "server-only";
 import { cache } from "react";
 import type { Prisma } from "@/generated/prisma/client";
 import { productCategories } from "@/data/catalog";
+import { retiredProductSlugs } from "@/data/product-redirects";
 import { hasRenderableStoredContent } from "@/lib/article-content-server";
 import { prisma } from "@/lib/prisma";
 import { getProductPagination, PRODUCTS_PER_PAGE } from "@/lib/product-pagination";
+
+const publicCatalogProductWhere = {
+  status: "PUBLISHED",
+  slug: { notIn: retiredProductSlugs },
+} satisfies Prisma.ProductWhereInput;
 
 const publicProductInclude = {
   images: { where: { role: "GALLERY" as const }, orderBy: { sortOrder: "asc" as const } },
@@ -130,7 +136,7 @@ function serializeProduct(product: PublicProductRecord): PublicProduct {
 
 export const getPublishedProducts = cache(async (): Promise<PublicProduct[]> => {
   const products = await prisma.product.findMany({
-    where: { status: "PUBLISHED" },
+    where: publicCatalogProductWhere,
     orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }, { updatedAt: "desc" }],
     include: publicProductInclude,
   });
@@ -153,7 +159,7 @@ export const getPublishedProductPage = cache(async (
   // Preserve the catalog's primary-category and combined-text search semantics.
   // Only scan search fields; load images and detailed content for this page.
   const candidates = await prisma.product.findMany({
-    where: { status: "PUBLISHED" },
+    where: publicCatalogProductWhere,
     orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }, { updatedAt: "desc" }, { id: "asc" }],
     select: {
       id: true, name: true, summary: true, legacyCategory: true,
@@ -174,7 +180,7 @@ export const getPublishedProductPage = cache(async (
   const pagination = getProductPagination(filtered.length, requestedPage);
   const ids = filtered.slice(pagination.skip, pagination.skip + PRODUCTS_PER_PAGE).map((product) => product.id);
   const records = ids.length ? await prisma.product.findMany({
-    where: { id: { in: ids }, status: "PUBLISHED" },
+    where: { ...publicCatalogProductWhere, id: { in: ids } },
     include: publicProductInclude,
   }) : [];
   const byId = new Map(records.map((product) => [product.id, product]));
@@ -227,11 +233,11 @@ export const getPublicCategoryTree = cache(async (): Promise<PublicCategory[]> =
       sortOrder: true,
       _count: {
         select: {
-          productLinks: { where: { product: { status: "PUBLISHED" } } },
+          productLinks: { where: { product: publicCatalogProductWhere } },
         },
       },
       productLinks: {
-        where: { product: { status: "PUBLISHED" } },
+        where: { product: publicCatalogProductWhere },
         orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
         take: 1,
         select: {
@@ -339,7 +345,7 @@ export async function getPublicCategorySitemapEntries() {
 
 export async function getPublishedProductSitemapEntries() {
   return prisma.product.findMany({
-    where: { status: "PUBLISHED" },
+    where: publicCatalogProductWhere,
     orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }],
     select: { slug: true, updatedAt: true },
   });
