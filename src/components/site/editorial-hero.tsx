@@ -11,7 +11,7 @@ export function EditorialHero({ eyebrow, title, description, image, imageAlt }: 
 }) {
   return (
     <section data-editorial-hero className={styles.hero}>
-      <Image src={image} alt={imageAlt} fill preload sizes="100vw" className={styles.heroImage} />
+      <Image src={image} alt={imageAlt} fill loading="eager" fetchPriority="high" sizes="100vw" className={styles.heroImage} />
       <div className={styles.heroShade} />
       <div className={`${styles.container} ${styles.heroContent}`}>
         <p className={styles.kicker}>{eyebrow}</p>

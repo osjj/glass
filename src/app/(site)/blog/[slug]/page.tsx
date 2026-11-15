@@ -105,7 +105,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </ReadingHeader>
       <div className={`${theme.container} ${styles.cover}`}>
         <div className={`${styles.coverImage} ${article.coverImageFit === "contain" ? styles.containCover : ""}`}>
-          <Image src={article.coverImage} alt={article.coverImageAlt} fill preload unoptimized sizes="(min-width: 1280px) 1100px, 90vw" className={article.coverImageFit === "contain" ? "object-contain" : "object-cover"} />
+          <Image src={article.coverImage} alt={article.coverImageAlt} fill loading="eager" fetchPriority="high" sizes="(max-width: 539px) calc(100vw - 40px), (min-width: 1223px) 1100px, 90vw" className={article.coverImageFit === "contain" ? "object-contain" : "object-cover"} />
         </div>
       </div>
       <div className={`${theme.container} ${styles.section} ${outline.length > 0 ? styles.articleLayout : ""}`}>

@@ -69,7 +69,7 @@ export default async function HomePage() {
   return (
     <HomeMotion className={styles.home}>
       <section data-home-hero className={styles.hero}>
-        <Image src="/images/home/showroom-hero-v2.webp" alt="Warm glassware showroom with illuminated wood displays and glass collections" fill preload sizes="100vw" className={styles.heroImage} />
+        <Image src="/images/home/showroom-hero-v2.webp" alt="Warm glassware showroom with illuminated wood displays and glass collections" fill loading="eager" fetchPriority="high" sizes="100vw" className={styles.heroImage} />
         <div className={styles.heroShade} aria-hidden="true" />
         <div className={styles.heroPrism} aria-hidden="true"><span /><span /><span /></div>
         <div data-home-light className={styles.heroLight} aria-hidden="true" />

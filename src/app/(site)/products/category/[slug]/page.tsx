@@ -48,7 +48,7 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
   return (
     <div className={styles.page}>
       <section data-editorial-hero className={`${styles.hero} ${productStyles.categoryHero}`}>
-        <Image src={category.image} alt="" fill unoptimized preload sizes="100vw" className={styles.heroImage} />
+        <Image src={category.image} alt="" fill unoptimized loading="eager" fetchPriority="high" sizes="100vw" className={styles.heroImage} />
         <div className={styles.heroShade} />
         <div className={`${styles.container} ${styles.heroContent}`}>
           <nav className={productStyles.breadcrumb} aria-label="Breadcrumb">

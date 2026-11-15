@@ -18,7 +18,7 @@ export function HomeFooter() {
     <div className={styles.footerContainer}>
       <div className={styles.footerGrid}>
         <div className={styles.brand}>
-          <Link href="/" aria-label="Glarivo Glassware home"><Image src="/brand/glarivo-logo-white.png" width={1378} height={748} alt="Glarivo Glassware" className={styles.footerLogo} /></Link>
+          <Link href="/" aria-label="Glarivo Glassware home"><Image src="/brand/glarivo-logo-white.png" width={1378} height={748} alt="Glarivo Glassware" sizes="(max-width: 899px) 230px, 270px" className={styles.footerLogo} /></Link>
           <p>Clear glassware collections and practical information for confident sourcing.</p>
         </div>
         {columns.map((column) => <nav key={column.title} aria-label={column.title + " footer links"}>

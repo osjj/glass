@@ -19,7 +19,8 @@ export function Logo({
         alt="Glarivo Glassware"
         width={1378}
         height={748}
-        priority
+        sizes={compact ? "(max-width: 539px) 150px, (max-width: 1279px) 165px, 190px" : "(min-width: 640px) 142px, 133px"}
+        loading="eager"
         className={compact ? "h-14 w-auto" : "h-[4.5rem] w-auto sm:h-[4.8rem]"}
       />
     </Link>
