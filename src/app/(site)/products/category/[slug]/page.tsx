@@ -12,7 +12,7 @@ import { getCategoryBuyingContent } from "@/data/category-buying-content";
 import { getCategoryProcurementContent, getCategoryProductDisplay } from "@/data/category-procurement-content";
 import { getPageNumber, productPageHref } from "@/lib/product-pagination";
 import { getPublicCategoryPage, getPublicCategoryTree } from "@/lib/public-products";
-import { getClustersForCategory } from "@/data/guide-clusters";
+import { getClustersForCategory, getRelatedArticlesForCategory } from "@/data/guide-clusters";
 import styles from "@/components/site/editorial-pages.module.css";
 import productStyles from "@/components/site/product-pages.module.css";
 
@@ -41,6 +41,7 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
   if (!data) notFound();
   const { category, breadcrumbs, products, pagination } = data;
   const buyingGuides = getClustersForCategory(category.slug);
+  const relatedArticles = getRelatedArticlesForCategory(category.slug);
   const buyingContent = getCategoryBuyingContent(category.slug);
   const procurement = pagination.page === 1 ? getCategoryProcurementContent(category.slug, products) : null;
   const inquiryBrief = category.slug === "mason-jar-glasses" ? "mason-jar" : category.slug === "glass-tumblers" ? "glass-cups" : undefined;
@@ -71,7 +72,13 @@ export default async function ProductCategoryPage({ params, searchParams }: Cate
       <section className={`${styles.container} ${styles.catalog}`}>
         <CategoryMenu categories={categoryTree} activeSlug={category.slug} />
         <div className={styles.catalogResults}>
-          {!procurement && buyingGuides.length > 0 && <nav aria-label="Related buying guides" className={productStyles.guideLinks}><p>Need help choosing?</p><div>{buyingGuides.map((guide) => <Link key={guide.slug} href={`/guides/${guide.slug}`}>{guide.title} guide →</Link>)}</div></nav>}
+          {((!procurement && buyingGuides.length > 0) || relatedArticles.length > 0) && <nav aria-label="Related buying guides" className={productStyles.guideLinks}>
+            <p>Need help choosing?</p>
+            <div>
+              {!procurement && buyingGuides.map((guide) => <Link key={guide.slug} href={`/guides/${guide.slug}`}>{guide.title} guide →</Link>)}
+              {relatedArticles.map((article) => <Link key={article.href} href={article.href}>{article.label} →</Link>)}
+            </div>
+          </nav>}
           {procurement && <CategoryProcurementSelection content={procurement} />}
           {!procurement && buyingContent ? <CategoryBuyingNotes content={buyingContent} brief={inquiryBrief} /> : null}
           <div id="category-products" className={`${styles.toolbar} ${productStyles.categoryProducts}`}>

@@ -22,9 +22,11 @@
 .modelTable a { color: #90672c; text-decoration: underline; text-underline-offset: 3px; }
 .notePanel h2 { margin-top: 7px; color: var(--navy); font-family: var(--font-home-display), Georgia, serif; font-size: 30px; font-weight: 400; line-height: 1.2; }
 .noteGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-top: 19px; }
-.noteGrid h3 { color: var(--navy); font-size: 14px; font-weight: 700; }
+.noteGrid h3, .noteSteps h3 { color: var(--navy); font-size: 14px; font-weight: 700; }
 .noteList { display: grid; gap: 8px; margin-top: 9px; padding-left: 18px; color: var(--ink-muted); font-size: 13px; line-height: 1.55; list-style: disc; }
 .noteList li::marker { color: #90672c; }
+.noteSteps { margin-top: 19px; }
+.noteSteps ol { list-style: decimal; }
 .noteActions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; margin-top: 19px; padding-top: 16px; border-top: 1px solid var(--line); }
 .noteActions p { max-width: 350px; color: var(--ink-muted); font-size: 12px; line-height: 1.5; }
 .noteActions > div { display: flex; flex-wrap: wrap; gap: 10px; }

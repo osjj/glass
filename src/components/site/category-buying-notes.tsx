@@ -29,6 +29,13 @@ export function CategoryBuyingNotes({ content, brief }: { content: CategoryBuyin
         </table>
       </div> : null}
 
+      {content.purchasingSteps?.length ? <div className={styles.noteSteps}>
+        <h3>From shortlist to order</h3>
+        <ol className={styles.noteList}>
+          {content.purchasingSteps.map((step) => <li key={step}>{step}</li>)}
+        </ol>
+      </div> : null}
+
       <div className={styles.noteGrid}>
         <div>
           <h3>Check before shortlisting</h3>

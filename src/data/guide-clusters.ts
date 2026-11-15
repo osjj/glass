@@ -92,3 +92,23 @@ export function getGuideCluster(slug: string) {
 export function getClustersForCategory(slug: string) {
   return guideClusters.filter((cluster) => cluster.categories.some((category) => category.slug === slug));
 }
+
+type CategoryRelatedArticle = { href: string; label: string };
+
+const rackFitArticle: CategoryRelatedArticle = {
+  href: "/blog/restaurant-glassware-dishwasher-rack-fit-storage-checklist",
+  label: "Dishwasher rack fit and storage checklist",
+};
+
+const categoryRelatedArticles: Record<string, CategoryRelatedArticle[]> = {
+  "glass-tumblers": [rackFitArticle],
+  "mason-jar-glasses": [rackFitArticle],
+  "whiskey-decanter-set": [{
+    href: "/blog/whiskey-decanter-sets-wholesale-components-stoppers-gift-boxes",
+    label: "Whiskey decanter sets: components, stoppers and gift boxes",
+  }],
+};
+
+export function getRelatedArticlesForCategory(slug: string) {
+  return categoryRelatedArticles[slug] ?? [];
+}

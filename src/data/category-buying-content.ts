@@ -1,6 +1,7 @@
 export type CategoryBuyingContent = {
   label: string;
   introduction?: string;
+  purchasingSteps?: string[];
   models?: Array<{ sku: string; slug: string; dimensions?: string; packing?: string }>;
   seoTitle: string;
   seoDescription: string;
@@ -347,15 +348,22 @@ Object.assign(categoryBuyingContent, {
     seoDescription: "Browse wholesale glass cups for water, juice and bar service. Compare selected tumblers by capacity, rim diameter and packing, then request a quote.",
     introduction: "Browse water and juice tumblers, highball glasses, whisky cups and decorated tea glasses. Compare cup sizes and packing, then send the product links and quantities for your wholesale quote.",
     useCases: ["Restaurant, bar and retail glass-cup assortments"],
+    purchasingSteps: [
+      "Shortlist a cup for each drink, allowing for ice, garnish and the intended fill level.",
+      "Request confirmed outside dimensions and check samples with your racks, trays and shelving.",
+      "Approve the finished glass, decoration and packing sample before confirming the order.",
+    ],
     comparisonPoints: [
-      "Choose capacity around the finished drink, including ice and garnish.",
-      "Check cup height and rim diameter against trays, racks and shelf clearance.",
-      "For decorated cups, approve the artwork, finish and care instructions on a sample.",
+      "Confirm whether listed capacity is nominal or brimful; record the intended serving volume separately.",
+      "Check overall height and maximum outside width as well as rim diameter against the actual rack, tray and shelf.",
+      "Confirm stacking and washing instructions for the exact model and finish; shape or rack fit alone does not establish suitability.",
     ],
     inquiryChecklist: [
-      "Product links, drink types and quantity per model",
-      "Logo, pattern or color reference",
-      "Retail box or carton requirements, destination and delivery date",
+      "Product links or item numbers, drink types and quantity per model",
+      "Intended serving volume, ice or garnish, and rack or shelf constraints",
+      "Logo artwork, placement, pattern or color reference",
+      "Unit pack, inner protection, pieces per carton and any retail-box requirements",
+      "Destination, required arrival date and sample or documentation requirements",
     ],
   },
 } satisfies Record<string, CategoryBuyingContent>);
