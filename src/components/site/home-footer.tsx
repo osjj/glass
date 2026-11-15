@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { EnvelopeSimple, Globe, MapPin, Phone } from "@phosphor-icons/react/dist/ssr";
+import { ContactLink } from "./contact-link";
 import styles from "./home-shell.module.css";
 
 const columns = [
@@ -30,14 +31,14 @@ export function HomeFooter() {
             <div className={styles.contactItem}>
               <span className={styles.contactIcon}><Phone size={19} aria-hidden="true" /></span>
               <span className={styles.contactPhoneList}>
-                <a href="tel:+8618688757773">+86 186 8875 7773</a>
-                <a href="tel:+8618825913441">+86 188 2591 3441</a>
+                <ContactLink href="tel:+8618688757773" contactMethod="phone" contactLocation="footer">+86 186 8875 7773</ContactLink>
+                <ContactLink href="tel:+8618825913441" contactMethod="phone" contactLocation="footer">+86 188 2591 3441</ContactLink>
               </span>
             </div>
-            <a href="mailto:sales@glarivoglass.com" className={styles.contactItem}>
+            <ContactLink href="mailto:sales@glarivoglass.com" contactMethod="email" contactLocation="footer" className={styles.contactItem}>
               <span className={styles.contactIcon}><EnvelopeSimple size={19} aria-hidden="true" /></span>
               <span>sales@glarivoglass.com</span>
-            </a>
+            </ContactLink>
             <a href="https://www.glarivoglass.com" className={styles.contactItem}>
               <span className={styles.contactIcon}><Globe size={19} aria-hidden="true" /></span>
               <span>www.glarivoglass.com</span>

@@ -1,10 +1,16 @@
-import Script from "next/script";
+"use client";
 
-const measurementId = "G-ZN5MYTQSBP";
+import Script from "next/script";
+import { useSyncExternalStore } from "react";
+import { GA_MEASUREMENT_ID, isAnalyticsEnabled } from "@/lib/analytics";
+
+const subscribe = () => () => {};
+const serverSnapshot = () => false;
 
 export function GoogleAnalytics() {
-  // Keep development visits out of the production property.
-  if (process.env.NODE_ENV !== "production") return null;
+  // The browser hostname is authoritative; server render never loads the tag.
+  const enabled = useSyncExternalStore(subscribe, isAnalyticsEnabled, serverSnapshot);
+  if (!enabled) return null;
 
   // GA4 enhanced measurement handles client-side navigation. Do not also
   // send manual page_view events, which would count those visits twice.
@@ -15,12 +21,12 @@ export function GoogleAnalytics() {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${measurementId}');
+          gtag('config', '${GA_MEASUREMENT_ID}');
         `}
       </Script>
       <Script
         id="google-analytics-script"
-        src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
         strategy="afterInteractive"
       />
     </>

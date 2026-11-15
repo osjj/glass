@@ -23,6 +23,7 @@
     "catalog:sunwin:check": "tsx scripts/check-sunwin-catalog.ts",
     "test:catalog": "tsx --test tests/sunwin.test.ts",
     "test:inquiry-email": "tsx --test src/lib/inquiries.test.ts src/lib/inquiry-email.test.ts",
+    "test:analytics": "tsx --test src/lib/analytics.test.ts src/lib/inquiry-client.test.ts src/components/site/contact-link.test.tsx",
     "mail:verify": "tsx scripts/verify-inquiry-smtp.ts",
     "r2:smoke": "tsx scripts/r2-smoke-test.ts"
   },

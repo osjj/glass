@@ -6,6 +6,7 @@ import { ArrowUpRight, BookOpen, List, X } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./logo";
 import { InquiryButton } from "./inquiry-contact";
+import { ContactLink } from "./contact-link";
 import styles from "./home-shell.module.css";
 import { DirectoryContent, ProductDirectory, type HeaderCategory } from "./product-directory";
 import { GLARIVO_CATALOG_URL } from "@/lib/catalog-download";
@@ -50,10 +51,10 @@ export function SiteHeader({ categories }: { categories: HeaderCategory[] }) {
       {pathname === "/" && !scrolled ? (
         <div className={`${styles.topContactBar} shrink-0`} aria-label="Homepage contact details">
           <div className={styles.topContactInner}>
-            <a href="mailto:sales@glarivoglass.com">sales@glarivoglass.com</a>
+            <ContactLink href="mailto:sales@glarivoglass.com" contactMethod="email" contactLocation="header">sales@glarivoglass.com</ContactLink>
             <span className={styles.topContactPhones}>
-              <a href="tel:+8618688757773">+86 186 8875 7773</a>
-              <a href="tel:+8618825913441">+86 188 2591 3441</a>
+              <ContactLink href="tel:+8618688757773" contactMethod="phone" contactLocation="header">+86 186 8875 7773</ContactLink>
+              <ContactLink href="tel:+8618825913441" contactMethod="phone" contactLocation="header">+86 188 2591 3441</ContactLink>
             </span>
           </div>
         </div>

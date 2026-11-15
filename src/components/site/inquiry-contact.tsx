@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { ChatTeardropText, EnvelopeSimple, WhatsappLogo } from "@phosphor-icons/react";
 import { inquiryAttribution, inquiryMessage, inquirySchema, SALES_EMAIL, type InquiryContext } from "@/lib/inquiries";
+import { submitInquiry } from "@/lib/inquiry-client";
 import { SALES_TELEPHONES } from "@/lib/site-identity";
+import { ContactLink } from "./contact-link";
 import styles from "./inquiry-contact.module.css";
 
 const InquiryContextValue = createContext<(product?: InquiryContext) => void>(() => {});
@@ -26,7 +28,7 @@ export function InquiryProvider({ children }: { children: ReactNode }) {
   return <InquiryContextValue.Provider value={open}>
     {children}
     <aside className={styles.rail} aria-label="Contact sales">
-      <a href={`mailto:${SALES_EMAIL}`} title={SALES_EMAIL}><EnvelopeSimple size={25} weight="regular" aria-hidden="true" /><span>Email</span></a>
+      <ContactLink href={`mailto:${SALES_EMAIL}`} title={SALES_EMAIL} contactMethod="email" contactLocation="rail"><EnvelopeSimple size={25} weight="regular" aria-hidden="true" /><span>Email</span></ContactLink>
       <WhatsAppContact />
       <button className={styles.inquire} type="button" onClick={() => open()} aria-haspopup="dialog"><ChatTeardropText size={25} weight="regular" aria-hidden="true" /><span>Inquire</span></button>
     </aside>
@@ -67,9 +69,9 @@ function WhatsAppContact() {
     <div id="whatsapp-contacts" className={styles.whatsappContacts} hidden={!expanded}>
       <div className={styles.whatsappPanel}>
         <p>Chat on WhatsApp</p>
-        {SALES_TELEPHONES.map((phone) => <a key={phone} href={`https://wa.me/${phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+        {SALES_TELEPHONES.map((phone) => <ContactLink key={phone} href={`https://wa.me/${phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" contactMethod="whatsapp" contactLocation="rail">
           <WhatsappLogo size={20} weight="regular" aria-hidden="true" />{phone}
-        </a>)}
+        </ContactLink>)}
       </div>
     </div>
   </div>;
@@ -104,9 +106,7 @@ function InquiryModal({ submissionId, product, sourcePath, productSlug, onClose 
     submitting.current = true;
     setBusy(true);
     try {
-      const response = await fetch("/api/inquiries", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(parsed.data), signal: AbortSignal.timeout(20000) });
-      const result = await response.json();
-      if (!response.ok || !result.success) throw new Error(result.error || "Your request could not be saved. Please try again.");
+      await submitInquiry(parsed.data);
       setSuccess(true);
     } catch (cause) {
       setError(cause instanceof Error && cause.name !== "TimeoutError" ? cause.message : "The request timed out. Please retry; your inquiry will not be saved twice.");
