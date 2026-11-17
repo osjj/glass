@@ -308,6 +308,15 @@ textarea {
   max-width: 760px;
 }
 
+/* Keep image captions in flow so they cannot cover the AI action row. */
+.article-editor-shell .image-tool--caption {
+  padding-bottom: 0;
+}
+
+.article-editor-shell .image-tool--caption .image-tool__caption {
+  position: static;
+}
+
 .article-editor-shell .ce-header {
   color: var(--navy);
   font-weight: 800;
